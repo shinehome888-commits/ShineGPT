@@ -1,4 +1,4 @@
-# 🌍 shineGPT: Learn Without Internet — For Every Child in Africa
+# 🌍 ShineGPT: Learn Without Internet — For Every Child in Africa
 
 ![Streamlit](https://img.shields.io/badge/Interface-Streamlit-blue)  
 ![Offline Mode](https://img.shields.io/badge/SMS--Mode-Offline-green)  
