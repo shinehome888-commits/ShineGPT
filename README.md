@@ -11,7 +11,7 @@
 
 ## 💡 What Is shineGPT?
 
-**shineGPT** is an educational AI app created by **KS1 Empire Foundation** to bring digital literacy to children in villages across Africa — where data is expensive, slow, or unavailable.
+**ShineGPT** is an educational AI app created by **KS1 Empire Foundation** to bring digital literacy to children in villages across Africa — where data is expensive, slow, or unavailable.
 
 Unlike most AI apps that need Wi-Fi, shineGPT has a special **SMS/Offline Mode** that works **without any internet connection**. Kids can learn core tech concepts using only text-based prompts — just like sending a message on a Nokia phone.
 
