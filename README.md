@@ -5,7 +5,7 @@
 ![AI for Good](https://img.shields.io/badge/Mission-Empower-Affordable)
 
 > **No internet? No problem.**  
-> shineGPT teaches AI, Blockchain, Crypto, and the Future of Work — even on a basic phone with only SMS.
+> ShineGPT teaches AI, Blockchain, Crypto, and the Future of Work — even on a basic phone with only SMS.
 
 ---
 
