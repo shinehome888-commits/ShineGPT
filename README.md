@@ -9,7 +9,7 @@
 
 ---
 
-## 💡 What Is shineGPT?
+## 💡 What Is ShineGPT?
 
 **ShineGPT** is an educational AI app created by **KS1 Empire Foundation** to bring digital literacy to children in villages across Africa — where data is expensive, slow, or unavailable.
 
