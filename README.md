@@ -31,7 +31,7 @@ Unlike most AI apps that need Wi-Fi, shineGPT has a special **SMS/Offline Mode**
 
 ---
 
-## 🔧 How to Use shineGPT
+## 🔧 How to Use ShineGPT
 
 ### In SMS/Offline Mode (No Internet!)
 Just type these simple commands:
