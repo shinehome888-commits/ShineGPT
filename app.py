@@ -1,15 +1,12 @@
 # ShineGPT: Learn. Earn. Empower the World.
-# Dual-Mode AI Tutor: Online (Internet) + SMS (Offline, No Internet)
+# Dual-Mode AI Tutor: Online (Phi-3) + SMS (Offline, No Internet)
 
 import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# ------------------- CONFIG -------------------
-MODEL_NAME = "Qwen/Qwen2.5-7B-Instruct"  # Online mode model
-USE_ONLINE = False  # Toggle this to False to force SMS mode
+MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
 
-# ------------------- LESSONS (OFFLINE SMS MODE) -------------------
 lessons = {
     1: "What is the 4th Industrial Revolution? – A time when technologies like AI, blockchain, and IoT are merging digital, physical, and biological worlds.",
     2: "Understanding Artificial Intelligence (AI) – AI enables machines to learn and perform tasks that normally require human intelligence.",
@@ -23,7 +20,6 @@ lessons = {
     10: "The Future of Work – Skills in AI, blockchain, and Web3 will drive new opportunities in the global economy."
 }
 
-# ------------------- SMS MODE RESPONSES (NO INTERNET NEEDED) -------------------
 sms_responses = {
     "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about AI. Or type 'sms help' for more.",
     "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
@@ -54,31 +50,29 @@ sms_responses = {
     "points": "You have 0 points. Earn 10 per lesson. Type 'lesson 1' to start!",
 }
 
-# ------------------- LOAD ONLINE MODEL (IF NEEDED) -------------------
 @st.cache_resource
 def load_online_model():
     try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=False)
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME,
-            torch_dtype=torch.float16,
+            torch_dtype="auto",
             device_map="auto",
-            trust_remote_code=True
+            trust_remote_code=False,
+            low_cpu_mem_usage=True,
         )
         return tokenizer, model
     except Exception as e:
-        st.warning(f"⚠️ Online model failed to load: {e}. Switching to SMS mode.")
+        st.warning("⚠️ Online model failed to load: " + str(e) + ". Switching to SMS mode.")
         return None, None
 
 tokenizer, model = load_online_model()
 
-# ------------------- CHAT BOT FUNCTION -------------------
 def generate_response_online(user_input):
-    """Use Qwen2.5 model for online mode (requires internet)"""
     if not tokenizer or not model:
         return "❌ Offline mode: No internet. Try typing 'sms help'."
 
-    prompt = f"<|im_start|>user\n{user_input}<|im_end|>\n<|im_start|>assistant\n"
+    prompt = f"<|user|>\n{user_input}<|end|><|assistant|>"
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
     with torch.no_grad():
@@ -88,13 +82,13 @@ def generate_response_online(user_input):
             temperature=0.7,
             top_p=0.9,
             do_sample=True,
-            pad_token_id=tokenizer.eos_token_id
+            pad_token_id=tokenizer.eos_token_id,
+            eos_token_id=tokenizer.eos_token_id
         )
 
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
     return response
 
-# ------------------- TRACK USER POINTS -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
@@ -106,27 +100,23 @@ def get_user_points(user):
 def add_points(user, points):
     st.session_state.user_points[user] += points
 
-# ------------------- MAIN APP -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="wide")
 
 st.title("🌟 ShineGPT – Learn. Earn Knowledge. Empower Yourself.")
 st.write("Powered by KS1 Empire Foundation")
 st.markdown("---")
 
-# Sidebar
 page = st.sidebar.radio("📚 Navigate", ["Lessons", "Chat with ShineGPT", "About", "SMS Mode (Offline)"])
 
-# Lessons Page
 if page == "Lessons":
     st.header("📘 ShineGPT Lessons")
     for i, lesson in lessons.items():
         with st.expander(f"Lesson {i}"):
             st.write(lesson)
 
-# Chat Page
 elif page == "Chat with ShineGPT":
     st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 This mode uses AI over the internet. Requires data connection.")
+    st.info("💡 This mode uses Microsoft Phi-3-mini — fast, stable, and works even on low memory.")
     user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:")
 
     if st.button("Send") and user_input:
@@ -135,11 +125,10 @@ elif page == "Chat with ShineGPT":
         st.success(response)
         add_points("online_user", 5)
 
-# SMS Mode Page (OFFLINE, NO INTERNET)
 elif page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
-    **This mode works even on a basic phone with SMS!**  
+    **This mode works even on a basic phone!**  
     No data? No problem. Just type keywords like:  
     - `lesson 1`  
     - `hello`  
@@ -156,13 +145,11 @@ elif page == "SMS Mode (Offline)":
         user_input_lower = user_input.strip().lower()
         response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'sms help'.")
 
-        # If user asks for a lesson, add points
         if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
             add_points("sms_user", 10)
 
         st.success(response)
 
-# About Page
 elif page == "About":
     st.header("ℹ️ About ShineGPT")
     st.write("""
@@ -177,7 +164,6 @@ elif page == "About":
     **Learn. Earn Knowledge. Empower Yourself.**
     """)
 
-# Display Points (Always visible)
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.write(f"**{get_user_points('online_user')}** points (Online)")
