@@ -7,7 +7,8 @@ import torch
 
 MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
 
-lessons = {# ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REVOLUTION (OFFLINE SMS MODE) -------------------
+    # ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REVOLUTION (OFFLINE SMS MODE) -------------------
+lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines to make machines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
     3: "The 4th Industrial Revolution started around 2010 — when phones became powerful, internet became global, and machines started learning on their own.",
@@ -108,19 +109,63 @@ lessons = {# ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REV
     98: "Your voice matters. If you see a problem — use tech to fix it. Maybe your idea will become the next shineGPT.",
     99: "The future isn’t something that happens to you — it’s something you create. With curiosity, courage, and kindness.",
     100: "You are the generation that will decide: Will technology serve humanity — or will humanity serve technology? Choose wisely."
+
+}
+# ------------------- SMS MODE RESPONSES (NO INTERNET NEEDED) -------------------
+sms_responses = {
+    "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'sms help' for more.",
+    "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
+    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 100' to learn. Or 'sms help' to see this again.",
+    "sms help": "📱 SMS MODE: No internet needed! Just type:\n- 'lesson 1'\n- 'lesson 2'\n- ... up to 'lesson 100'\n- 'hello'\n- 'help'",
+    "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
+    "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
+    "bye": "Goodbye! Come back soon. Remember: Knowledge is your superpower.",
+    "what is ai": "AI is when machines learn to think like humans — like me! It helps us solve big problems.",
+    "what is blockchain": "Blockchain is a digital notebook that everyone can see, but no one can cheat. It keeps records safe.",
+    "what is crypto": "Cryptocurrency is digital money. Like Bitcoin. No bank needed — just your phone and trust.",
+    "what is web3": "Web3 is the internet you own. Not Facebook or Google. YOU control your data.",
+    "what is bitcoin": "Bitcoin is the first digital money. Created in 2009. No government controls it.",
+    "what is big data": "Big Data means collecting lots of information — like how many kids go to school — to help make better decisions.",
+    "what is iot": "IoT = Internet of Things. Your fridge, watch, or light bulb connected to the internet to help you.",
+    "what is metaverse": "The Metaverse is a 3D internet world. You can walk around, meet friends, and work — all in a game-like space.",
+    "what is future of work": "Future jobs will need AI, blockchain, and coding skills. Learn now — so you can earn later.",
+    "points": "You have 0 points. Earn 10 per lesson. Type 'lesson 1' to start!",
 }
 
-   sms_responses = {
-    "hello": "Hello! I'm ShineGPT...",
-    ...
-    "points": "You have 0 points..."
-}
-
-# AUTO-GENERATE LESSON RESPONSES FOR ALL 100 LESSONS
+# ✅ AUTO-GENERATE LESSON RESPONSES FOR ALL 100 LESSONS
 for i in range(1, 101):
     lesson_text = lessons.get(i, "Lesson not found.")
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
+# ------------------- AUDIO FEATURES -------------------
+import soundfile as sf
+from io import BytesIO
+from pydub import AudioSegment
+from coqui_tts.api import TTS
+import torch
+
+# Initialize TTS model (small, fast, offline)
+tts_model = TTS(model_name="tts_models/en/ljspeech/tacotron2-DDC", progress_bar=False, gpu=False)
+
+def text_to_speech(text):
+    """Convert text to audio file in memory"""
+    try:
+        wav = tts_model.tts(text)
+        # Convert to WAV format in memory
+        buffer = BytesIO()
+        sf.write(buffer, wav, 22050, format='WAV')
+        buffer.seek(0)
+        return buffer.read()
+    except Exception as e:
+        st.warning(f"⚠️ Could not generate voice: {e}")
+        return None
+
+# ------------------- AUDIO PLAYER COMPONENT -------------------
+def play_audio(audio_bytes):
+    """Play audio in Streamlit"""
+    if audio_bytes:
+        st.audio(audio_bytes, format="audio/wav")
+        
 @st.cache_resource
 def load_online_model():
     try:
@@ -187,14 +232,56 @@ if page == "Lessons":
 
 elif page == "Chat with ShineGPT":
     st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 This mode uses Microsoft Phi-3-mini — fast, stable, and works even on low memory.")
-    user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:")
+    st.info("💡 Say it out loud! Ask questions like: 'What is AI?' — then listen to the answer.")
+
+    # Voice input button
+    user_input = st.text_input("Type or speak your question:", key="chat_input")
+
+    # Microphone button (Streamlit's experimental mic input)
+    import streamlit as st
+    from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
+    import av
+
+    class AudioProcessor(AudioProcessorBase):
+        def __init__(self):
+            self.audio_data = b""
+        
+        def recv(self, frame):
+            # Just capture audio — we'll handle processing later
+            audio_frame = frame.to_ndarray()
+            self.audio_data += audio_frame.tobytes()
+            return frame
+
+    webrtc_ctx = webrtc_streamer(
+        key="speech-to-text",
+        mode=WebRtcMode.SENDRECV,
+        audio_processor_factory=AudioProcessor,
+        media_stream_constraints={"audio": True, "video": True},
+    )
+
+    if webrtc_ctx.state.playing:
+        st.write("🎙️ Listening... Say something!")
+        if st.button("Stop Listening & Send"):
+            audio_data = webrtc_ctx.audio_processor.audio_data
+            if len(audio_data) > 0:
+                # For now, we'll just use text input — but this sets up voice input
+                st.success("Audio captured! In next version, we'll convert to text.")
+            else:
+                st.warning("No audio detected.")
 
     if st.button("Send") and user_input:
         with st.spinner("Thinking..."):
             response = generate_response_online(user_input)
         st.success(response)
+
+        # Generate voice reply
+        audio_data = text_to_speech(response)
+        if audio_
+            st.markdown("🔊 **Listen to the answer:**")
+            play_audio(audio_data)
+
         add_points("online_user", 5)
+
 
 elif page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
@@ -226,11 +313,9 @@ elif page == "About":
     st.write("""
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
     It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
-
     🌍 **Special Feature**:  
     We built an **SMS Mode** so kids in villages with **no internet** can still learn for free —  
     using only text messages on basic phones.
-
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
     """)
