@@ -1,4 +1,5 @@
 # 🌍 ShineGPT: Learn Without Internet — For Every Child in Africa
+https://img.shields.io/github/actions/workflow/status/shinehome888-commits/shineGPT/check-app.yaml?label=App%20Check&logo=github
 
 ![Streamlit](https://img.shields.io/badge/Interface-Streamlit-blue)  
 ![Offline Mode](https://img.shields.io/badge/SMS--Mode-Offline-green)  
