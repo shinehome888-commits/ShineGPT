@@ -5,9 +5,10 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
+# ------------------- CONFIG -------------------
 MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
 
-    # ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REVOLUTION (OFFLINE SMS MODE) -------------------
+# ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REVOLUTION -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines to make machines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -109,8 +110,8 @@ lessons = {
     98: "Your voice matters. If you see a problem — use tech to fix it. Maybe your idea will become the next shineGPT.",
     99: "The future isn’t something that happens to you — it’s something you create. With curiosity, courage, and kindness.",
     100: "You are the generation that will decide: Will technology serve humanity — or will humanity serve technology? Choose wisely."
-
 }
+
 # ------------------- SMS MODE RESPONSES (NO INTERNET NEEDED) -------------------
 sms_responses = {
     "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'sms help' for more.",
@@ -132,7 +133,7 @@ sms_responses = {
     "points": "You have 0 points. Earn 10 per lesson. Type 'lesson 1' to start!",
 }
 
-# ✅ AUTO-GENERATE LESSON RESPONSES FOR ALL 100 LESSONS
+# AUTO-GENERATE LESSON RESPONSES FOR ALL 100 LESSONS
 for i in range(1, 101):
     lesson_text = lessons.get(i, "Lesson not found.")
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
@@ -140,7 +141,6 @@ for i in range(1, 101):
 # ------------------- AUDIO FEATURES -------------------
 import soundfile as sf
 from io import BytesIO
-from pydub import AudioSegment
 from coqui_tts.api import TTS
 import torch
 
@@ -151,7 +151,6 @@ def text_to_speech(text):
     """Convert text to audio file in memory"""
     try:
         wav = tts_model.tts(text)
-        # Convert to WAV format in memory
         buffer = BytesIO()
         sf.write(buffer, wav, 22050, format='WAV')
         buffer.seek(0)
@@ -160,16 +159,16 @@ def text_to_speech(text):
         st.warning(f"⚠️ Could not generate voice: {e}")
         return None
 
-# ------------------- AUDIO PLAYER COMPONENT -------------------
 def play_audio(audio_bytes):
     """Play audio in Streamlit"""
     if audio_bytes:
         st.audio(audio_bytes, format="audio/wav")
-        
+
+# ------------------- LOAD ONLINE MODEL (IF NEEDED) -------------------
 @st.cache_resource
 def load_online_model():
     try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=False)
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME,
             torch_dtype="auto",
@@ -184,6 +183,7 @@ def load_online_model():
 
 tokenizer, model = load_online_model()
 
+# ------------------- CHAT BOT FUNCTION -------------------
 def generate_response_online(user_input):
     if not tokenizer or not model:
         return "❌ Offline mode: No internet. Try typing 'sms help'."
@@ -205,6 +205,7 @@ def generate_response_online(user_input):
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
     return response
 
+# ------------------- TRACK USER POINTS -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
@@ -216,6 +217,7 @@ def get_user_points(user):
 def add_points(user, points):
     st.session_state.user_points[user] += points
 
+# ------------------- MAIN APP -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="wide")
 
 st.title("🌟 ShineGPT – Learn. Earn Knowledge. Empower Yourself.")
@@ -231,13 +233,6 @@ if page == "Lessons":
             st.write(lesson)
 
 elif page == "Chat with ShineGPT":
-    st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 Say it out loud! Ask questions like: 'What is AI?' — then listen to the answer.")
-
-    # Voice input button
-    user_input = st.text_input("Type or speak your question:", key="chat_input")
-
- lif page == "Chat with ShineGPT":
     st.header("💬 Chat with ShineGPT (Online Mode)")
     st.info("💡 Say your question out loud — then type it here! Your phone can convert speech to text. Then listen to the answer.")
 
@@ -255,15 +250,6 @@ elif page == "Chat with ShineGPT":
             play_audio(audio_data)
 
         add_points("online_user", 5)
-
-        # Generate voice reply
-        audio_data = text_to_speech(response)
-        if audio_
-            st.markdown("🔊 **Listen to the answer:**")
-            play_audio(audio_data)
-
-        add_points("online_user", 5)
-
 
 elif page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
@@ -295,9 +281,11 @@ elif page == "About":
     st.write("""
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
     It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
+
     🌍 **Special Feature**:  
     We built an **SMS Mode** so kids in villages with **no internet** can still learn for free —  
     using only text messages on basic phones.
+
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
     """)
