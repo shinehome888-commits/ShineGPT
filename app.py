@@ -110,35 +110,16 @@ lessons = {# ------------------- 100-LESSON CURRICULUM ON THE 4TH INDUSTRIAL REV
     100: "You are the generation that will decide: Will technology serve humanity — or will humanity serve technology? Choose wisely."
 }
 
-sms_responses = {
-    "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about AI. Or type 'sms help' for more.",
-    "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
-    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 10' to learn. Or 'sms help' to see this again.",
-    "sms help": "📱 SMS MODE: No internet needed! Just type:\n- 'lesson 1'\n- 'lesson 2'\n- 'hello'\n- 'help'",
-    "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
-    "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
-    "bye": "Goodbye! Come back soon. Remember: Knowledge is your superpower.",
-    "what is ai": "AI is when machines learn to think like humans — like me! It helps us solve big problems.",
-    "what is blockchain": "Blockchain is a digital notebook that everyone can see, but no one can cheat. It keeps records safe.",
-    "what is crypto": "Cryptocurrency is digital money. Like Bitcoin. No bank needed — just your phone and trust.",
-    "what is web3": "Web3 is the internet you own. Not Facebook or Google. YOU control your data.",
-    "what is bitcoin": "Bitcoin is the first digital money. Created in 2009. No government controls it.",
-    "what is big data": "Big Data means collecting lots of information — like how many kids go to school — to help make better decisions.",
-    "what is iot": "IoT = Internet of Things. Your fridge, watch, or light bulb connected to the internet to help you.",
-    "what is metaverse": "The Metaverse is a 3D internet world. You can walk around, meet friends, and work — all in a game-like space.",
-    "what is future of work": "Future jobs will need AI, blockchain, and coding skills. Learn now — so you can earn later.",
-    "lesson 1": lessons[1] + "\n\n✨ You earned 10 points! Type 'lesson 2' to continue.",
-    "lesson 2": lessons[2] + "\n\n✨ You earned 10 points! Type 'lesson 3' to continue.",
-    "lesson 3": lessons[3] + "\n\n✨ You earned 10 points! Type 'lesson 4' to continue.",
-    "lesson 4": lessons[4] + "\n\n✨ You earned 10 points! Type 'lesson 5' to continue.",
-    "lesson 5": lessons[5] + "\n\n✨ You earned 10 points! Type 'lesson 6' to continue.",
-    "lesson 6": lessons[6] + "\n\n✨ You earned 10 points! Type 'lesson 7' to continue.",
-    "lesson 7": lessons[7] + "\n\n✨ You earned 10 points! Type 'lesson 8' to continue.",
-    "lesson 8": lessons[8] + "\n\n✨ You earned 10 points! Type 'lesson 9' to continue.",
-    "lesson 9": lessons[9] + "\n\n✨ You earned 10 points! Type 'lesson 10' to continue.",
-    "lesson 10": lessons[10] + "\n\n✨ You earned 10 points! You completed all lessons! 🎉 Keep learning!",
-    "points": "You have 0 points. Earn 10 per lesson. Type 'lesson 1' to start!",
+   sms_responses = {
+    "hello": "Hello! I'm ShineGPT...",
+    ...
+    "points": "You have 0 points..."
 }
+
+# AUTO-GENERATE LESSON RESPONSES FOR ALL 100 LESSONS
+for i in range(1, 101):
+    lesson_text = lessons.get(i, "Lesson not found.")
+    sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
 @st.cache_resource
 def load_online_model():
