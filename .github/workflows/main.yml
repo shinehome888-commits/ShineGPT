@@ -1,0 +1,76 @@
+# .github/workflows/check-app.yaml
+
+name: Check shineGPT App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Python syntax
+        run: |
+          python -m py_compile app.py
+          echo "✅ Syntax check passed!"
+
+      - name: Validate requirements.txt
+        run: |
+          echo "🔍 Checking requirements.txt..."
+          grep -q "streamlit" requirements.txt || { echo "❌ ERROR: requirements.txt missing streamlit"; exit 1; }
+          grep -q "transformers" requirements.txt || { echo "❌ ERROR: requirements.txt missing transformers"; exit 1; }
+          grep -q "torch" requirements.txt || { echo "❌ ERROR: requirements.txt missing torch"; exit 1; }
+          echo "✅ requirements.txt is complete!"
+
+      - name: Check README.md exists
+        run: |
+          if [ ! -f README.md ]; then
+            echo "❌ ERROR: README.md is missing!"
+            exit 1
+          fi
+          echo "✅ README.md found!"
+
+      - name: Check LICENSE exists
+        run: |
+          if [ ! -f LICENSE ]; then
+            echo "❌ ERROR: LICENSE is missing!"
+            exit 1
+          fi
+          echo "✅ LICENSE found!"
+
+      - name: Check lesson 100 works in code
+        run: |
+          python -c "
+import sys
+try:
+    from app import lessons
+    if len(lessons) < 100:
+        print('❌ ERROR: Only', len(lessons), 'lessons found. Need 100!')
+        sys.exit(1)
+    print('✅ All 100 lessons loaded successfully!')
+except ImportError:
+    print('❌ Could not import lessons from app.py')
+    sys.exit(1)
+"
+
+      - name: Warn about Hugging Face deployment
+        run: |
+          echo "💡 TIP: After this passes, go to Hugging Face → Create Space → Connect GitHub → Rebuild"
+          echo "   Your app will work best when deployed via GitHub connection — not manual upload."
