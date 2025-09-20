@@ -237,42 +237,24 @@ elif page == "Chat with ShineGPT":
     # Voice input button
     user_input = st.text_input("Type or speak your question:", key="chat_input")
 
-    # Microphone button (Streamlit's experimental mic input)
-    import streamlit as st
-    from streamlit_webrtc import webrtc_streamer, WebRtcMode, AudioProcessorBase
-    import av
+ lif page == "Chat with ShineGPT":
+    st.header("💬 Chat with ShineGPT (Online Mode)")
+    st.info("💡 Say your question out loud — then type it here! Your phone can convert speech to text. Then listen to the answer.")
 
-    class AudioProcessor(AudioProcessorBase):
-        def __init__(self):
-            self.audio_data = b""
-        
-        def recv(self, frame):
-            # Just capture audio — we'll handle processing later
-            audio_frame = frame.to_ndarray()
-            self.audio_data += audio_frame.tobytes()
-            return frame
-
-    webrtc_ctx = webrtc_streamer(
-        key="speech-to-text",
-        mode=WebRtcMode.SENDRECV,
-        audio_processor_factory=AudioProcessor,
-        media_stream_constraints={"audio": True, "video": True},
-    )
-
-    if webrtc_ctx.state.playing:
-        st.write("🎙️ Listening... Say something!")
-        if st.button("Stop Listening & Send"):
-            audio_data = webrtc_ctx.audio_processor.audio_data
-            if len(audio_data) > 0:
-                # For now, we'll just use text input — but this sets up voice input
-                st.success("Audio captured! In next version, we'll convert to text.")
-            else:
-                st.warning("No audio detected.")
+    user_input = st.text_input("Type your question here:", key="chat_input")
 
     if st.button("Send") and user_input:
         with st.spinner("Thinking..."):
             response = generate_response_online(user_input)
         st.success(response)
+
+        # Generate voice reply
+        audio_data = text_to_speech(response)
+        if audio_data:
+            st.markdown("🔊 **Listen to the answer:**")
+            play_audio(audio_data)
+
+        add_points("online_user", 5)
 
         # Generate voice reply
         audio_data = text_to_speech(response)
