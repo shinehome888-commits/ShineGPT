@@ -58,7 +58,7 @@ def load_online_model():
             MODEL_NAME,
             torch_dtype="auto",
             device_map="auto",
-            trust_remote_code=true,
+            trust_remote_code=True,
             low_cpu_mem_usage=True,
         )
         return tokenizer, model
