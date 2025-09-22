@@ -125,10 +125,10 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — CLEAN, WORKING, BRAND-COMPLIANT -------------------
+# ------------------- MAIN APP — PERFECTED UI WITH FULL-WIDTH INPUT BOXES -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — Your Brand Colors: GOLD, RED, WHITE, BLACK
+# Custom CSS — FULL-WIDTH INPUT BOXES, CENTERED, BRAND-COMPLIANT
 st.markdown(
     """
     <style>
@@ -136,48 +136,101 @@ st.markdown(
         background-color: #000000;
         color: #ffffff;
         font-family: 'Arial', sans-serif;
+        text-align: center;
+    }
+    .main > div {
+        padding-top: 2rem;
+        text-align: center;
     }
     h1, h2, h3, h4, p {
         color: #ffffff !important;
         text-align: center;
         font-family: 'Arial', sans-serif;
+        margin: 0.5rem auto;
+        max-width: 800px;
+        padding: 0 20px;
     }
     h1 {
         font-size: 4rem;
         font-weight: 900;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
         color: #D4AF37 !important; /* Yellowish Gold */
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
     h2 {
         font-size: 2rem;
         font-weight: 700;
-        margin-top: -10px;
-        margin-bottom: 5px;
+        margin-top: -0.5rem;
+        margin-bottom: 1rem;
         color: #ffffff !important; /* White */
     }
     h4 {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         font-weight: 500;
-        margin-top: 5px;
+        margin-top: 0.5rem;
+        margin-bottom: 2rem;
         color: #D32F2F !important; /* RED — Powered by KS1 */
     }
     .stRadio > label {
         color: #ffffff !important;
         font-weight: 600;
-        font-size: 1.3rem;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
     }
     .stRadio > div > div > label {
         background-color: #111111 !important;
-        border-radius: 10px !important;
-        padding: 15px 25px !important;
-        margin: 10px 0 !important;
+        border-radius: 12px !important;
+        padding: 18px 30px !important;
+        margin: 12px auto !important;
         border: 2px solid #D4AF37 !important;
         transition: all 0.3s ease;
+        width: 90%;
+        max-width: 400px;
     }
     .stRadio > div > div > label:hover {
         background-color: #222222 !important;
-        transform: scale(1.02);
+        transform: scale(1.03);
+    }
+    .stButton>button {
+        background-color: #D32F2F !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        font-size: 1.3rem !important;
+        padding: 18px 40px !important;
+        border: none !important;
+        width: 90% !important;
+        max-width: 400px;
+        margin: 1rem auto !important;
+        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+    }
+    .stButton>button:hover {
+        background-color: #B71C1C !important;
+    }
+    /* ✅ PERFECTED INPUT BOXES — FULL WIDTH, CENTERED, PROFESSIONAL */
+    .stTextInput > div > div > input {
+        font-size: 1.3rem;
+        text-align: center;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid #D4AF37;
+        background-color: #111111;
+        color: #ffffff;
+        width: 95% !important;  /* ← FULL WIDTH */
+        max-width: 700px !important; /* ← MAX WIDTH ON LARGE SCREENS */
+        margin: 1.5rem auto !important; /* ← CENTERED */
+        display: block !important;
+    }
+    .stTextInput > label {
+        font-size: 1.3rem;
+        color: #ffffff;
+        margin-bottom: 0.5rem;
+    }
+    .stAlert {
+        text-align: center;
+        font-size: 1.3rem;
+        margin: 1rem auto;
+        max-width: 800px;
     }
     .sidebar .sidebar-content {
         background-color: #000000 !important;
@@ -188,47 +241,21 @@ st.markdown(
         font-size: 1.8rem;
         margin-bottom: 1rem;
     }
-    .stButton>button {
-        background-color: #D32F2F !important;
-        color: white !important;
-        font-weight: 700 !important;
-        border-radius: 12px !important;
-        font-size: 1.2rem !important;
-        padding: 15px 30px !important;
-        border: none !important;
-        width: 100% !important;
-        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
-    }
-    .stButton>button:hover {
-        background-color: #B71C1C !important;
+    .stMarkdown {
+        text-align: center;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOMEPAGE LAYOUT -------------------
-col1, col2, col3 = st.columns([1, 2, 1])
-
-with col2:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
-
-    st.markdown("<h2>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
-    st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
-
-# ------------------- SIDEBAR NAVIGATION -------------------
+# ------------------- SIDEBAR NAVIGATION — NO HOME, ONLY 3 OPTIONS -------------------
 with st.sidebar:
     st.markdown("## 📚 ShineGPT Menu")
-    page = st.radio("", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"], key="nav", label_visibility="collapsed")
+    page = st.radio("", ["SMS Mode (Offline)", "Chat with ShineGPT", "About"], key="nav", label_visibility="collapsed")
 
-# ------------------- PAGE LOGIC -------------------
-if page == "Home":
-    pass  # Only logo and title shown
-
-elif page == "SMS Mode (Offline)":
+# ------------------- PAGE LOGIC — NO HOMEPAGE. ALWAYS START ON SMS MODE -------------------
+if page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
     **This mode works even on a basic phone!**  
@@ -266,17 +293,28 @@ elif page == "Chat with ShineGPT":
 
 elif page == "About":
     st.header("ℹ️ About ShineGPT")
-    st.write("""
+    st.markdown("""
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
-    It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
-
+    It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.
+    
     🌍 **Dual-Mode Learning**:  
     - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
-    - 💻 **Online Mode**: Uses TinyLlama — open, free, and no login required.  
-
+    - 💻 **Online Mode**: Uses TinyLlama — open, free, and no login required.
+    
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
+    
+    This app is designed for children in villages where:
+    - Internet is slow or expensive  
+    - Books are scarce  
+    - Teachers are few  
+    - But curiosity is endless
+    
+    No login. No account. No cost.  
+    Just knowledge — free, forever.
     """)
+    
+    st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
 # ------------------- DISPLAY POINTS (ALWAYS) -------------------
 st.sidebar.markdown("---")
