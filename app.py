@@ -4,9 +4,9 @@ import torch
 
 # ------------------- INITIALIZE SESSION STATE -------------------
 if 'user_points' not in st.session_state:
-    st.session_state.user_points = {}
+    st.session_state.user_points = 0
 
-# ------------------- 50 OFFLINE LESSONS (FOR SMS MODE ONLY) -------------------
+# ------------------- 50 OFFLINE LESSONS -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -69,7 +69,7 @@ sms_responses = {
     "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
     "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
     "bye": "Goodbye! Come back soon. Remember: Knowledge is your superpower.",
-    "points": "You have 0 points. Earn 10 per lesson. Type 'lesson 1' to start!",
+    "points": f"You have {st.session_state.user_points} points. Earn 10 per lesson. Type 'lesson 1' to start!",
 }
 
 # AUTO-GENERATE LESSON RESPONSES FOR ALL 50 LESSONS
@@ -78,15 +78,8 @@ for i in range(1, 51):
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
 # ------------------- POINTS FUNCTIONS -------------------
-def get_user_points(user):
-    if user not in st.session_state.user_points:
-        st.session_state.user_points[user] = 0
-    return st.session_state.user_points[user]
-
-def add_points(user, points):
-    if user not in st.session_state.user_points:
-        st.session_state.user_points[user] = 0
-    st.session_state.user_points[user] += points
+def add_points(points):
+    st.session_state.user_points += points
 
 # ------------------- ONLINE MODEL (TINYLLAMA) -------------------
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
@@ -133,7 +126,7 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — BRAND-COMPLIANT, CLEAN HOMEPAGE -------------------
+# ------------------- MAIN APP — CLEAN, BRAND-COMPLIANT UI -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
 # Custom CSS — Your Brand Colors: GOLD, WHITE, BLACK
@@ -154,7 +147,7 @@ st.markdown(
         font-size: 4rem;
         font-weight: 900;
         margin-bottom: 5px;
-        color: #D4AF37 !important; /* Yellowish Gold — Pantone 124 C */
+        color: #D4AF37 !important; /* Yellowish Gold */
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
     h2 {
@@ -196,41 +189,41 @@ st.markdown(
         font-size: 1.8rem;
         margin-bottom: 1rem;
     }
+    .stButton>button {
+        display: none !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOMEPAGE LAYOUT — ONLY LOGO + TITLE -------------------
+# ------------------- HOMEPAGE LAYOUT -------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    # Display logo — use_container_width instead of use_column_width
     try:
         st.image("logo.png", use_container_width=True)
     except:
-        # Fallback: Bold gold text if logo fails
         st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
 
     st.markdown("<h2>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
     st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
-    # ✅ ONLY SHOW THIS ON HOME PAGE
+    # ✅ ONLY SHOW ON HOME PAGE
     if st.session_state.get('page', 'home') == 'home':
         st.markdown(
-            "<div style='margin-top: 40px; margin-bottom: 40px;'><strong style='color: #ffffff; font-size: 1.5rem;'>Use the menu on the left</strong></div>",
+            "<div style='margin-top: 50px;'><strong style='color: #ffffff; font-size: 1.5rem;'>Navigate left</strong></div>",
             unsafe_allow_html=True
         )
 
-# ------------------- SIDEBAR NAVIGATION — ONLY WAY TO NAVIGATE -------------------
+# ------------------- SIDEBAR NAVIGATION -------------------
 with st.sidebar:
     st.markdown("## 📚 ShineGPT Menu")
     page = st.radio("", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"], key="nav", label_visibility="collapsed")
 
-# ------------------- PAGE LOGIC — CLEAN AND RELIABLE -------------------
+# ------------------- PAGE LOGIC -------------------
 if page == "Home":
     st.session_state.page = "home"
-    # Home page content already shown above — no extra content needed
 
 elif page == "SMS Mode (Offline)":
     st.session_state.page = "sms_mode"
@@ -254,7 +247,7 @@ elif page == "SMS Mode (Offline)":
         response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'sms help'.")
 
         if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
-            add_points("sms_user", 10)
+            add_points(10)
 
         st.success(response)
 
@@ -269,7 +262,7 @@ elif page == "Chat with ShineGPT":
         with st.spinner("Thinking..."):
             response = generate_response_online(user_input)
         st.success(response)
-        add_points("online_user", 5)
+        add_points(5)
 
 elif page == "About":
     st.session_state.page = "about"
@@ -289,6 +282,5 @@ elif page == "About":
 # ------------------- DISPLAY POINTS (ALWAYS) -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
-st.sidebar.write(f"**{get_user_points('online_user')}** points (Online)")
-st.sidebar.write(f"**{get_user_points('sms_user')}** points (SMS)")
+st.sidebar.write(f"**{st.session_state.user_points}** points")
 st.sidebar.info("Earn 10 points per lesson. No data cost in SMS mode!")
