@@ -62,10 +62,9 @@ lessons = {
 
 # ------------------- SMS MODE RESPONSES -------------------
 sms_responses = {
-    "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'sms help' for more.",
+    "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'help' for more.",
     "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
-    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'sms help' to see this again.",
-    "sms help": "📱 SMS MODE: No internet needed! Just type:\n- 'lesson 1'\n- 'lesson 2'\n- ... up to 'lesson 50'\n- 'hello'\n- 'help'",
+    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'points' to see your score.",
     "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
     "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
     "bye": "Goodbye! Come back soon. Remember: Knowledge is your superpower.",
@@ -77,7 +76,7 @@ for i in range(1, 51):
     lesson_text = lessons.get(i, "Lesson not found.")
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
-# ------------------- POINTS FUNCTIONS -------------------
+# ------------------- POINTS FUNCTION -------------------
 def add_points(points):
     st.session_state.user_points += points
 
@@ -97,14 +96,14 @@ def load_online_model():
         )
         return tokenizer, model
     except Exception as e:
-        st.warning("⚠️ Online model failed to load: " + str(e) + ". Switching to SMS mode.")
+        st.warning("⚠️ Online model failed to load. Switching to SMS mode.")
         return None, None
 
 tokenizer, model = load_online_model()
 
 def generate_response_online(user_input):
     if not tokenizer or not model:
-        return "❌ Offline mode: No internet. Try typing 'sms help'."
+        return "❌ Offline mode: No internet. Try typing 'lesson 1'."
 
     prompt = f"<|system|>\nYou are a helpful AI assistant.<|end|>\n<|user|>\n{user_input}<|end|>\n<|assistant|>\n"
 
@@ -126,10 +125,10 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — CLEAN, BRAND-COMPLIANT UI -------------------
+# ------------------- MAIN APP — CLEAN, WORKING, BRAND-COMPLIANT -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — Your Brand Colors: GOLD, WHITE, BLACK
+# Custom CSS — Your Brand Colors: GOLD, RED, WHITE, BLACK
 st.markdown(
     """
     <style>
@@ -161,7 +160,7 @@ st.markdown(
         font-size: 1.3rem;
         font-weight: 500;
         margin-top: 5px;
-        color: #ffffff !important; /* White */
+        color: #D32F2F !important; /* RED — Powered by KS1 */
     }
     .stRadio > label {
         color: #ffffff !important;
@@ -190,7 +189,18 @@ st.markdown(
         margin-bottom: 1rem;
     }
     .stButton>button {
-        display: none !important;
+        background-color: #D32F2F !important;
+        color: white !important;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        font-size: 1.2rem !important;
+        padding: 15px 30px !important;
+        border: none !important;
+        width: 100% !important;
+        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+    }
+    .stButton>button:hover {
+        background-color: #B71C1C !important;
     }
     </style>
     """,
@@ -209,13 +219,6 @@ with col2:
     st.markdown("<h2>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
     st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
-    # ✅ ONLY SHOW ON HOME PAGE
-    if st.session_state.get('page', 'home') == 'home':
-        st.markdown(
-            "<div style='margin-top: 50px;'><strong style='color: #ffffff; font-size: 1.5rem;'>Navigate left</strong></div>",
-            unsafe_allow_html=True
-        )
-
 # ------------------- SIDEBAR NAVIGATION -------------------
 with st.sidebar:
     st.markdown("## 📚 ShineGPT Menu")
@@ -223,17 +226,15 @@ with st.sidebar:
 
 # ------------------- PAGE LOGIC -------------------
 if page == "Home":
-    st.session_state.page = "home"
+    pass  # Only logo and title shown
 
 elif page == "SMS Mode (Offline)":
-    st.session_state.page = "sms_mode"
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
     **This mode works even on a basic phone!**  
-    No data? No problem. Just type keywords like:  
+    No data? No problem. Just type:  
     - `lesson 1`  
     - `hello`  
-    - `what is ai`  
     - `help`  
     - `points`
     
@@ -244,7 +245,7 @@ elif page == "SMS Mode (Offline)":
 
     if st.button("Send (SMS)") and user_input:
         user_input_lower = user_input.strip().lower()
-        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'sms help'.")
+        response = sms_responses.get(user_input_lower, "I don't understand. Type 'help' for options.")
 
         if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
             add_points(10)
@@ -252,7 +253,6 @@ elif page == "SMS Mode (Offline)":
         st.success(response)
 
 elif page == "Chat with ShineGPT":
-    st.session_state.page = "chat_with_shinegpt"
     st.header("💬 Chat with ShineGPT (Online Mode)")
     st.info("💡 This mode uses TinyLlama — fast, open, and free. Requires internet.")
 
@@ -265,7 +265,6 @@ elif page == "Chat with ShineGPT":
         add_points(5)
 
 elif page == "About":
-    st.session_state.page = "about"
     st.header("ℹ️ About ShineGPT")
     st.write("""
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
