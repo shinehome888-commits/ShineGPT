@@ -1,5 +1,9 @@
 import streamlit as st
 
+# ------------------- INITIALIZE SESSION STATE (MUST BE FIRST!) -------------------
+if 'user_points' not in st.session_state:
+    st.session_state.user_points = {}
+
 # ------------------- 50 OFFLINE LESSONS (NO INTERNET NEEDED) -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
@@ -71,16 +75,15 @@ for i in range(1, 51):
     lesson_text = lessons.get(i, "Lesson not found.")
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
-# ------------------- TRACK USER POINTS -------------------
-if 'user_points' not in st.session_state:
-    st.session_state.user_points = {}
-
+# ------------------- POINTS FUNCTION (NOW SAFELY DEFINED AFTER SESSION STATE INIT) -------------------
 def get_user_points(user):
     if user not in st.session_state.user_points:
         st.session_state.user_points[user] = 0
     return st.session_state.user_points[user]
 
 def add_points(user, points):
+    if user not in st.session_state.user_points:
+        st.session_state.user_points[user] = 0
     st.session_state.user_points[user] += points
 
 # ------------------- MAIN APP -------------------
@@ -136,3 +139,9 @@ elif page == "About":
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
     """)
+
+# ------------------- DISPLAY POINTS (ALWAYS) -------------------
+st.sidebar.markdown("---")
+st.sidebar.subheader("🏆 Your Points")
+st.sidebar.write(f"**{get_user_points('sms_user')}** points (SMS)")
+st.sidebar.info("Earn 10 points per lesson. No data cost in SMS mode!")
