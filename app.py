@@ -133,26 +133,31 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — WHITE THEME HOMEPAGE -------------------
+# ------------------- MAIN APP — BRAND-COMPLIANT THEME -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS for white text on dark background
+# Custom CSS — Your Brand Colors: GOLD, RED, BLACK, WHITE
 st.markdown(
     """
     <style>
     body {
         background-color: #000000;
         color: #ffffff;
+        font-family: 'Arial', sans-serif;
     }
     .stButton>button {
-        background-color: #2563eb;
-        color: white;
-        font-weight: bold;
-        border-radius: 12px;
-        font-size: 1.2rem;
-        padding: 15px 30px;
-        border: none;
-        width: 100%;
+        background-color: #D32F2F !important; /* Deep Red */
+        color: white !important;
+        font-weight: 900 !important;
+        border-radius: 12px !important;
+        font-size: 1.3rem !important;
+        padding: 18px 40px !important;
+        border: none !important;
+        width: 100% !important;
+        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+    }
+    .stButton>button:hover {
+        background-color: #B71C1C !important; /* Darker Red on hover */
     }
     h1, h2, h3, h4, p {
         color: #ffffff !important;
@@ -160,21 +165,41 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
     h1 {
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 900;
         margin-bottom: 5px;
+        color: #D4AF37 !important; /* Yellowish Gold — Pantone 124 C */
+        text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
     h2 {
-        font-size: 1.8rem;
+        font-size: 2rem;
         font-weight: 700;
         margin-top: -10px;
         margin-bottom: 5px;
+        color: #D4AF37 !important; /* Gold */
     }
     h4 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: 500;
         margin-top: 5px;
-        color: #e0e0e0;
+        color: #e0e0e0 !important;
+    }
+    .stRadio > label {
+        color: #ffffff !important;
+        font-weight: 600;
+    }
+    .stRadio > div > div > label {
+        background-color: #111111 !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        margin: 5px 0 !important;
+        border: 1px solid #D4AF37 !important;
+    }
+    .stRadio > div > div > label:hover {
+        background-color: #222222 !important;
+    }
+    .sidebar .sidebar-content {
+        background-color: #000000 !important;
     }
     </style>
     """,
@@ -185,32 +210,33 @@ st.markdown(
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    # Display logo — use_container_width instead of use_column_width (deprecated)
+    # Display logo — use_container_width instead of use_column_width
     try:
-        st.image("logo.png", use_container_width=True)  # ✅ Fixed: use_container_width
+        st.image("logo.png", use_container_width=True)
     except:
-        # Fallback: Bold white text if logo fails
-        st.markdown("<h1 style='color: #ffffff; font-weight: 900;'>SHINEGPT</h1>", unsafe_allow_html=True)
+        # Fallback: Bold gold text if logo fails
+        st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
 
     st.markdown("<h2>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
     st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
-    # Main call-to-action button
+    # Main call-to-action button — RED
     if st.button("🚀 Start Learning", type="primary", use_container_width=True):
         st.session_state.page = "sms_mode"
         st.rerun()
 
-# ------------------- SIDEBAR — ONLY FOR NAVIGATION -------------------
+# ------------------- SIDEBAR NAVIGATION -------------------
 with st.sidebar:
     st.markdown("## 📚 Navigation")
-    page = st.radio("Go to", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"])
+    page = st.radio("Go to", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"], key="nav")
 
-# ------------------- PAGE LOGIC -------------------
+# ------------------- PAGE LOGIC — FIXED CASE SENSITIVITY -------------------
 if 'page' not in st.session_state:
     st.session_state.page = "home"
 
+# ✅ FIXED: Use lowercase for all state keys — consistent with radio button labels
 if page == "Home" or st.session_state.page == "home":
     pass  # Already shown above
 
@@ -240,7 +266,8 @@ elif page == "SMS Mode (Offline)" or st.session_state.page == "sms_mode":
 
         st.success(response)
 
-elif page == "Chat with ShineGPT":
+elif page == "Chat with ShineGPT" or st.session_state.page == "chat_with_shinegpt":
+    st.session_state.page = "chat_with_shinegpt"
     st.header("💬 Chat with ShineGPT (Online Mode)")
     st.info("💡 This mode uses TinyLlama — fast, open, and free. Requires internet.")
 
@@ -252,7 +279,8 @@ elif page == "Chat with ShineGPT":
         st.success(response)
         add_points("online_user", 5)
 
-elif page == "About":
+elif page == "About" or st.session_state.page == "about":
+    st.session_state.page = "about"
     st.header("ℹ️ About ShineGPT")
     st.write("""
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
