@@ -1,10 +1,12 @@
 import streamlit as st
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
-# ------------------- INITIALIZE SESSION STATE (MUST BE FIRST!) -------------------
+# ------------------- INITIALIZE SESSION STATE -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
-# ------------------- 50 OFFLINE LESSONS (NO INTERNET NEEDED) -------------------
+# ------------------- 50 OFFLINE LESSONS (SMS MODE) -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -75,7 +77,7 @@ for i in range(1, 51):
     lesson_text = lessons.get(i, "Lesson not found.")
     sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
-# ------------------- POINTS FUNCTION (NOW SAFELY DEFINED AFTER SESSION STATE INIT) -------------------
+# ------------------- POINTS FUNCTIONS -------------------
 def get_user_points(user):
     if user not in st.session_state.user_points:
         st.session_state.user_points[user] = 0
@@ -86,6 +88,48 @@ def add_points(user, points):
         st.session_state.user_points[user] = 0
     st.session_state.user_points[user] += points
 
+# ------------------- ONLINE MODEL (MICROSOFT PHI-3) -------------------
+MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
+
+@st.cache_resource
+def load_online_model():
+    try:
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_NAME,
+            torch_dtype="auto",
+            device_map="auto",
+            trust_remote_code=True,
+            low_cpu_mem_usage=True,
+        )
+        return tokenizer, model
+    except Exception as e:
+        st.warning("⚠️ Online model failed to load: " + str(e) + ". Switching to SMS mode.")
+        return None, None
+
+tokenizer, model = load_online_model()
+
+def generate_response_online(user_input):
+    if not tokenizer or not model:
+        return "❌ Offline mode: No internet. Try typing 'sms help'."
+
+    prompt = f"<|user|>\n{user_input}<|end|><|assistant|>"
+    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+
+    with torch.no_grad():
+        outputs = model.generate(
+            **inputs,
+            max_new_tokens=256,
+            temperature=0.7,
+            top_p=0.9,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id,
+            eos_token_id=tokenizer.eos_token_id
+        )
+
+    response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
+    return response
+
 # ------------------- MAIN APP -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="wide")
 
@@ -93,13 +137,25 @@ st.title("🌟 ShineGPT – Learn. Earn Knowledge. Empower Yourself.")
 st.write("Powered by KS1 Empire Foundation")
 st.markdown("---")
 
-page = st.sidebar.radio("📚 Navigate", ["Lessons", "About", "SMS Mode (Offline)"])
+page = st.sidebar.radio("📚 Navigate", ["Lessons", "Chat with ShineGPT", "About", "SMS Mode (Offline)"])
 
 if page == "Lessons":
     st.header("📘 ShineGPT Lessons")
     for i, lesson in lessons.items():
         with st.expander(f"Lesson {i}"):
             st.write(lesson)
+
+elif page == "Chat with ShineGPT":
+    st.header("💬 Chat with ShineGPT (Online Mode)")
+    st.info("💡 This mode uses Microsoft Phi-3-mini — fast, small, and works even on low-end devices. Requires internet.")
+
+    user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
+
+    if st.button("Send") and user_input:
+        with st.spinner("Thinking..."):
+            response = generate_response_online(user_input)
+        st.success(response)
+        add_points("online_user", 5)
 
 elif page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
@@ -132,9 +188,9 @@ elif page == "About":
     ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
     It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
 
-    🌍 **Special Feature**:  
-    We built an **SMS Mode** so kids in villages with **no internet** can still learn for free —  
-    using only text messages on basic phones.
+    🌍 **Dual-Mode Learning**:  
+    - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
+    - 💻 **Online Mode**: Uses Microsoft Phi-3-mini AI to answer questions — fast and reliable.  
 
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
@@ -143,5 +199,6 @@ elif page == "About":
 # ------------------- DISPLAY POINTS (ALWAYS) -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
+st.sidebar.write(f"**{get_user_points('online_user')}** points (Online)")
 st.sidebar.write(f"**{get_user_points('sms_user')}** points (SMS)")
 st.sidebar.info("Earn 10 points per lesson. No data cost in SMS mode!")
