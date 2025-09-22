@@ -88,8 +88,8 @@ def add_points(user, points):
         st.session_state.user_points[user] = 0
     st.session_state.user_points[user] += points
 
-# ------------------- ONLINE MODEL (MISTRAL-7B-INSTRUCT-V0.3) -------------------
-MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
+# ------------------- ONLINE MODEL (TINYLLAMA) -------------------
+MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
 @st.cache_resource
 def load_online_model():
@@ -113,8 +113,8 @@ def generate_response_online(user_input):
     if not tokenizer or not model:
         return "❌ Offline mode: No internet. Try typing 'sms help'."
 
-    # ✅ Mistral-7B-Instruct-v0.3 uses [INST]...[/INST] format
-    prompt = f"[INST]{user_input}[/INST]"
+    # ✅ TinyLlama uses <|system|>, <|user|>, <|assistant|> tags
+    prompt = f"<|system|>\nYou are a helpful AI assistant.<|end|>\n<|user|>\n{user_input}<|end|>\n<|assistant|>\n"
 
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
@@ -132,11 +132,8 @@ def generate_response_online(user_input):
 
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
 
-    # ✅ Clean up any extra [INST] or [/INST] tags
-    if "[/INST]" in response:
-        response = response.split("[/INST]")[0].strip()
-    if "[INST]" in response:
-        response = response.split("[INST]")[1].strip()
+    # ✅ Clean up any extra tags
+    response = response.replace("<|end|>", "").strip()
 
     return response
 
@@ -157,7 +154,7 @@ if page == "Lessons":
 
 elif page == "Chat with ShineGPT":
     st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 This mode uses Mistral-7B-Instruct — fast, powerful, and **free to use** on Hugging Face. Requires internet.")
+    st.info("💡 This mode uses TinyLlama-1.1B — fast, open, and **free to use** on Hugging Face. Requires internet.")
 
     user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
 
@@ -200,7 +197,7 @@ elif page == "About":
 
     🌍 **Dual-Mode Learning**:  
     - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
-    - 💻 **Online Mode**: Uses Mistral-7B-Instruct — fast, open, and free. No login needed.  
+    - 💻 **Online Mode**: Uses TinyLlama-1.1B — open, free, and **no login required**.  
 
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
