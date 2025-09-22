@@ -125,10 +125,10 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — PERFECTED UI WITH FULL-WIDTH INPUT BOXES -------------------
+# ------------------- MAIN APP — BACK TO NATURAL, SIMPLE LAYOUT -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — FULL-WIDTH INPUT BOXES, CENTERED, BRAND-COMPLIANT
+# Custom CSS — BRAND COLORS, NO CENTERING, CLEAN INPUT BOXES
 st.markdown(
     """
     <style>
@@ -136,36 +136,27 @@ st.markdown(
         background-color: #000000;
         color: #ffffff;
         font-family: 'Arial', sans-serif;
-        text-align: center;
-    }
-    .main > div {
-        padding-top: 2rem;
-        text-align: center;
     }
     h1, h2, h3, h4, p {
         color: #ffffff !important;
-        text-align: center;
         font-family: 'Arial', sans-serif;
-        margin: 0.5rem auto;
-        max-width: 800px;
-        padding: 0 20px;
     }
     h1 {
-        font-size: 4rem;
+        font-size: 3rem;
         font-weight: 900;
         margin-bottom: 0.5rem;
         color: #D4AF37 !important; /* Yellowish Gold */
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
     h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         margin-top: -0.5rem;
         margin-bottom: 1rem;
         color: #ffffff !important; /* White */
     }
     h4 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 500;
         margin-top: 0.5rem;
         margin-bottom: 2rem;
@@ -174,63 +165,50 @@ st.markdown(
     .stRadio > label {
         color: #ffffff !important;
         font-weight: 600;
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
+        font-size: 1.3rem;
     }
     .stRadio > div > div > label {
         background-color: #111111 !important;
         border-radius: 12px !important;
-        padding: 18px 30px !important;
-        margin: 12px auto !important;
+        padding: 15px 25px !important;
+        margin: 10px 0 !important;
         border: 2px solid #D4AF37 !important;
         transition: all 0.3s ease;
-        width: 90%;
-        max-width: 400px;
     }
     .stRadio > div > div > label:hover {
         background-color: #222222 !important;
-        transform: scale(1.03);
+        transform: scale(1.02);
     }
     .stButton>button {
         background-color: #D32F2F !important;
         color: white !important;
         font-weight: 700 !important;
         border-radius: 12px !important;
-        font-size: 1.3rem !important;
-        padding: 18px 40px !important;
+        font-size: 1.2rem !important;
+        padding: 15px 30px !important;
         border: none !important;
-        width: 90% !important;
-        max-width: 400px;
-        margin: 1rem auto !important;
+        width: 100% !important;
         box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
     }
     .stButton>button:hover {
         background-color: #B71C1C !important;
     }
-    /* ✅ PERFECTED INPUT BOXES — FULL WIDTH, CENTERED, PROFESSIONAL */
+    /* INPUT BOXES — FULL WIDTH, CENTERED, NOT CUT OFF */
     .stTextInput > div > div > input {
-        font-size: 1.3rem;
-        text-align: center;
-        padding: 18px;
+        font-size: 1.2rem;
+        text-align: left;
+        padding: 15px;
         border-radius: 12px;
         border: 1px solid #D4AF37;
         background-color: #111111;
         color: #ffffff;
-        width: 95% !important;  /* ← FULL WIDTH */
-        max-width: 700px !important; /* ← MAX WIDTH ON LARGE SCREENS */
-        margin: 1.5rem auto !important; /* ← CENTERED */
-        display: block !important;
+        width: 100% !important;
+        margin: 1rem 0 !important;
     }
     .stTextInput > label {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: #ffffff;
         margin-bottom: 0.5rem;
-    }
-    .stAlert {
-        text-align: center;
-        font-size: 1.3rem;
-        margin: 1rem auto;
-        max-width: 800px;
     }
     .sidebar .sidebar-content {
         background-color: #000000 !important;
@@ -240,9 +218,6 @@ st.markdown(
         color: #D4AF37 !important;
         font-size: 1.8rem;
         margin-bottom: 1rem;
-    }
-    .stMarkdown {
-        text-align: center;
     }
     </style>
     """,
@@ -254,7 +229,7 @@ with st.sidebar:
     st.markdown("## 📚 ShineGPT Menu")
     page = st.radio("", ["SMS Mode (Offline)", "Chat with ShineGPT", "About"], key="nav", label_visibility="collapsed")
 
-# ------------------- PAGE LOGIC — NO HOMEPAGE. ALWAYS START ON SMS MODE -------------------
+# ------------------- PAGE LOGIC — NO HOMEPAGE. STARTS ON SMS MODE -------------------
 if page == "SMS Mode (Offline)":
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
