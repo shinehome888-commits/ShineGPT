@@ -125,10 +125,10 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — BACK TO NATURAL, SIMPLE LAYOUT -------------------
+# ------------------- MAIN APP — FINAL HUMAN-CENTERED LAYOUT -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — BRAND COLORS, NO CENTERING, CLEAN INPUT BOXES
+# Custom CSS — FOCUS ON INPUT + RESPONSE VISIBILITY
 st.markdown(
     """
     <style>
@@ -137,21 +137,28 @@ st.markdown(
         color: #ffffff;
         font-family: 'Arial', sans-serif;
     }
+    .main > div {
+        padding-top: 1rem;
+    }
     h1, h2, h3, h4, p {
         color: #ffffff !important;
+        text-align: center;
         font-family: 'Arial', sans-serif;
+        margin: 0.5rem auto;
+        max-width: 800px;
+        padding: 0 20px;
     }
     h1 {
-        font-size: 3rem;
+        font-size: 3.5rem;
         font-weight: 900;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.3rem;
         color: #D4AF37 !important; /* Yellowish Gold */
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
     h2 {
         font-size: 1.8rem;
         font-weight: 700;
-        margin-top: -0.5rem;
+        margin-top: -0.3rem;
         margin-bottom: 1rem;
         color: #ffffff !important; /* White */
     }
@@ -166,14 +173,17 @@ st.markdown(
         color: #ffffff !important;
         font-weight: 600;
         font-size: 1.3rem;
+        margin-bottom: 1rem;
     }
     .stRadio > div > div > label {
         background-color: #111111 !important;
         border-radius: 12px !important;
         padding: 15px 25px !important;
-        margin: 10px 0 !important;
+        margin: 10px auto !important;
         border: 2px solid #D4AF37 !important;
         transition: all 0.3s ease;
+        width: 90%;
+        max-width: 400px;
     }
     .stRadio > div > div > label:hover {
         background-color: #222222 !important;
@@ -187,29 +197,54 @@ st.markdown(
         font-size: 1.2rem !important;
         padding: 15px 30px !important;
         border: none !important;
-        width: 100% !important;
+        width: 90% !important;
+        max-width: 400px;
+        margin: 1.5rem auto !important;
         box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
     }
     .stButton>button:hover {
         background-color: #B71C1C !important;
     }
-    /* INPUT BOXES — FULL WIDTH, CENTERED, NOT CUT OFF */
+
+    /* ✅ INPUT BOX — FULL WIDTH, LARGE, CLEAR */
     .stTextInput > div > div > input {
-        font-size: 1.2rem;
+        font-size: 1.4rem !important;
         text-align: left;
-        padding: 15px;
-        border-radius: 12px;
-        border: 1px solid #D4AF37;
-        background-color: #111111;
-        color: #ffffff;
-        width: 100% !important;
-        margin: 1rem 0 !important;
+        padding: 18px !important;
+        border-radius: 14px !important;
+        border: 2px solid #D4AF37 !important;
+        background-color: #111111 !important;
+        color: #ffffff !important;
+        width: 95% !important;
+        max-width: 700px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
     }
     .stTextInput > label {
-        font-size: 1.2rem;
-        color: #ffffff;
-        margin-bottom: 0.5rem;
+        font-size: 1.4rem !important;
+        color: #ffffff !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 600;
     }
+
+    /* ✅ RESPONSE BOX — CLEAR, PADDDED, SEPARATED */
+    .stSuccess, .stWarning, .stError {
+        font-size: 1.4rem !important;
+        padding: 20px !important;
+        margin: 1.5rem auto !important;
+        max-width: 90% !important;
+        border-radius: 14px !important;
+        background-color: #1a1a1a !important;
+        border: 1px solid #D4AF37 !important;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+        text-align: left !important;
+        line-height: 1.7 !important;
+    }
+    .stSuccess::before, .stWarning::before, .stError::before {
+        font-size: 1.6rem !important;
+    }
+
     .sidebar .sidebar-content {
         background-color: #000000 !important;
         padding: 2rem 1rem;
