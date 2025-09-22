@@ -6,7 +6,7 @@ import torch
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
-# ------------------- 50 OFFLINE LESSONS (SMS MODE) -------------------
+# ------------------- 50 OFFLINE LESSONS (FOR SMS MODE ONLY) -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -64,7 +64,7 @@ lessons = {
 sms_responses = {
     "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'sms help' for more.",
     "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
-    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'sms help' to see this again.",
+    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'SMS help' to see this again.",
     "sms help": "📱 SMS MODE: No internet needed! Just type:\n- 'lesson 1'\n- 'lesson 2'\n- ... up to 'lesson 50'\n- 'hello'\n- 'help'",
     "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
     "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
@@ -111,9 +111,8 @@ tokenizer, model = load_online_model()
 
 def generate_response_online(user_input):
     if not tokenizer or not model:
-        return "❌ Offline mode: No internet. Try typing 'sms help'."
+        return "❌ Offline mode: No internet. Try typing 'SMS help'."
 
-    # ✅ TinyLlama uses <|system|>, <|user|>, <|assistant|> tags
     prompt = f"<|system|>\nYou are a helpful AI assistant.<|end|>\n<|user|>\n{user_input}<|end|>\n<|assistant|>\n"
 
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
@@ -131,40 +130,47 @@ def generate_response_online(user_input):
         )
 
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
-
-    # ✅ Clean up any extra tags
     response = response.replace("<|end|>", "").strip()
-
     return response
 
-# ------------------- MAIN APP -------------------
-st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="wide")
+# ------------------- MAIN APP — CLEAN HOMEPAGE WITH LOGO -------------------
+st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-st.title("🌟 ShineGPT – Learn. Earn Knowledge. Empower Yourself.")
-st.write("Powered by KS1 Empire Foundation")
-st.markdown("---")
+# ------------------- HOMEPAGE LAYOUT -------------------
+col1, col2, col3 = st.columns([1, 2, 1])
 
-page = st.sidebar.radio("📚 Navigate", ["Lessons", "Chat with ShineGPT", "About", "SMS Mode (Offline)"])
+with col2:
+    # Display logo — if you have a transparent PNG, upload it as "logo.png"
+    try:
+        st.image("logo.png", use_column_width=True)  # Transparent logo
+    except:
+        # Fallback: Bold text logo if no image
+        st.markdown("<h1 style='text-align: center; color: #2563eb; font-size: 3rem; font-weight: 800;'>SHINEGPT</h1>", unsafe_allow_html=True)
 
-if page == "Lessons":
-    st.header("📘 ShineGPT Lessons")
-    for i, lesson in lessons.items():
-        with st.expander(f"Lesson {i}"):
-            st.write(lesson)
+    st.markdown("<h2 style='text-align: center; color: #1f2937; margin-top: -10px;'>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align: center; color: #6b7280; margin-top: 5px;'>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
-elif page == "Chat with ShineGPT":
-    st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 This mode uses TinyLlama-1.1B — fast, open, and **free to use** on Hugging Face. Requires internet.")
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
-    user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
+    # Main call-to-action button
+    if st.button("🚀 Start Learning", type="primary", use_container_width=True):
+        st.session_state.page = "sms_mode"
+        st.rerun()
 
-    if st.button("Send") and user_input:
-        with st.spinner("Thinking..."):
-            response = generate_response_online(user_input)
-        st.success(response)
-        add_points("online_user", 5)
+# ------------------- SIDEBAR — ONLY FOR NAVIGATION -------------------
+with st.sidebar:
+    st.markdown("##  Navigation")
+    page = st.radio("Go to", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"])
 
-elif page == "SMS Mode (Offline)":
+# ------------------- PAGE LOGIC -------------------
+if 'page' not in st.session_state:
+    st.session_state.page = "home"
+
+if page == "Home" or st.session_state.page == "home":
+    pass  # Already shown above
+
+elif page == "SMS Mode (Offline)" or st.session_state.page == "SMS_mode":
+    st.session_state.page = "SMS_mode"
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
     **This mode works even on a basic phone!**  
@@ -178,16 +184,28 @@ elif page == "SMS Mode (Offline)":
     💡 Tip: Save this page as a bookmark. You can use it anywhere — even without Wi-Fi.
     """)
     
-    user_input = st.text_input("Type your message (SMS-style):", key="sms_input")
+    user_input = st.text_input("Type your message (SMS-style):", key="SMS_input")
 
     if st.button("Send (SMS)") and user_input:
         user_input_lower = user_input.strip().lower()
-        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'sms help'.")
+        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'SMS help'.")
 
-        if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
-            add_points("sms_user", 10)
+        if user_input_lower.startswith("lesson ") and user_input_lower in SMS_RESPONSE:
+            add_points("SMS_user", 10)
 
         st.success(response)
+
+elif page == "Chat with ShineGPT":
+    st.header("💬 Chat with ShineGPT (Online Mode)")
+    st.info("💡 This mode uses TinyLlama — fast, open, and free. Requires internet.")
+
+    user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
+
+    if st.button("Send") and user_input:
+        with st.spinner("Thinking..."):
+            response = generate_response_online(user_input)
+        st.success(response)
+        add_points("online_user", 5)
 
 elif page == "About":
     st.header("ℹ️ About ShineGPT")
@@ -196,8 +214,8 @@ elif page == "About":
     It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
 
     🌍 **Dual-Mode Learning**:  
-    - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
-    - 💻 **Online Mode**: Uses TinyLlama-1.1B — open, free, and **no login required**.  
+    -  **SMS Mode**: Works with zero internet — perfect for villages.  
+    - 💻 **Online Mode**: Uses TinyLlama — open, free, and no login required.  
 
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
@@ -207,5 +225,5 @@ elif page == "About":
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.write(f"**{get_user_points('online_user')}** points (Online)")
-st.sidebar.write(f"**{get_user_points('sms_user')}** points (SMS)")
+st.sidebar.write(f"**{get_user_points('SMS_user')}** points (SMS)")
 st.sidebar.info("Earn 10 points per lesson. No data cost in SMS mode!")
