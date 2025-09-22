@@ -2,7 +2,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# ------------------- INITIALIZE SESSION STATE -------------------
+# ------------------- INITIALIZE SESSION STATE (MUST BE FIRST!) -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
@@ -102,6 +102,20 @@ def load_online_model():
             trust_remote_code=True,
             low_cpu_mem_usage=True,
         )
+
+        # 🔥 PATCH: Fix Phi-3's get_max_length bug — apply once at load time
+        original_prepare = model.prepare_inputs_for_generation
+
+        def patched_prepare_inputs_for_generation(input_ids, past_key_values=None, **kwargs):
+            if past_key_values is None:
+                # For first generation, skip get_max_length() — it's None
+                return original_prepare(input_ids, past_key_values=None, **kwargs)
+            else:
+                return original_prepare(input_ids, past_key_values=past_key_values, **kwargs)
+
+        # Patch the model's method permanently
+        model.prepare_inputs_for_generation = patched_prepare_inputs_for_generation
+
         return tokenizer, model
     except Exception as e:
         st.warning("⚠️ Online model failed to load: " + str(e) + ". Switching to SMS mode.")
@@ -116,20 +130,6 @@ def generate_response_online(user_input):
     prompt = f"<|user|>\n{user_input}<|end|><|assistant|>"
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-    # --- PATCH: Fix Phi-3's get_max_length bug ---
-    # Override the model's prepare_inputs_for_generation to handle past_key_values=None
-    original_prepare = model.prepare_inputs_for_generation
-
-    def patched_prepare_inputs_for_generation(input_ids, past_key_values=None, **kwargs):
-        if past_key_values is None:
-            # For first generation, skip get_max_length() — it's None
-            return original_prepare(input_ids, past_key_values=None, **kwargs)
-        else:
-            return original_prepare(input_ids, past_key_values=past_key_values, **kwargs)
-
-    model.prepare_inputs_for_generation = patched_prepare_inputs_for_generation
-
-    # --- Generate response ---
     with torch.no_grad():
         outputs = model.generate(
             **inputs,
@@ -139,14 +139,6 @@ def generate_response_online(user_input):
             do_sample=True,
             pad_token_id=tokenizer.eos_token_id,
             eos_token_id=tokenizer.eos_token_id
-        )
-
-    # Restore original method (optional, for safety)
-    model.prepare_inputs_for_generation = original_prepare
-
-    response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
-    return response
-
         )
 
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
