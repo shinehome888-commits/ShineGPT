@@ -1,4 +1,4 @@
-# 🌍 ShineGPT — Is An AI App For Everychild In Alkebulan {AFRICA}
+# 🌍 ShineGPT - AI App For Everychild In Alkebulan {AFRICA}
                                      Learn. Earn Knowledge. Empower Yourself
 
 > **No Wi-Fi? No problem.**  
