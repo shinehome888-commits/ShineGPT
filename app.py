@@ -2,7 +2,7 @@ import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
-# ------------------- INITIALIZE SESSION STATE (MUST BE FIRST!) -------------------
+# ------------------- INITIALIZE SESSION STATE -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = {}
 
@@ -88,8 +88,8 @@ def add_points(user, points):
         st.session_state.user_points[user] = 0
     st.session_state.user_points[user] += points
 
-# ------------------- ONLINE MODEL (MICROSOFT PHI-3) -------------------
-MODEL_NAME = "microsoft/Phi-3-mini-4k-instruct"
+# ------------------- ONLINE MODEL (MISTRAL-7B-INSTRUCT-V0.3) -------------------
+MODEL_NAME = "mistralai/Mistral-7B-Instruct-v0.3"
 
 @st.cache_resource
 def load_online_model():
@@ -102,20 +102,6 @@ def load_online_model():
             trust_remote_code=True,
             low_cpu_mem_usage=True,
         )
-
-        # 🔥 PATCH: Fix Phi-3's get_max_length bug — apply once at load time
-        original_prepare = model.prepare_inputs_for_generation
-
-        def patched_prepare_inputs_for_generation(input_ids, past_key_values=None, **kwargs):
-            if past_key_values is None:
-                # For first generation, skip get_max_length() — it's None
-                return original_prepare(input_ids, past_key_values=None, **kwargs)
-            else:
-                return original_prepare(input_ids, past_key_values=past_key_values, **kwargs)
-
-        # Patch the model's method permanently
-        model.prepare_inputs_for_generation = patched_prepare_inputs_for_generation
-
         return tokenizer, model
     except Exception as e:
         st.warning("⚠️ Online model failed to load: " + str(e) + ". Switching to SMS mode.")
@@ -127,7 +113,9 @@ def generate_response_online(user_input):
     if not tokenizer or not model:
         return "❌ Offline mode: No internet. Try typing 'sms help'."
 
-    prompt = f"<|user|>\n{user_input}<|end|><|assistant|>"
+    # ✅ Mistral-7B-Instruct-v0.3 uses [INST]...[/INST] format
+    prompt = f"[INST]{user_input}[/INST]"
+
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
     with torch.no_grad():
@@ -138,10 +126,18 @@ def generate_response_online(user_input):
             top_p=0.9,
             do_sample=True,
             pad_token_id=tokenizer.eos_token_id,
-            eos_token_id=tokenizer.eos_token_id
+            eos_token_id=tokenizer.eos_token_id,
+            max_length=512,
         )
 
     response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
+
+    # ✅ Clean up any extra [INST] or [/INST] tags
+    if "[/INST]" in response:
+        response = response.split("[/INST]")[0].strip()
+    if "[INST]" in response:
+        response = response.split("[INST]")[1].strip()
+
     return response
 
 # ------------------- MAIN APP -------------------
@@ -161,7 +157,7 @@ if page == "Lessons":
 
 elif page == "Chat with ShineGPT":
     st.header("💬 Chat with ShineGPT (Online Mode)")
-    st.info("💡 This mode uses Microsoft Phi-3-mini — fast, small, and works even on low-end devices. Requires internet.")
+    st.info("💡 This mode uses Mistral-7B-Instruct — fast, powerful, and **free to use** on Hugging Face. Requires internet.")
 
     user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
 
@@ -204,7 +200,7 @@ elif page == "About":
 
     🌍 **Dual-Mode Learning**:  
     - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
-    - 💻 **Online Mode**: Uses Microsoft Phi-3-mini AI to answer questions — fast and reliable.  
+    - 💻 **Online Mode**: Uses Mistral-7B-Instruct — fast, open, and free. No login needed.  
 
     Our mission:  
     **Learn. Earn Knowledge. Empower Yourself.**
