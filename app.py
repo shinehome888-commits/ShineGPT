@@ -64,7 +64,7 @@ lessons = {
 sms_responses = {
     "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning about the 4th Industrial Revolution. Or type 'sms help' for more.",
     "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
-    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'SMS help' to see this again.",
+    "help": "Type: 'lesson 1', 'lesson 2', ..., 'lesson 50' to learn. Or 'sms help' to see this again.",
     "sms help": "📱 SMS MODE: No internet needed! Just type:\n- 'lesson 1'\n- 'lesson 2'\n- ... up to 'lesson 50'\n- 'hello'\n- 'help'",
     "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
     "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
@@ -111,7 +111,7 @@ tokenizer, model = load_online_model()
 
 def generate_response_online(user_input):
     if not tokenizer or not model:
-        return "❌ Offline mode: No internet. Try typing 'SMS help'."
+        return "❌ Offline mode: No internet. Try typing 'sms help'."
 
     prompt = f"<|system|>\nYou are a helpful AI assistant.<|end|>\n<|user|>\n{user_input}<|end|>\n<|assistant|>\n"
 
@@ -133,22 +133,67 @@ def generate_response_online(user_input):
     response = response.replace("<|end|>", "").strip()
     return response
 
-# ------------------- MAIN APP — CLEAN HOMEPAGE WITH LOGO -------------------
+# ------------------- MAIN APP — WHITE THEME HOMEPAGE -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
+
+# Custom CSS for white text on dark background
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #000000;
+        color: #ffffff;
+    }
+    .stButton>button {
+        background-color: #2563eb;
+        color: white;
+        font-weight: bold;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        padding: 15px 30px;
+        border: none;
+        width: 100%;
+    }
+    h1, h2, h3, h4, p {
+        color: #ffffff !important;
+        text-align: center;
+        font-family: 'Arial', sans-serif;
+    }
+    h1 {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 5px;
+    }
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-top: -10px;
+        margin-bottom: 5px;
+    }
+    h4 {
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin-top: 5px;
+        color: #e0e0e0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ------------------- HOMEPAGE LAYOUT -------------------
 col1, col2, col3 = st.columns([1, 2, 1])
 
 with col2:
-    # Display logo — if you have a transparent PNG, upload it as "logo.png"
+    # Display logo — use_container_width instead of use_column_width (deprecated)
     try:
-        st.image("logo.png", use_column_width=True)  # Transparent logo
+        st.image("logo.png", use_container_width=True)  # ✅ Fixed: use_container_width
     except:
-        # Fallback: Bold text logo if no image
-        st.markdown("<h1 style='text-align: center; color: #2563eb; font-size: 3rem; font-weight: 800;'>SHINEGPT</h1>", unsafe_allow_html=True)
+        # Fallback: Bold white text if logo fails
+        st.markdown("<h1 style='color: #ffffff; font-weight: 900;'>SHINEGPT</h1>", unsafe_allow_html=True)
 
-    st.markdown("<h2 style='text-align: center; color: #1f2937; margin-top: -10px;'>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
-    st.markdown("<h4 style='text-align: center; color: #6b7280; margin-top: 5px;'>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
+    st.markdown("<h2>Learn. Earn Knowledge. Empower Yourself.</h2>", unsafe_allow_html=True)
+    st.markdown("<h4>Powered by KS1 Empire Foundation</h4>", unsafe_allow_html=True)
 
     st.markdown("<br><br>", unsafe_allow_html=True)
 
@@ -159,7 +204,7 @@ with col2:
 
 # ------------------- SIDEBAR — ONLY FOR NAVIGATION -------------------
 with st.sidebar:
-    st.markdown("##  Navigation")
+    st.markdown("## 📚 Navigation")
     page = st.radio("Go to", ["Home", "SMS Mode (Offline)", "Chat with ShineGPT", "About"])
 
 # ------------------- PAGE LOGIC -------------------
@@ -169,8 +214,8 @@ if 'page' not in st.session_state:
 if page == "Home" or st.session_state.page == "home":
     pass  # Already shown above
 
-elif page == "SMS Mode (Offline)" or st.session_state.page == "SMS_mode":
-    st.session_state.page = "SMS_mode"
+elif page == "SMS Mode (Offline)" or st.session_state.page == "sms_mode":
+    st.session_state.page = "sms_mode"
     st.header("📱 SMS Mode — No Internet Needed!")
     st.markdown("""
     **This mode works even on a basic phone!**  
@@ -184,14 +229,14 @@ elif page == "SMS Mode (Offline)" or st.session_state.page == "SMS_mode":
     💡 Tip: Save this page as a bookmark. You can use it anywhere — even without Wi-Fi.
     """)
     
-    user_input = st.text_input("Type your message (SMS-style):", key="SMS_input")
+    user_input = st.text_input("Type your message (SMS-style):", key="sms_input")
 
     if st.button("Send (SMS)") and user_input:
         user_input_lower = user_input.strip().lower()
-        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'SMS help'.")
+        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'sms help'.")
 
-        if user_input_lower.startswith("lesson ") and user_input_lower in SMS_RESPONSE:
-            add_points("SMS_user", 10)
+        if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
+            add_points("sms_user", 10)
 
         st.success(response)
 
@@ -214,7 +259,7 @@ elif page == "About":
     It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
 
     🌍 **Dual-Mode Learning**:  
-    -  **SMS Mode**: Works with zero internet — perfect for villages.  
+    - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
     - 💻 **Online Mode**: Uses TinyLlama — open, free, and no login required.  
 
     Our mission:  
@@ -225,5 +270,5 @@ elif page == "About":
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.write(f"**{get_user_points('online_user')}** points (Online)")
-st.sidebar.write(f"**{get_user_points('SMS_user')}** points (SMS)")
+st.sidebar.write(f"**{get_user_points('sms_user')}** points (SMS)")
 st.sidebar.info("Earn 10 points per lesson. No data cost in SMS mode!")
