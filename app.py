@@ -5,9 +5,10 @@ if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
+if 'mode' not in st.session_state:
+    st.session_state.mode = 'sms'  # Default: SMS Mode
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
-# Covers AI, Big Data, Blockchain, Crypto, Digital Ethics — all under 4IR
 lessons = {
     1: "The 4th Industrial Revolution (4IR) is the fusion of digital, physical, and biological technologies that is transforming how we live, work, and relate to one another.",
     2: "AI (Artificial Intelligence) is at the heart of 4IR — machines that learn, reason, and make decisions like humans — without being explicitly programmed.",
@@ -61,20 +62,10 @@ lessons = {
     50: "ShineGPT proves that 4IR doesn’t require internet or money — just curiosity, courage, and the will to learn. Keep going — you’re changing the future."
 }
 
-# ------------------- SMS RESPONSES -------------------
-def get_sms_response(lesson_key):
-    lesson_num = int(lesson_key.split()[-1])
-    if lesson_num in lessons:
-        lesson_text = lessons[lesson_num]
-    else:
-        if lesson_num > 50:
-            return "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
-        else:
-            return "Lesson not found. Type 'lesson 1' to start."
+# ------------------- HELPER FUNCTIONS -------------------
+def get_lesson_text(lesson_num):
+    return lessons.get(lesson_num, "Lesson not found.")
 
-    return lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
-
-# ------------------- POINTS FUNCTION -------------------
 def add_points(points):
     st.session_state.user_points += points
 
@@ -135,6 +126,22 @@ st.markdown(
         text-align: center !important;
         font-size: 1.2rem !important;
     }
+    .online-mode {
+        background-color: #1a1a1a;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #D4AF37;
+        margin: 1rem 0;
+    }
+    .lesson-card {
+        background-color: #111;
+        padding: 20px;
+        border-radius: 10px;
+        margin: 1rem 0;
+        border-left: 4px solid #D4AF37;
+        color: white;
+        font-size: 1.2rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -145,52 +152,118 @@ st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
 st.markdown("<p>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
 st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
 
-# ------------------- SMS MODE UI -------------------
-st.header("📱 SMS Mode — No Internet Needed!")
-st.info("Type: lesson 1, hello, help, points")
+# ------------------- MODE TOGGLE -------------------
+col1, col2 = st.columns([3, 1])
+with col1:
+    st.info("Choose your learning mode:")
+with col2:
+    st.session_state.mode = st.toggle("🌐 Online Mode", value=False)
 
-user_input = st.text_input(
-    label="",
-    key="sms_input",
-    placeholder="Type your message...",
-    label_visibility="collapsed"
-)
+# ------------------- SMS MODE (OFFLINE) -------------------
+if st.session_state.mode == 'sms':
+    st.header("📱 SMS Mode — No Internet Needed!")
+    st.info("Type: lesson 1, hello, help, points")
 
-if st.button("📩 Send", key="send_sms") and user_input:
-    user_input_lower = user_input.strip().lower()
+    user_input = st.text_input(
+        label="",
+        key="sms_input",
+        placeholder="Type your message...",
+        label_visibility="collapsed"
+    )
 
-    if user_input_lower == "help":
-        response = """
+    if st.button("📩 Send", key="send_sms") and user_input:
+        user_input_lower = user_input.strip().lower()
+
+        if user_input_lower == "help":
+            response = """
 Available commands:
 - type 'lesson 1' to start
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
-        """
-    elif user_input_lower == "points":
-        response = f"🎉 You have {st.session_state.user_points} points!"
-    elif user_input_lower == "hello":
-        response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-    elif user_input_lower.startswith("lesson "):
-        try:
-            lesson_num = int(user_input_lower.split()[-1])
-            if lesson_num < 1:
-                response = "Start with lesson 1!"
-            elif lesson_num > 50:
-                response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
-            else:
-                response = get_sms_response(user_input_lower)
-                add_points(10)
-                st.session_state.current_lesson = lesson_num
-        except:
-            response = "Type 'lesson 1' to start."
-    else:
-        response = "I don't understand. Try typing 'help'."
+            """
+        elif user_input_lower == "points":
+            response = f"🎉 You have {st.session_state.user_points} points!"
+        elif user_input_lower == "hello":
+            response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+        elif user_input_lower.startswith("lesson "):
+            try:
+                lesson_num = int(user_input_lower.split()[-1])
+                if lesson_num < 1:
+                    response = "Start with lesson 1!"
+                elif lesson_num > 50:
+                    response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                else:
+                    response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
+                    add_points(10)
+                    st.session_state.current_lesson = lesson_num
+            except:
+                response = "Type 'lesson 1' to start."
+        else:
+            response = "I don't understand. Try typing 'help'."
 
-    st.success(response)
+        st.success(response)
 
-# ------------------- SIDEBAR — POINTS & PROGRESS -------------------
+# ------------------- ONLINE MODE (WEB) -------------------
+else:
+    st.header("🌐 Online Mode — Rich Learning Experience")
+    st.info("Use buttons to navigate. No typing needed!")
+
+    # Progress bar
+    progress = st.session_state.current_lesson / 50
+    st.progress(progress)
+    st.write(f"**Lesson {st.session_state.current_lesson} of 50** — {int(progress * 100)}% complete")
+
+    # Lesson display card
+    if st.session_state.current_lesson <= 50:
+        lesson_text = get_lesson_text(st.session_state.current_lesson)
+        st.markdown(f"""
+            <div class="lesson-card">
+                {lesson_text}
+            </div>
+        """, unsafe_allow_html=True)
+
+    # Navigation buttons
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    with col1:
+        if st.button("⬅️ Previous", key="prev_btn") and st.session_state.current_lesson > 1:
+            st.session_state.current_lesson -= 1
+            st.rerun()
+
+    with col3:
+        if st.button("Next ➡️", key="next_btn") and st.session_state.current_lesson < 50:
+            st.session_state.current_lesson += 1
+            add_points(10)
+            st.rerun()
+
+    # Points display
+    st.markdown(f"<div style='text-align: center; color: #D4AF37; font-size: 1.5rem; margin: 1rem 0;'>🏆 {st.session_state.user_points} Points</div>", unsafe_allow_html=True)
+
+    # Help buttons
+    st.markdown("---")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("📘 Help", key="help_btn"):
+            st.info("""
+            Online Mode Features:
+            - Click buttons to go next or previous
+            - Earn 10 points per lesson
+            - Progress bar shows your journey
+            - No typing needed — perfect for tablets and schools
+            """)
+    with col2:
+        if st.button("🔁 Restart", key="restart_btn"):
+            st.session_state.current_lesson = 1
+            st.session_state.user_points = 0
+            st.rerun()
+    with col3:
+        if st.button("↩️ Back to SMS", key="back_sms"):
+            st.session_state.mode = 'sms'
+            st.rerun()
+
+# ------------------- SIDEBAR — COMMON FOR BOTH MODES -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.write(f"**{st.session_state.user_points}** points")
@@ -199,3 +272,7 @@ st.sidebar.info("Earn 10 per lesson. No data cost.")
 st.sidebar.subheader("📖 Progress")
 st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed")
 st.sidebar.caption("You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics.")
+
+# ------------------- FOOTER -------------------
+st.markdown("---")
+st.markdown("<p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most.</p>", unsafe_allow_html=True)
