@@ -1,6 +1,6 @@
 import streamlit as st
 
-# ------------------- INITIALIZE SESSION STATE (MUST BE FIRST) -------------------
+# ------------------- INITIALIZE SESSION STATE -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 
@@ -79,59 +79,58 @@ def add_points(points):
     st.session_state.user_points += points
 
 # ------------------- MAIN APP LAYOUT -------------------
-st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
+st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="wide")
 
-# Custom CSS — Your Brand Colors: Gold, Red, Black, White
+# Custom CSS — FULL-WIDTH, NO CUT-OFF, CENTERED
 st.markdown(
     """
     <style>
-    body {
-        background-color: #000000;
-        color: #ffffff;
-        font-family: 'Arial', sans-serif;
+    /* FULL-WIDTH CONTAINER */
+    .block-container {
+        padding-left: 2rem;
+        padding-right: 2rem;
+        max-width: 100%;
     }
-    h1, h2, h3, h4, p {
-        color: #ffffff !important;
-        text-align: center;
-        margin: 0.5rem auto;
-        max-width: 800px;
-        padding: 0 20px;
+
+    /* CENTER EVERYTHING */
+    h1, h2, h3, p, div[data-testid="column"] {
+        text-align: center !important;
     }
-    h1 {
-        font-size: 4rem;
-        font-weight: 900;
-        margin-bottom: 0.3rem;
-        color: #D4AF37 !important; /* Gold */
-        text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
-    }
+
+    /* ✅ OVERRIDE STREAMLIT DEFAULT INPUT WIDTH */
+    [data-baseweb="input"] input,
     .stTextInput > div > div > input {
         font-size: 1.4rem !important;
         padding: 20px !important;
         border-radius: 14px !important;
-        border: 2px solid #D4AF37 !important;
+        border: 2px solid #D4AF37 !important; /* Gold */
         background-color: #111111 !important;
-        color: #ffffff !important;
+        color: white !important;
         width: 95% !important;
         max-width: 700px !important;
         margin: 1.5rem auto !important;
         display: block !important;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
         height: 80px !important;
         line-height: 1.5 !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
     }
+
+    /* ✅ LABEL ABOVE INPUT — BOLD AND VISIBLE */
     .stTextInput > label {
         font-size: 1.4rem !important;
         color: #ffffff !important;
         margin-bottom: 0.5rem !important;
         font-weight: 600;
-        text-align: center;
+        text-align: center !important;
     }
-    .stButton>button {
+
+    /* ✅ SEND BUTTON — LARGE, RED, CENTERED */
+    .stButton > button {
         background-color: #D32F2F !important;
         color: white !important;
         font-weight: 700 !important;
         border-radius: 12px !important;
-        font-size: 1.2rem !important;
+        font-size: 1.3rem !important;
         padding: 15px 30px !important;
         border: none !important;
         width: 90% !important;
@@ -140,7 +139,12 @@ st.markdown(
         display: block !important;
         box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
     }
-    .stSuccess {
+    .stButton > button:hover {
+        background-color: #B71C1C !important;
+    }
+
+    /* ✅ SUCCESS BOX — SCROLLABLE, CLEAR */
+    .stSuccess, .stError, .stWarning {
         max-width: 95% !important;
         margin: 1.5rem auto !important;
         padding: 25px !important;
@@ -155,25 +159,53 @@ st.markdown(
         overflow-y: auto !important;
         max-height: 300px !important;
     }
+
+    /* SIDEBAR STYLING */
+    .sidebar .sidebar-content {
+        background-color: #000000 !important;
+        padding: 2rem 1rem;
+    }
+    .sidebar .sidebar-content h2 {
+        color: #D4AF37 !important;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    /* HEADER STYLES */
+    h1, h2, h3, h4, p {
+        color: #ffffff !important;
+        font-family: Arial, sans-serif;
+    }
+    h1 {
+        color: #D4AF37 !important;
+        font-size: 3.5rem;
+        font-weight: 900;
+        text-align: center;
+        margin-bottom: 5px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HEADER -------------------
-st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
-st.markdown("<p style='color: white;'>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
-st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
+# ------------------- HEADER — GOLD LOGO OR TEXT -------------------
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: white;'>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
 
-# ------------------- SMS MODE UI -------------------
+# ------------------- SMS MODE — FULL SCREEN INPUT -------------------
 st.header("📱 SMS Mode — No Internet Needed!")
 st.markdown("""
 **This mode works even on a basic phone!**  
-No data? No problem. Just type keywords like:  
+No data? No problem. Just type:  
 - `lesson 1`  
 - `hello`  
 - `help`  
 - `points`
+
+💡 Tip: Save this page as a bookmark.
 """)
 
 user_input = st.text_input("Type your message (SMS-style):", key="sms_input")
