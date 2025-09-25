@@ -7,6 +7,8 @@ if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
 if 'mode' not in st.session_state:
     st.session_state.mode = 'sms'  # Default: SMS Mode
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -69,137 +71,177 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING -------------------
+# ------------------- ONLINE MODE: PERPLEXITY SEARCH (WORKS ON HUGGING FACE) -------------------
+def perplexity_search(query):
+    try:
+        url = "https://api.perplexity.ai/chat/completions"
+        headers = {
+            "Authorization": "Bearer pplx-7e0547363235242a9d3a885559842897989d9d481b8e7d942413371219759785",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": "llama-3-sonar-small-32k-online",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful, accurate, and ethical assistant for students in developing countries. Answer clearly, simply, and cite your sources. Avoid jargon. Prioritize free, open resources."
+                },
+                {
+                    "role": "user",
+                    "content": query
+                }
+            ],
+            "temperature": 0.3,
+            "max_tokens": 800,
+            "top_p": 0.9,
+            "return_citations": True
+        }
+        response = requests.post(url, headers=headers, json=data, timeout=10)
+        result = response.json()
+        if 'choices' in result and len(result['choices']) > 0:
+            answer = result['choices'][0]['message']['content']
+            sources = result['choices'][0]['message'].get('citations', [])
+            return answer, sources
+        else:
+            return "Sorry, I couldn't find an answer right now. Try rephrasing your question.", []
+    except Exception as e:
+        return f"⚠️ Could not connect to the internet. Please check your connection. (Error: {str(e)})", []
+
+# ------------------- STYLING — CHATGPT-STYLE UI -------------------
 st.markdown(
     """
     <style>
-    div[data-testid="stTextInput"] > div > div > input {
-        font-size: 1.4rem !important;
-        padding: 20px 25px !important;
-        border: 2px solid #D4AF37 !important;
-        border-radius: 20px !important;
-        background-color: #0a0a0a !important;
-        color: #e0e0e0 !important;
-        width: 90% !important;
-        max-width: 700px !important;
-        margin: 1.5rem auto !important;
-        display: block !important;
-        box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2) !important;
-        caret-color: #D4AF37 !important;
-    }
-    div[data-testid="stTextInput"] > div > div > input::placeholder {
-        color: #666 !important;
-        font-style: italic !important;
-    }
+    /* Hide Streamlit's default menu, footer, and header */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 
-    .stButton>button {
-        background-color: #D32F2F !important;
-        color: white !important;
-        font-weight: 700 !important;
-        font-size: 1.2rem !important;
-        padding: 15px 30px !important;
-        margin: 1.5rem auto !important;
-        display: block !important;
-        width: 90% !important;
-        max-width: 400px !important;
-        border-radius: 15px !important;
-        border: none !important;
-        cursor: pointer !important;
-    }
-
-    .stSuccess {
-        max-width: 90%;
-        margin: 1.5rem auto;
-        padding: 25px;
-        background-color: #1a1a1a;
-        border-left: 5px solid #D4AF37;
-        font-size: 1.4rem;
-    }
-
-    h1 {
-        color: #D4AF37 !important;
-        text-align: center !important;
-        font-family: 'Arial', sans-serif;
-    }
-    p {
-        color: white !important;
-        text-align: center !important;
-        font-size: 1.2rem !important;
-    }
-    .online-mode {
-        background-color: #1a1a1a;
+    /* Chat container */
+    .chat-container {
+        max-width: 700px;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 12px;
-        border: 1px solid #D4AF37;
-        margin: 1rem 0;
+        font-family: 'Segoe UI', sans-serif;
     }
-    .lesson-card {
-        background-color: #111;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 1rem 0;
-        border-left: 4px solid #D4AF37;
+
+    /* User message */
+    .user-message {
+        background-color: #262730;
         color: white;
-        font-size: 1.2rem;
+        padding: 14px 18px;
+        border-radius: 18px 18px 0 18px;
+        margin: 10px 0;
+        max-width: 70%;
+        margin-left: auto;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .resource-btn {
-        background-color: #222 !important;
+
+    /* ShineGPT message */
+    .shingpt-message {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        padding: 14px 18px;
+        border-radius: 18px 18px 18px 0;
+        margin: 10px 0;
+        max-width: 70%;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        border-left: 3px solid #D4AF37;
+    }
+
+    /* Input box */
+    .stTextInput > div > div > input {
+        font-size: 1.2rem !important;
+        padding: 16px 20px !important;
+        border: 2px solid #D4AF37 !important;
+        border-radius: 30px !important;
+        background-color: #111 !important;
+        color: white !important;
+        width: 100% !important;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
+    }
+
+    /* Send button */
+    .stButton > button {
+        display: none; /* We'll use Enter key instead */
+    }
+
+    /* Toggle switch */
+    .stToggle > label {
         color: #D4AF37 !important;
-        border: 1px solid #D4AF37 !important;
-        font-size: 1.3rem !important;
-        padding: 15px 25px !important;
-        margin: 10px 5px !important;
-        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        margin-bottom: 10px !important;
         text-align: center !important;
         display: block !important;
-        width: 90% !important;
-        max-width: 500px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
     }
-    .resource-btn:hover {
-        background-color: #333 !important;
+
+    /* Toggle container */
+    .stToggle {
+        text-align: center !important;
+        margin: 15px 0 !important;
     }
-    .iframe-container {
-        margin: 2rem auto;
-        width: 100%;
-        height: 600px;
-        border: 2px solid #D4AF37;
-        border-radius: 12px;
-        overflow: hidden;
+
+    /* Source links */
+    .source-link {
+        color: #D4AF37 !important;
+        text-decoration: none !important;
+        font-size: 0.9rem !important;
+        margin-top: 8px !important;
+        display: block !important;
+    }
+    .source-link:hover {
+        text-decoration: underline !important;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HEADER -------------------
-st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
-st.markdown("<p>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
-st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
+# ------------------- HEADER — ONLY SHOW TOGGLE -------------------
+st.markdown("<div class='stToggle'><label>🌐 Online Mode</label></div>", unsafe_allow_html=True)
+st.session_state.mode = st.toggle("", value=False, label_visibility="collapsed")
 
-# ------------------- MODE TOGGLE -------------------
-col1, col2 = st.columns([3, 1])
-with col1:
-    st.info("Choose your learning mode:")
-with col2:
-    st.session_state.mode = st.toggle("🌐 Online Mode", value=False)
+# ------------------- CHAT CONTAINER -------------------
+st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
 
-# ------------------- SMS MODE (OFFLINE) -------------------
-if st.session_state.mode == 'sms':
-    st.header("📱 SMS Mode — No Internet Needed!")
-    st.info("Type: lesson 1, hello, help, points")
+# Display chat history
+for msg in st.session_state.messages:
+    if msg["role"] == "user":
+        st.markdown(f"<div class='user-message'>{msg['content']}</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"<div class='shingpt-message'>{msg['content']}</div>", unsafe_allow_html=True)
+        # Show sources if any
+        if "sources" in msg:
+            for src in msg["sources"][:2]:
+                if isinstance(src, str):
+                    st.markdown(f'<a href="{src}" class="source-link" target="_blank">🔗 Source</a>', unsafe_allow_html=True)
 
-    user_input = st.text_input(
-        label="",
-        key="sms_input",
-        placeholder="Type your message...",
-        label_visibility="collapsed"
-    )
+# ------------------- INPUT BOX -------------------
+user_input = st.text_input(
+    "Ask ShineGPT...",
+    key="chat_input",
+    placeholder="Type 'lesson 1' to start, or ask anything about AI, Blockchain, or 4IR...",
+    label_visibility="collapsed"
+)
 
-    if st.button("📩 Send", key="send_sms") and user_input:
+# Handle input
+if user_input:
+    # Add user message
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    
+    # Clear input
+    st.rerun()
+
+# Only respond if there's new input (prevents infinite loop)
+if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+    user_input = st.session_state.messages[-1]["content"]
+    
+    # Mode: SMS — only respond to lesson commands or help
+    if st.session_state.mode == 'sms':
         user_input_lower = user_input.strip().lower()
-
+        
         if user_input_lower == "help":
             response = """
 Available commands:
@@ -209,10 +251,16 @@ Available commands:
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
             """
+            st.session_state.messages.append({"role": "shingpt", "content": response})
+            
         elif user_input_lower == "points":
             response = f"🎉 You have {st.session_state.user_points} points!"
+            st.session_state.messages.append({"role": "shingpt", "content": response})
+            
         elif user_input_lower == "hello":
             response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+            st.session_state.messages.append({"role": "shingpt", "content": response})
+            
         elif user_input_lower.startswith("lesson "):
             try:
                 lesson_num = int(user_input_lower.split()[-1])
@@ -224,94 +272,27 @@ No internet needed! All lessons work offline.
                     response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
                     add_points(10)
                     st.session_state.current_lesson = lesson_num
+                st.session_state.messages.append({"role": "shingpt", "content": response})
             except:
                 response = "Type 'lesson 1' to start."
+                st.session_state.messages.append({"role": "shingpt", "content": response})
+                
         else:
-            response = "I don't understand. Try typing 'help'."
+            response = "I'm in SMS mode — I only know 50 lessons. Try typing 'lesson 1' or 'help'."
+            st.session_state.messages.append({"role": "shingpt", "content": response})
 
-        st.success(response)
-
-# ------------------- ONLINE MODE (EMBEDDED EDUCATIONAL PORTAL) -------------------
-else:
-    st.header("🌐 Online Mode — Explore the World of 4IR")
-    st.info("Click a button below to explore free, trusted educational resources. No login needed.")
-
-    # Resource buttons
-    st.markdown("### 📚 Choose a Learning Path:")
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        if st.button("🤖 AI & Machine Learning", key="btn_ai", help="Khan Academy’s free AI course"):
-            st.session_state.selected_resource = "khan_ai"
-    with col2:
-        if st.button("🔗 Blockchain & Crypto", key="btn_blockchain", help="Blockchain.org — simple, official intro"):
-            st.session_state.selected_resource = "blockchain_org"
-    with col3:
-        if st.button("📊 Big Data & Analytics", key="btn_bigdata", help="Wikipedia — clear, open explanations"):
-            st.session_state.selected_resource = "wikipedia_bigdata"
-
-    col4, col5 = st.columns(2)
-    with col4:
-        if st.button("🎓 MIT OpenCourseWare", key="btn_mit", help="Free university-level courses"):
-            st.session_state.selected_resource = "mit_ocw"
-    with col5:
-        if st.button("🔬 Google Scholar", key="btn_scholar", help="Academic papers and research"):
-            st.session_state.selected_resource = "google_scholar"
-
-    # Show embedded content based on button click
-    if 'selected_resource' in st.session_state:
-        resource = st.session_state.selected_resource
-
-        urls = {
-            "khan_ai": "https://www.khanacademy.org/computing",
-            "blockchain_org": "https://www.blockchain.org/",
-            "wikipedia_bigdata": "https://en.wikipedia.org/wiki/Big_data",
-            "mit_ocw": "https://ocw.mit.edu/search/?q=artificial+intelligence",
-            "google_scholar": "https://scholar.google.com/"
-        }
-
-        url = urls.get(resource, "https://en.wikipedia.org/wiki/4th_Industrial_Revolution")
-
-        st.markdown(f"""
-            <div class="iframe-container">
-                <iframe src="{url}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
-            </div>
-        """, unsafe_allow_html=True)
-
-        # Add a back button
-        if st.button("↩️ Back to Resources", key="back_resources"):
-            del st.session_state.selected_resource
-            st.rerun()
+    # Mode: Online — use Perplexity for deep answers
     else:
-        st.markdown("""
-            <div style='text-align: center; color: #888; padding: 40px; font-size: 1.2rem;'>
-                Click any button above to begin your journey into the 4th Industrial Revolution.
-            </div>
-        """, unsafe_allow_html=True)
+        with st.spinner("🔍 Thinking..."):
+            response, sources = perplexity_search(user_input)
+        
+        msg = {"role": "shingpt", "content": response}
+        if sources:
+            msg["sources"] = sources
+        st.session_state.messages.append(msg)
 
-    # Points display
-    st.markdown(f"<div style='text-align: center; color: #D4AF37; font-size: 1.5rem; margin: 1rem 0;'>🏆 {st.session_state.user_points} Points</div>", unsafe_allow_html=True)
-
-    # Navigation
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("↩️ Back to SMS Mode"):
-            st.session_state.mode = 'sms'
-            st.rerun()
-    with col2:
-        if st.button("🔁 Refresh Page"):
-            st.rerun()
-
-# ------------------- SIDEBAR — COMMON FOR BOTH MODES -------------------
-st.sidebar.markdown("---")
-st.sidebar.subheader("🏆 Your Points")
-st.sidebar.write(f"**{st.session_state.user_points}** points")
-st.sidebar.info("Earn 10 per lesson in SMS mode. Online mode gives you knowledge — no points, but endless learning.")
-
-st.sidebar.subheader("📖 Progress")
-st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed (SMS Mode)")
-st.sidebar.caption("You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics.")
+    # Auto-scroll to bottom
+    st.rerun()
 
 # ------------------- FOOTER -------------------
-st.markdown("---")
-st.markdown("<p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
