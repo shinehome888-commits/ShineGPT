@@ -1,7 +1,4 @@
 import streamlit as st
-from gtts import gTTS
-import io
-import base64
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
@@ -63,17 +60,6 @@ lessons = {
     49: "You don’t need a university degree to learn 4IR skills — free online lessons, SMS-based apps like ShineGPT, and community labs can teach anyone.",
     50: "ShineGPT proves that 4IR doesn’t require internet or money — just curiosity, courage, and the will to learn. Keep going — you’re changing the future."
 }
-
-# ------------------- HELPER: GENERATE AUDIO FROM TEXT -------------------
-def text_to_audio(text):
-    """Convert text to MP3 audio using gTTS and return both bytes and base64 for playback"""
-    tts = gTTS(text=text, lang='en', slow=False)
-    fp = io.BytesIO()
-    tts.write_to_fp(fp)
-    fp.seek(0)
-    audio_bytes = fp.read()
-    b64 = base64.b64encode(audio_bytes).decode()
-    return audio_bytes, f"audio/mp3;base64,{b64}"
 
 # ------------------- SMS RESPONSES -------------------
 def get_sms_response(lesson_key):
@@ -161,7 +147,7 @@ st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", u
 
 # ------------------- SMS MODE UI -------------------
 st.header("📱 SMS Mode — No Internet Needed!")
-st.info("Type: lesson 1, hello, help, points, speak")
+st.info("Type: lesson 1, hello, help, points")
 
 user_input = st.text_input(
     label="",
@@ -180,34 +166,12 @@ Available commands:
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
-- type 'speak' to hear the lesson aloud
-- click 'Download' to save the lesson as MP3 forever
-No internet needed after audio is downloaded!
+No internet needed! All lessons work offline.
         """
     elif user_input_lower == "points":
         response = f"🎉 You have {st.session_state.user_points} points!"
     elif user_input_lower == "hello":
         response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-    elif user_input_lower == "speak":
-        if st.session_state.current_lesson <= 50:
-            lesson_text = lessons[st.session_state.current_lesson]
-            audio_bytes, audio_src = text_to_audio(lesson_text)
-            st.markdown(f"""
-                <audio controls style="width: 100%;">
-                    <source src="{audio_src}" type="audio/mp3">
-                    Your browser does not support the audio element.
-                </audio>
-            """, unsafe_allow_html=True)
-            st.download_button(
-                label="💾 Download this lesson as MP3",
-                data=audio_bytes,
-                file_name=f"lesson_{st.session_state.current_lesson}.mp3",
-                mime="audio/mp3",
-                key=f"download_{st.session_state.current_lesson}"
-            )
-            response = "🔊 Playing your last lesson aloud. Click 'Download' to save it forever!"
-        else:
-            response = "You’ve completed all 50 lessons! 🎉 Type 'lesson 1' to restart."
     elif user_input_lower.startswith("lesson "):
         try:
             lesson_num = int(user_input_lower.split()[-1])
