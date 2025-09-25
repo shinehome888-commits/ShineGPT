@@ -3,8 +3,6 @@ import streamlit as st
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
     st.session_state.mode = None  # None, 'sms', 'online'
-if 'show_about' not in st.session_state:
-    st.session_state.show_about = False
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -69,7 +67,7 @@ def add_points(points):
         st.session_state.user_points = 0
     st.session_state.user_points += points
 
-# ------------------- STYLING — FAST, CLEAN, SACRED -------------------
+# ------------------- STYLING — FAST, CLEAN, CALM -------------------
 st.markdown(
     """
     <style>
@@ -86,7 +84,7 @@ st.markdown(
         padding: 0 !important;
     }
 
-    /* ShineGPT Brand — Centered, Calm, Sacred */
+    /* ShineGPT Brand — Centered, Sacred, Unchanged */
     .brand-container {
         text-align: center;
         margin: 5rem 1rem 1rem 1rem;
@@ -118,57 +116,36 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Mode Buttons — Tappable Areas, Not Buttons — Fast & Smooth */
-    .mode-card {
-        display: flex;
-        justify-content: center;
-        margin: 3rem 0;
-        gap: 1rem;
-    }
+    /* Mode Buttons — BIG, EASY TO TAP, FAST TO CLICK */
     .mode-btn {
         background-color: #1a1a1a;
         color: #D4AF37;
         border: 2px solid #D4AF37;
         border-radius: 20px;
-        padding: 20px 35px;
-        font-size: 1.7rem;
+        padding: 25px 35px;
+        font-size: 1.8rem;
         font-weight: 700;
         cursor: pointer;
-        text-align: center;
-        min-width: 140px;
+        margin: 1.5rem auto;
+        display: block;
+        width: 85%;
+        max-width: 500px;
+        box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
         transition: all 0.2s ease;
-        box-shadow: 0 3px 8px rgba(212, 175, 55, 0.2);
     }
     .mode-btn:hover {
         background-color: #222;
         transform: translateY(-2px);
     }
 
-    /* Instruction Text — Soft, Calm */
-    .instruction {
+    /* Mode Description — ONE SIMPLE SENTENCE */
+    .mode-desc {
         text-align: center;
         color: #ccc;
-        font-size: 1.4rem;
-        margin: 1.5rem auto;
-        max-width: 600px;
-        line-height: 1.7;
-    }
-
-    /* About Box */
-    .about-box {
-        background-color: #111;
-        padding: 2.5rem;
-        border-radius: 20px;
-        border-left: 5px solid #D4AF37;
-        margin: 2rem auto;
-        max-width: 700px;
-        color: #e0e0e0;
         font-size: 1.3rem;
-        line-height: 1.8;
-    }
-    .about-box h3 {
-        color: #D4AF37 !important;
-        margin-bottom: 1.5rem;
+        margin: 0.5rem auto 2rem auto;
+        max-width: 600px;
+        line-height: 1.6;
     }
 
     /* Input Box */
@@ -198,7 +175,6 @@ st.markdown(
         border: none !important;
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
     }
 
     /* Iframe Container */
@@ -217,16 +193,16 @@ st.markdown(
         .brand-container h1 { font-size: 2.8rem !important; }
         .brand-container p { font-size: 1.4rem !important; }
         .brand-footer { font-size: 1.2rem !important; }
-        .mode-btn { font-size: 1.5rem !important; padding: 18px 30px !important; }
-        .instruction { font-size: 1.2rem !important; }
+        .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
+        .mode-desc { font-size: 1.2rem !important; }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — BRAND + TWO TAPABLE AREAS -------------------
-if st.session_state.mode is None and not st.session_state.show_about:
+# ------------------- HOME PAGE — BRAND + TWO WORKING BUTTONS -------------------
+if st.session_state.mode is None:
     # ------------------- YOUR BRAND — SACRED, CENTERED, UNCHANGED -------------------
     st.markdown(
         """
@@ -241,36 +217,28 @@ if st.session_state.mode is None and not st.session_state.show_about:
         unsafe_allow_html=True,
     )
 
-    # ------------------- TWO TAPABLE CARDS — FAST, CLEAN, NO BUTTONS -------------------
-    st.markdown("<div class='mode-card'>", unsafe_allow_html=True)
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        if st.markdown('<div class="mode-btn">📱 SMS Mode</div>', unsafe_allow_html=True):
-            st.session_state.mode = 'sms'
-    
-    with col2:
-        if st.markdown('<div class="mode-btn">🌐 Online Mode</div>', unsafe_allow_html=True):
-            st.session_state.mode = 'online'
-    
-    st.markdown("</div>", unsafe_allow_html=True)
+    # ------------------- SMS MODE BUTTON + EXPLANATION -------------------
+    if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
+        st.session_state.mode = 'sms'
 
-    # ------------------- SOFT INSTRUCTION BELOW -------------------
     st.markdown(
-        """
-        <div class="instruction">
-            Tap one option — then begin learning.  
-            No internet? No problem.
-        </div>
-        """,
+        "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works without data.</div>",
         unsafe_allow_html=True
     )
 
-# ------------------- SMS MODE — FAST, SIMPLE, CALM -------------------
+    # ------------------- ONLINE MODE BUTTON + EXPLANATION -------------------
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get answers from Wikipedia."):
+        st.session_state.mode = 'online'
+
+    st.markdown(
+        "<div class='mode-desc'>Have internet? Ask anything — get answers from Wikipedia. No login needed.</div>",
+        unsafe_allow_html=True
+    )
+
+# ------------------- SMS MODE — SIMPLE, FAST, WORKS -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='instruction'>Write 'lesson 1' to begin your journey.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -324,10 +292,10 @@ No internet needed! All lessons work offline.
     if st.button("⬅️ Back to Home", key="back_home_sms"):
         st.session_state.mode = None
 
-# ------------------- ONLINE MODE — FAST, CLEAN, NO DELAY -------------------
+# ------------------- ONLINE MODE — FAST, CLEAN, WORKS -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Explore the World</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='instruction'>Ask ShineGPT anything — like 'What is AI?' or 'How does blockchain work?'</div>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' or 'How does blockchain work?'</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -348,39 +316,6 @@ elif st.session_state.mode == 'online':
 
     # ------------------- Back Button -------------------
     if st.button("⬅️ Back to Home", key="back_home_online"):
-        st.session_state.mode = None
-
-# ------------------- FOOTER — NO BUTTONS. JUST YOUR BRAND. -------------------
-# (Already rendered above — no extra elements)
-
-# ------------------- ABOUT PAGE — ONLY WHEN NEEDED -------------------
-if st.session_state.show_about:
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
-    
-    st.markdown(
-        """
-        <div class="about-box">
-            <h3>Who is ShineGPT?</h3>
-            <p>ShineGPT is a free, simple learning tool made for kids and youth like you — especially in places with no internet or slow connections.</p>
-            
-            <h3>What can you do?</h3>
-            <p>📱 In SMS Mode: Type 'lesson 1' to start learning 50 powerful lessons — no internet needed.</p>
-            <p>🌐 In Online Mode: Ask anything — and ShineGPT opens a Wikipedia page with the answer.</p>
-            
-            <h3>Why was it made?</h3>
-            <p>Because every child deserves to learn — no matter where they live, or what phone they have.</p>
-            
-            <h3>Our Promise</h3>
-            <p>No ads. No tracking. No paywalls. Just pure, free, kind learning.</p>
-            
-            <p>💙 Powered by KS1 Empire Foundation — because education should be a light, not a luxury.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    if st.button("⬅️ Back to Home", key="back_home_about"):
-        st.session_state.show_about = False
         st.session_state.mode = None
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
