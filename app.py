@@ -12,7 +12,7 @@ lessons = {
 }
 
 # ------------------- SMS RESPONSES -------------------
-sms_responses = { -m "Fix: sms_responses is now a proper dict — no more 'set' error"..., }  # your responses
+sms_responses, = { -m "Fix: sms_responses is now a proper dict — no more 'set' error"... }  # your responses
 
 # AUTO-GENERATE FOR ALL 50
 for i in range(1, 51):
