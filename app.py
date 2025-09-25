@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
@@ -71,7 +72,7 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: PERPLEXITY SEARCH (WORKS ON HUGGING FACE) -------------------
+# ------------------- ONLINE MODE: PERPLEXITY SEARCH -------------------
 def perplexity_search(query):
     try:
         url = "https://api.perplexity.ai/chat/completions"
@@ -107,55 +108,72 @@ def perplexity_search(query):
     except Exception as e:
         return f"⚠️ Could not connect to the internet. Please check your connection. (Error: {str(e)})", []
 
-# ------------------- STYLING — CHATGPT-STYLE UI -------------------
+# ------------------- STYLING — YOUR BRAND, YOUR VISION -------------------
 st.markdown(
     """
     <style>
-    /* Hide Streamlit's default menu, footer, and header */
+    /* Hide Streamlit’s default menu, footer, and header */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
-    /* Chat container */
-    .chat-container {
-        max-width: 700px;
-        margin: 0 auto;
-        padding: 20px;
+    /* Sidebar styling */
+    .css-1d391kg { /* Sidebar container */
+        background-color: #111 !important;
+        padding-top: 2rem !important;
+    }
+    .css-1d391kg .css-1v3fvcr { /* Sidebar menu items */
+        color: #D4AF37 !important;
+        font-size: 1.3rem !important;
+        font-weight: 600 !important;
+        padding: 12px 20px !important;
+        border-radius: 8px !important;
+        margin: 5px 0 !important;
+    }
+    .css-1d391kg .css-1d391kg:hover {
+        background-color: #1a1a1a !important;
+    }
+
+    /* Main content area */
+    .main {
+        padding: 2rem 2rem;
+        background-color: #0a0a0a;
+        color: white;
         font-family: 'Segoe UI', sans-serif;
     }
 
-    /* User message */
-    .user-message {
-        background-color: #262730;
-        color: white;
-        padding: 14px 18px;
-        border-radius: 18px 18px 0 18px;
-        margin: 10px 0;
-        max-width: 70%;
-        margin-left: auto;
-        font-size: 1.1rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    /* ShineGPT Header */
+    .brand-header {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .brand-header h1 {
+        color: #D4AF37 !important;
+        font-size: 2.8rem !important;
+        font-weight: 800 !important;
+        margin: 0 !important;
+        font-family: 'Arial', sans-serif;
+    }
+    .brand-header p {
+        color: white !important;
+        font-size: 1.4rem !important;
+        font-weight: 400 !important;
+        margin: 0.5rem 0 0.5rem 0 !important;
+    }
+    .brand-footer {
+        text-align: center;
+        margin-top: 1rem;
+        color: #D32F2F !important;
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
     }
 
-    /* ShineGPT message */
-    .shingpt-message {
-        background-color: #1a1a1a;
-        color: #e0e0e0;
-        padding: 14px 18px;
-        border-radius: 18px 18px 18px 0;
-        margin: 10px 0;
-        max-width: 70%;
-        font-size: 1.1rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        border-left: 3px solid #D4AF37;
-    }
-
-    /* Input box */
+    /* Chat input box */
     .stTextInput > div > div > input {
-        font-size: 1.2rem !important;
-        padding: 16px 20px !important;
+        font-size: 1.4rem !important;
+        padding: 18px 24px !important;
         border: 2px solid #D4AF37 !important;
-        border-radius: 30px !important;
+        border-radius: 20px !important;
         background-color: #111 !important;
         color: white !important;
         width: 100% !important;
@@ -164,23 +182,29 @@ st.markdown(
 
     /* Send button */
     .stButton > button {
-        display: none; /* We'll use Enter key instead */
-    }
-
-    /* Toggle switch */
-    .stToggle > label {
-        color: #D4AF37 !important;
-        font-size: 1.1rem !important;
-        font-weight: 500 !important;
-        margin-bottom: 10px !important;
-        text-align: center !important;
+        background-color: #D32F2F !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.3rem !important;
+        padding: 15px 35px !important;
+        margin: 1.5rem auto !important;
         display: block !important;
+        width: 80% !important;
+        max-width: 500px !important;
+        border-radius: 18px !important;
+        border: none !important;
+        cursor: pointer !important;
     }
 
-    /* Toggle container */
-    .stToggle {
-        text-align: center !important;
-        margin: 15px 0 !important;
+    /* Success messages */
+    .stSuccess {
+        max-width: 90%;
+        margin: 1.5rem auto;
+        padding: 25px;
+        background-color: #1a1a1a;
+        border-left: 5px solid #D4AF37;
+        font-size: 1.4rem;
+        color: #e0e0e0 !important;
     }
 
     /* Source links */
@@ -194,105 +218,116 @@ st.markdown(
     .source-link:hover {
         text-decoration: underline !important;
     }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+        .brand-header h1 { font-size: 2.2rem !important; }
+        .brand-header p { font-size: 1.2rem !important; }
+        .brand-footer { font-size: 1.1rem !important; }
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HEADER — ONLY SHOW TOGGLE -------------------
-st.markdown("<div class='stToggle'><label>🌐 Online Mode</label></div>", unsafe_allow_html=True)
-st.session_state.mode = st.toggle("", value=False, label_visibility="collapsed")
+# ------------------- SIDEBAR — CLEAN NAVIGATION MENU -------------------
+with st.sidebar:
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("📱 SMS Mode"):
+        st.session_state.mode = 'sms'
+    if st.button("🌐 Online Mode"):
+        st.session_state.mode = 'online'
 
-# ------------------- CHAT CONTAINER -------------------
-st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
-
-# Display chat history
-for msg in st.session_state.messages:
-    if msg["role"] == "user":
-        st.markdown(f"<div class='user-message'>{msg['content']}</div>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<div class='shingpt-message'>{msg['content']}</div>", unsafe_allow_html=True)
-        # Show sources if any
-        if "sources" in msg:
-            for src in msg["sources"][:2]:
-                if isinstance(src, str):
-                    st.markdown(f'<a href="{src}" class="source-link" target="_blank">🔗 Source</a>', unsafe_allow_html=True)
-
-# ------------------- INPUT BOX -------------------
-user_input = st.text_input(
-    "Ask ShineGPT...",
-    key="chat_input",
-    placeholder="Type 'lesson 1' to start, or ask anything about AI, Blockchain, or 4IR...",
-    label_visibility="collapsed"
+# ------------------- MAIN CONTENT — BRAND HEADER -------------------
+st.markdown(
+    """
+    <div class="brand-header">
+        <h1>SHINEGPT</h1>
+        <p>Learn. Earn Knowledge. Empower Yourself.</p>
+    </div>
+    <div class="brand-footer">
+        Powered by KS1 Empire Foundation
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
 
-# Handle input
-if user_input:
-    # Add user message
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    
-    # Clear input
-    st.rerun()
+# ------------------- MAIN CONTENT — MODE-BASED INTERFACE -------------------
+if st.session_state.mode == 'sms':
+    st.header("📱 SMS Mode — No Internet Needed")
+    st.info("Type: lesson 1, hello, help, points")
 
-# Only respond if there's new input (prevents infinite loop)
-if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
-    user_input = st.session_state.messages[-1]["content"]
-    
-    # Mode: SMS — only respond to lesson commands or help
-    if st.session_state.mode == 'sms':
-        user_input_lower = user_input.strip().lower()
-        
-        if user_input_lower == "help":
-            response = """
+    user_input = st.text_input(
+        label="",
+        placeholder="Type your message...",
+        key="sms_input"
+    )
+
+    if st.button("📩 Send", key="send_sms"):
+        if user_input:
+            user_input_lower = user_input.strip().lower()
+            
+            if user_input_lower == "help":
+                response = """
 Available commands:
 - type 'lesson 1' to start
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
-            """
-            st.session_state.messages.append({"role": "shingpt", "content": response})
-            
-        elif user_input_lower == "points":
-            response = f"🎉 You have {st.session_state.user_points} points!"
-            st.session_state.messages.append({"role": "shingpt", "content": response})
-            
-        elif user_input_lower == "hello":
-            response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-            st.session_state.messages.append({"role": "shingpt", "content": response})
-            
-        elif user_input_lower.startswith("lesson "):
-            try:
-                lesson_num = int(user_input_lower.split()[-1])
-                if lesson_num < 1:
-                    response = "Start with lesson 1!"
-                elif lesson_num > 50:
-                    response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
-                else:
-                    response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
-                    add_points(10)
-                    st.session_state.current_lesson = lesson_num
-                st.session_state.messages.append({"role": "shingpt", "content": response})
-            except:
-                response = "Type 'lesson 1' to start."
-                st.session_state.messages.append({"role": "shingpt", "content": response})
+                """
+                st.success(response)
                 
-        else:
-            response = "I'm in SMS mode — I only know 50 lessons. Try typing 'lesson 1' or 'help'."
-            st.session_state.messages.append({"role": "shingpt", "content": response})
+            elif user_input_lower == "points":
+                response = f"🎉 You have {st.session_state.user_points} points!"
+                st.success(response)
+                
+            elif user_input_lower == "hello":
+                response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+                st.success(response)
+                
+            elif user_input_lower.startswith("lesson "):
+                try:
+                    lesson_num = int(user_input_lower.split()[-1])
+                    if lesson_num < 1:
+                        response = "Start with lesson 1!"
+                    elif lesson_num > 50:
+                        response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                    else:
+                        response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
+                        add_points(10)
+                        st.session_state.current_lesson = lesson_num
+                    st.success(response)
+                except:
+                    response = "Type 'lesson 1' to start."
+                    st.success(response)
+            else:
+                response = "I don't understand. Try typing 'help'."
+                st.success(response)
 
-    # Mode: Online — use Perplexity for deep answers
-    else:
-        with st.spinner("🔍 Thinking..."):
-            response, sources = perplexity_search(user_input)
-        
-        msg = {"role": "shingpt", "content": response}
-        if sources:
-            msg["sources"] = sources
-        st.session_state.messages.append(msg)
+elif st.session_state.mode == 'online':
+    st.header("🌐 Online Mode — Explore the World of 4IR")
+    st.info("Ask anything: 'How does blockchain work?' or 'What is AI bias in Africa?'")
 
-    # Auto-scroll to bottom
-    st.rerun()
+    user_input = st.text_input(
+        label="",
+        placeholder="Ask ShineGPT...",
+        key="online_input"
+    )
 
-# ------------------- FOOTER -------------------
-st.markdown("</div>", unsafe_allow_html=True)
+    if st.button("🔍 Search", key="search_btn"):
+        if user_input:
+            with st.spinner("🔍 Searching the web for you..."):
+                answer, sources = perplexity_search(user_input)
+            
+            st.success(answer)
+            
+            if sources:
+                st.markdown("---")
+                st.markdown("📚 **Sources:**")
+                for src in sources[:2]:
+                    if isinstance(src, str):
+                        st.markdown(f'<a href="{src}" class="source-link" target="_blank">🔗 {src}</a>', unsafe_allow_html=True)
+
+# ------------------- FOOTER (Optional) -------------------
+st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
