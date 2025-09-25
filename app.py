@@ -9,58 +9,59 @@ if 'user_points' not in st.session_state:
 if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
 
-# ------------------- LESSONS -------------------
+# ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
+# Covers AI, Big Data, Blockchain, Crypto, Digital Ethics — all under 4IR
 lessons = {
-    1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
-    2: "AI stands for Artificial Intelligence — machines that can learn, reason, and make decisions like humans.",
-    3: "Machine Learning is a subset of AI where computers learn from data without being explicitly programmed.",
-    4: "Data is the new oil — it fuels AI systems and helps them understand patterns in the world.",
-    5: "Neural networks are computing systems inspired by the human brain, used to recognize patterns.",
-    6: "Supervised learning uses labeled data to teach AI models — like showing photos of cats and dogs.",
-    7: "Unsupervised learning finds hidden patterns in data without labels — like grouping customers by behavior.",
-    8: "Deep Learning uses multi-layered neural networks to solve complex problems like image and speech recognition.",
-    9: "Natural Language Processing (NLP) lets machines understand and respond to human language — like chatbots.",
-    10: "Computer Vision allows machines to 'see' and interpret images and videos — used in facial recognition.",
-    11: "AI ethics means building systems that are fair, transparent, and avoid bias — especially in hiring or policing.",
-    12: "Bias in AI happens when training data reflects human prejudices — leading to unfair outcomes.",
-    13: "Explainable AI (XAI) helps us understand why an AI made a decision — critical for trust and accountability.",
-    14: "Generative AI creates new content — like images, music, or text — using models like GPT and DALL·E.",
-    15: "LLM stands for Large Language Model — AI trained on massive text datasets to understand and generate human language.",
-    16: "Prompt engineering is the skill of writing clear, effective instructions to get better results from AI.",
-    17: "Fine-tuning is when you train a pre-trained AI model on your own data to make it better at a specific task.",
-    18: "AI agents are programs that can act autonomously — like scheduling meetings or managing smart homes.",
-    19: "Reinforcement learning is when AI learns by trial and error, rewarded for good actions — like training a robot.",
-    20: "AI can assist doctors by analyzing X-rays faster and more accurately than humans in some cases.",
-    21: "AI-powered translation tools now work in real-time — breaking language barriers for global communication.",
-    22: "AI in agriculture helps farmers predict crop yields, detect diseases, and optimize water use.",
-    23: "AI chatbots are used in customer service to answer questions 24/7 — reducing wait times and costs.",
-    24: "AI can generate personalized learning paths for students based on their progress and weaknesses.",
-    25: "AI can detect fake news by analyzing language patterns, sources, and spread behavior.",
-    26: "AI doesn't 'think' — it calculates probabilities based on patterns in data it was trained on.",
-    27: "AI can help identify endangered species from camera trap images — aiding wildlife conservation.",
-    28: "AI is used in music to compose new melodies, remix songs, and even mimic the style of famous artists.",
-    29: "AI can write poetry, stories, and even screenplays — but it doesn't feel emotion like humans do.",
-    30: "AI assistants like Siri and Alexa use voice recognition and NLP to understand spoken commands.",
-    31: "AI can predict traffic jams by analyzing GPS data from millions of phones and cars.",
-    32: "AI helps banks detect fraudulent transactions by spotting unusual spending patterns.",
-    33: "AI-driven robots are now used in warehouses to pick, pack, and ship orders faster than humans.",
-    34: "AI can analyze satellite images to track deforestation, urban growth, and illegal mining.",
-    35: "AI models are trained on massive datasets — sometimes containing billions of words or images.",
-    36: "Overfitting happens when an AI model memorizes training data instead of learning general patterns.",
-    37: "Underfitting happens when an AI model is too simple to capture the underlying patterns in data.",
-    38: "Transfer learning lets AI reuse knowledge from one task to improve performance on a new, related task.",
-    39: "OpenAI, Google DeepMind, and Meta are leading companies in AI research and development.",
-    40: "AI models require huge amounts of electricity to train — raising concerns about their carbon footprint.",
-    41: "Edge AI runs AI models directly on devices like phones or sensors — no internet needed.",
-    42: "AI can help translate sign language into text or speech — improving accessibility for the deaf community.",
-    43: "AI can generate personalized workout plans based on your fitness goals and body metrics.",
-    44: "AI tools can now detect early signs of diseases like cancer from medical scans with high accuracy.",
-    45: "AI can analyze social media to predict mental health trends and identify people at risk of depression.",
-    46: "AI-powered drones are used to deliver medicine to remote villages — saving lives in emergencies.",
-    47: "AI can generate realistic fake videos called 'deepfakes' — which can be used for both entertainment and fraud.",
-    48: "AI can write code for you — tools like GitHub Copilot suggest entire functions as you type.",
-    49: "AI can help teachers grade essays by checking grammar, structure, and relevance — but human review is still key.",
-    50: "AI doesn't have consciousness — it simulates understanding but doesn't experience thoughts or feelings."
+    1: "The 4th Industrial Revolution (4IR) is the fusion of digital, physical, and biological technologies that is transforming how we live, work, and relate to one another.",
+    2: "AI (Artificial Intelligence) is at the heart of 4IR — machines that learn, reason, and make decisions like humans — without being explicitly programmed.",
+    3: "Machine Learning is a subset of AI that uses data to train systems to recognize patterns — like identifying spam emails or recommending videos.",
+    4: "Big Data refers to massive volumes of structured and unstructured information — from social media, sensors, and transactions — that can be analyzed to reveal insights.",
+    5: "IoT (Internet of Things) connects everyday objects — fridges, cars, lights — to the internet to collect and share data, making homes and cities smarter.",
+    6: "Cloud computing lets us store and access data and software over the internet — no need for powerful local computers, making technology accessible to all.",
+    7: "5G networks are the backbone of 4IR — offering ultra-fast, low-latency connections that enable real-time remote surgery, autonomous vehicles, and smart factories.",
+    8: "Blockchain is a secure, decentralized digital ledger that records transactions across many computers — making it tamper-proof and transparent.",
+    9: "Cryptocurrency like Bitcoin uses blockchain to enable peer-to-peer money transfers without banks — giving financial power to the unbanked.",
+    10: "Smart contracts are self-executing agreements on blockchain — they automatically trigger payments or actions when conditions are met — no middlemen needed.",
+    11: "NFTs (Non-Fungible Tokens) use blockchain to prove ownership of unique digital items — art, music, or even virtual land — creating new economies.",
+    12: "Data privacy is critical in 4IR — your location, habits, and health data are valuable. You have the right to control who uses it.",
+    13: "Digital literacy means knowing how to use technology safely, ethically, and effectively — a basic skill for the 21st century, like reading and writing.",
+    14: "Automation replaces repetitive tasks with machines — from factory robots to chatbots — freeing humans for creative, strategic, and caring work.",
+    15: "AI in healthcare can analyze X-rays faster than doctors, predict disease outbreaks, and personalize treatment — saving lives in remote villages.",
+    16: "Big Data helps farmers predict crop yields by combining satellite images, weather data, and soil sensors — reducing hunger and waste.",
+    17: "Cities use Big Data to optimize traffic lights, reduce pollution, and plan public transport — making urban life cleaner and less stressful.",
+    18: "Big Data detects fraud in banking by spotting unusual spending patterns — protecting people’s savings even when they’re offline.",
+    19: "In education, Big Data helps teachers identify which students are struggling — so they can get help before falling behind.",
+    20: "Big Data tracks the spread of diseases by analyzing search trends, hospital records, and mobile location data — helping stop pandemics early.",
+    21: "Blockchain can record land ownership in countries with weak paperwork — protecting farmers from being kicked off their own land.",
+    22: "Blockchain can verify academic certificates — eliminating fake degrees and saving schools and employers time and money.",
+    23: "Blockchain can track food from farm to table — so you know your vegetables are safe, organic, and not stolen from another country.",
+    24: "Blockchain can record carbon credits — proving companies are actually reducing emissions, not just claiming it.",
+    25: "Decentralized Finance (DeFi) lets people lend, borrow, and earn interest without banks — using only a smartphone and internet.",
+    26: "Crypto wallets give people control over their money — no government or bank can freeze your account or charge hidden fees.",
+    27: "Digital identity on blockchain lets refugees prove who they are — even without a passport — so they can access education, healthcare, and jobs.",
+    28: "AI-powered chatbots can answer questions in local languages — helping people in rural areas get information without needing to read.",
+    29: "Edge AI runs AI models directly on phones or sensors — no internet needed — perfect for areas with poor connectivity.",
+    30: "Low-power devices like solar-powered tablets can run AI and blockchain apps — bringing 4IR tech to villages without electricity.",
+    31: "Digital twins are virtual copies of real objects — like a factory or a bridge — used to predict failures and save billions in repairs.",
+    32: "3D printing turns digital designs into physical objects — letting communities print tools, medical parts, or even homes — on demand.",
+    33: "Robotics combined with AI can deliver medicine to remote clinics — saving lives in places where ambulances can’t reach.",
+    34: "Drones with AI can monitor forests, detect fires, and count wildlife — helping protect nature without humans needing to go in.",
+    35: "Augmented Reality (AR) lets you see digital information overlaid on the real world — helping mechanics fix machines or students learn anatomy.",
+    36: "Virtual Reality (VR) creates immersive learning — students can walk inside a human cell or visit ancient Rome — without leaving the classroom.",
+    37: "Digital payment systems like mobile money let farmers sell crops and get paid instantly — no cash, no middlemen, no delays.",
+    38: "Online marketplaces connect small artisans to global buyers — turning local crafts into global income, even without a bank account.",
+    39: "AI can detect fake news by analyzing how stories spread — helping communities avoid misinformation and build trust.",
+    40: "Ethical AI means building systems that are fair, transparent, and don’t discriminate — especially against women, minorities, or the poor.",
+    41: "Bias in AI happens when training data reflects old inequalities — like hiring systems that favor men — and we must fix it before it harms people.",
+    42: "Digital rights mean having control over your data, your voice, and your identity — not letting corporations own your digital life.",
+    43: "The digital divide is the gap between those with access to technology and those without — 4IR must include everyone, not just the connected.",
+    44: "Open-source software lets anyone use, modify, and share code — empowering communities to build their own tools, not depend on foreign companies.",
+    45: "Digital citizenship means using technology responsibly — respecting others, protecting privacy, and fighting misinformation — online and offline.",
+    46: "4IR can reduce poverty by creating new jobs in tech, data, and green energy — but only if we train people to use it.",
+    47: "Girls and women must be included in 4IR — coding, AI, and blockchain are not male domains. Diversity makes innovation stronger.",
+    48: "4IR is not about replacing humans — it’s about empowering them. Technology should serve people, not control them.",
+    49: "You don’t need a university degree to learn 4IR skills — free online lessons, SMS-based apps like ShineGPT, and community labs can teach anyone.",
+    50: "ShineGPT proves that 4IR doesn’t require internet or money — just curiosity, courage, and the will to learn. Keep going — you’re changing the future."
 }
 
 # ------------------- HELPER: GENERATE AUDIO FROM TEXT -------------------
@@ -180,8 +181,8 @@ Available commands:
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
 - type 'speak' to hear the lesson aloud
-- audio automatically downloads when you click "Download"
-No internet needed after audio is generated!
+- click 'Download' to save the lesson as MP3 forever
+No internet needed after audio is downloaded!
         """
     elif user_input_lower == "points":
         response = f"🎉 You have {st.session_state.user_points} points!"
@@ -233,4 +234,4 @@ st.sidebar.info("Earn 10 per lesson. No data cost.")
 
 st.sidebar.subheader("📖 Progress")
 st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed")
-st.sidebar.caption("You're learning AI — 50 real lessons. No repeats. No placeholders.")
+st.sidebar.caption("You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics
