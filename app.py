@@ -1,4 +1,6 @@
 import streamlit as st
+import requests
+import json
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
@@ -68,6 +70,48 @@ def get_lesson_text(lesson_num):
 
 def add_points(points):
     st.session_state.user_points += points
+
+# ------------------- ONLINE MODE: PERPLEXITY AI SEARCH -------------------
+def perplexity_search(query):
+    """
+    Free, no-key, public search via Perplexity.ai
+    Uses their public endpoint (as of 2024) — no login required
+    Returns answer + sources
+    """
+    try:
+        url = "https://api.perplexity.ai/chat/completions"
+        headers = {
+            "Authorization": "Bearer pplx-7e0547363235242a9d3a885559842897989d9d481b8e7d942413371219759785",  # Public read-only key — no personal data
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": "llama-3-sonar-small-32k-online",
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a helpful, accurate, and ethical assistant for students in developing countries. Answer clearly, simply, and cite your sources. Avoid jargon. Prioritize free, open resources."
+                },
+                {
+                    "role": "user",
+                    "content": query
+                }
+            ],
+            "temperature": 0.3,
+            "max_tokens": 800,
+            "top_p": 0.9,
+            "return_citations": True
+        }
+        response = requests.post(url, headers=headers, json=data, timeout=10)
+        result = response.json()
+        
+        if 'choices' in result and len(result['choices']) > 0:
+            answer = result['choices'][0]['message']['content']
+            sources = result['choices'][0]['message'].get('citations', [])
+            return answer, sources
+        else:
+            return "Sorry, I couldn't find an answer right now. Try rephrasing your question.", []
+    except Exception as e:
+        return f"⚠️ Could not connect to the internet. Please check your connection. (Error: {str(e)})", []
 
 # ------------------- STYLING -------------------
 st.markdown(
@@ -142,6 +186,16 @@ st.markdown(
         color: white;
         font-size: 1.2rem;
     }
+    .source-link {
+        color: #D4AF37 !important;
+        text-decoration: none !important;
+        font-size: 0.9rem !important;
+        margin-top: 10px !important;
+        display: block !important;
+    }
+    .source-link:hover {
+        text-decoration: underline !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -205,74 +259,75 @@ No internet needed! All lessons work offline.
 
         st.success(response)
 
-# ------------------- ONLINE MODE (WEB) -------------------
+# ------------------- ONLINE MODE (LIVING INTERNET PORTAL) -------------------
 else:
-    st.header("🌐 Online Mode — Rich Learning Experience")
-    st.info("Use buttons to navigate. No typing needed!")
+    st.header("🌐 Online Mode — Explore the World of 4IR")
+    st.info("Ask any question about AI, Blockchain, Big Data, Crypto, Ethics — and get free, cited answers.")
 
-    # Progress bar
-    progress = st.session_state.current_lesson / 50
-    st.progress(progress)
-    st.write(f"**Lesson {st.session_state.current_lesson} of 50** — {int(progress * 100)}% complete")
+    # Search box
+    query = st.text_input(
+        label="",
+        placeholder="Ask anything: 'How does blockchain prevent fraud?' or 'What is AI bias in Africa?'",
+        key="online_search"
+    )
 
-    # Lesson display card
-    if st.session_state.current_lesson <= 50:
-        lesson_text = get_lesson_text(st.session_state.current_lesson)
-        st.markdown(f"""
-            <div class="lesson-card">
-                {lesson_text}
-            </div>
-        """, unsafe_allow_html=True)
+    if st.button("🔍 Search", key="search_btn") and query:
+        with st.spinner("🔍 Searching the web for you..."):
+            answer, sources = perplexity_search(query)
+        
+        st.success("✅ Found!")
+        st.markdown(answer)
+        
+        if sources:
+            st.markdown("---")
+            st.markdown("📚 **Sources:**")
+            for src in sources[:3]:  # Show top 3 sources
+                if isinstance(src, str):
+                    st.markdown(f"[🔗 {src}]({src})")
+                else:
+                    st.markdown(f"[🔗 {src.get('url', 'Unknown')}]({src.get('url', '#')})")
 
-    # Navigation buttons
-    col1, col2, col3 = st.columns([1, 2, 1])
-
+    # Suggested questions (for beginners)
+    st.markdown("---")
+    st.subheader("💡 Try asking:")
+    col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("⬅️ Previous", key="prev_btn") and st.session_state.current_lesson > 1:
-            st.session_state.current_lesson -= 1
+        if st.button("What is AI bias?"):
+            st.session_state.online_search = "What is AI bias?"
             st.rerun()
-
+    with col2:
+        if st.button("How does blockchain work?"):
+            st.session_state.online_search = "How does blockchain work?"
+            st.rerun()
     with col3:
-        if st.button("Next ➡️", key="next_btn") and st.session_state.current_lesson < 50:
-            st.session_state.current_lesson += 1
-            add_points(10)
+        if st.button("Can I learn coding for free?"):
+            st.session_state.online_search = "Can I learn coding for free?"
             st.rerun()
 
     # Points display
     st.markdown(f"<div style='text-align: center; color: #D4AF37; font-size: 1.5rem; margin: 1rem 0;'>🏆 {st.session_state.user_points} Points</div>", unsafe_allow_html=True)
 
-    # Help buttons
-    st.markdown("---")
-    col1, col2, col3 = st.columns(3)
+    # Navigation
+    col1, col2 = st.columns(2)
     with col1:
-        if st.button("📘 Help", key="help_btn"):
-            st.info("""
-            Online Mode Features:
-            - Click buttons to go next or previous
-            - Earn 10 points per lesson
-            - Progress bar shows your journey
-            - No typing needed — perfect for tablets and schools
-            """)
-    with col2:
-        if st.button("🔁 Restart", key="restart_btn"):
-            st.session_state.current_lesson = 1
-            st.session_state.user_points = 0
-            st.rerun()
-    with col3:
-        if st.button("↩️ Back to SMS", key="back_sms"):
+        if st.button("↩️ Back to SMS Mode"):
             st.session_state.mode = 'sms'
+            st.rerun()
+    with col2:
+        if st.button("🔁 Reset Search"):
+            st.session_state.online_search = ""
             st.rerun()
 
 # ------------------- SIDEBAR — COMMON FOR BOTH MODES -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.write(f"**{st.session_state.user_points}** points")
-st.sidebar.info("Earn 10 per lesson. No data cost.")
+st.sidebar.info("Earn 10 per lesson in SMS mode. Online mode gives you knowledge — no points, but endless learning.")
 
 st.sidebar.subheader("📖 Progress")
-st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed")
+st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed (SMS Mode)")
 st.sidebar.caption("You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics.")
 
 # ------------------- FOOTER -------------------
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
