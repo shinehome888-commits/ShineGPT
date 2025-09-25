@@ -81,7 +81,7 @@ def add_points(points):
 # ------------------- MAIN APP LAYOUT -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — Your Brand Colors
+# Custom CSS — Fixed Input Box: Full Width, Large Font, Clear Visibility
 st.markdown(
     """
     <style>
@@ -110,38 +110,86 @@ st.markdown(
         margin-top: 0.5rem;
         color: #D32F2F !important; /* Red */
     }
+
+    /* ✅ FIXED TEXT INPUT — FULL WIDTH, LARGE, CENTERED */
     .stTextInput > div > div > input {
-        font-size: 1.4rem;
-        padding: 18px;
-        border-radius: 12px;
-        border: 2px solid #D4AF37;
-        background-color: #111111;
-        color: #ffffff;
-        width: 90%;
-        max-width: 700px;
-        margin: 1.5rem auto;
-        display: block;
+        font-size: 1.4rem !important;
+        padding: 20px !important;
+        border-radius: 14px !important;
+        border: 2px solid #D4AF37 !important;
+        background-color: #111111 !important;
+        color: #ffffff !important;
+        width: 95% !important;
+        max-width: 700px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        height: 80px !important;
+        line-height: 1.5 !important;
     }
+
+    /* ✅ LABEL ABOVE INPUT — CLEAR AND VISIBLE */
+    .stTextInput > label {
+        font-size: 1.4rem !important;
+        color: #ffffff !important;
+        margin-bottom: 0.5rem !important;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* ✅ SEND BUTTON — RED, CENTERED, LARGE */
     .stButton>button {
         background-color: #D32F2F !important;
         color: white !important;
-        font-weight: 700;
-        border-radius: 12px;
-        font-size: 1.2rem;
+        font-weight: 700 !important;
+        border-radius: 12px !important;
+        font-size: 1.3rem !important;
         padding: 15px 30px !important;
-        width: 90%;
-        max-width: 400px;
-        margin: 1.5rem auto;
-        display: block;
+        border: none !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
     }
+    .stButton>button:hover {
+        background-color: #B71C1C !important;
+    }
+
+    /* ✅ SUCCESS MESSAGE — SCROLLABLE, CLEAR, WELL-FORMATTED */
     .stSuccess {
-        max-width: 90%;
-        margin: 1.5rem auto;
-        padding: 25px;
-        border-radius: 14px;
-        background-color: #1a1a1a;
-        border: 1px solid #D4AF37;
-        color: #ffffff;
+        max-width: 95% !important;
+        margin: 1.5rem auto !important;
+        padding: 25px !important;
+        border-radius: 14px !important;
+        background-color: #1a1a1a !important;
+        border: 1px solid #D4AF37 !important;
+        color: #ffffff !important;
+        text-align: left !important;
+        line-height: 1.8 !important;
+        min-height: 120px !important;
+        overflow-y: auto !important;
+        max-height: 300px !important;
+        font-size: 1.4rem !important;
+    }
+
+    /* SIDEBAR STYLING */
+    .sidebar .sidebar-content {
+        background-color: #000000 !important;
+        padding: 2rem 1rem;
+    }
+    .sidebar .sidebar-content h2 {
+        color: #D4AF37 !important;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+
+    /* REMOVE ALL EXTRA PADDING */
+    .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 0 !important;
+        max-width: 100% !important;
     }
     </style>
     """,
