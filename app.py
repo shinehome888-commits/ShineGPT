@@ -1,53 +1,49 @@
 import streamlit as st
-from lessons import lessons  # Only 200 lessons loaded at startup — safe!
+import pyttsx3
+from lessons import lessons  # Only 50 real lessons loaded — safe and perfect
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 if 'current_lesson' not in st.session_state:
-    st.session_state.current_lesson = 1  # Start at lesson 1
+    st.session_state.current_lesson = 1
 
-# ------------------- HELPER: GENERATE LESSON ON DEMAND -------------------
-def get_lesson_text(lesson_num):
-    """Generate lesson text on-demand if not pre-loaded"""
-    if lesson_num in lessons:
-        return lessons[lesson_num]
-    
-    # Assign topic based on range
-    if 1 <= lesson_num <= 500:
-        topic = "AI"
-    elif 501 <= lesson_num <= 1000:
-        topic = "Big Data"
-    elif 1001 <= lesson_num <= 1500:
-        topic = "Advanced AI"
-    elif 1501 <= lesson_num <= 2000:
-        topic = "Blockchain"
-    else:
-        return "Lesson not found. Type 'lesson 1' to start."
-    
-    # Provide a brief, educational description for each topic
-    descriptions = {
-        "AI": "Artificial Intelligence — machines that learn from data to solve problems.",
-        "Big Data": "Massive datasets that help us understand patterns in the world.",
-        "Advanced AI": "Cutting-edge AI like generative models, agents, and ethical systems.",
-        "Blockchain": "Secure, decentralized ledgers for trust without middlemen."
-    }
-    
-    description = descriptions.get(topic, "")
-    return f"Lesson {lesson_num}: You're learning about {topic} — {description} Keep going!"
+# ------------------- INIT TTS ENGINE -------------------
+@st.cache_resource
+def init_tts():
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 150)   # Speed
+    engine.setProperty('volume', 0.9) # Volume
+    return engine
 
-# ------------------- SMS RESPONSES — GENERATED ON-DEMAND -------------------
+tts_engine = init_tts()
+
+# ------------------- SPEAK FUNCTION -------------------
+def speak(text):
+    try:
+        tts_engine.say(text)
+        tts_engine.runAndWait()
+    except Exception as e:
+        st.warning("🔊 Voice not available on this device (try on mobile).")
+
+# ------------------- SMS RESPONSES -------------------
 def get_sms_response(lesson_key):
-    """Generate response only when user asks for a lesson"""
     lesson_num = int(lesson_key.split()[-1])
-    lesson_text = get_lesson_text(lesson_num)
+    if lesson_num in lessons:
+        lesson_text = lessons[lesson_num]
+    else:
+        if lesson_num > 50:
+            return "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+        else:
+            return "Lesson not found. Type 'lesson 1' to start."
+
     return lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
 
 # ------------------- POINTS FUNCTION -------------------
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — FULL-WIDTH INPUT & BUTTON -------------------
+# ------------------- STYLING -------------------
 st.markdown(
     """
     <style>
@@ -116,7 +112,7 @@ st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", u
 
 # ------------------- SMS MODE UI -------------------
 st.header("📱 SMS Mode — No Internet Needed!")
-st.info("Type: lesson 1, hello, help, points")
+st.info("Type: lesson 1, hello, help, points, speak")
 
 user_input = st.text_input(
     label="",
@@ -128,7 +124,6 @@ user_input = st.text_input(
 if st.button("📩 Send", key="send_sms") and user_input:
     user_input_lower = user_input.strip().lower()
 
-    # Custom responses for special commands
     if user_input_lower == "help":
         response = """
 Available commands:
@@ -136,23 +131,32 @@ Available commands:
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
+- type 'speak' to hear the lesson aloud (works on mobile)
 No internet needed! All lessons work offline.
         """
     elif user_input_lower == "points":
         response = f"🎉 You have {st.session_state.user_points} points!"
     elif user_input_lower == "hello":
         response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+    elif user_input_lower == "speak":
+        # Speak the current lesson
+        if st.session_state.current_lesson <= 50:
+            lesson_text = lessons[st.session_state.current_lesson]
+            speak(lesson_text)
+            response = "🔊 Playing your last lesson aloud..."
+        else:
+            response = "You’ve completed all 50 lessons! 🎉 Type 'lesson 1' to restart."
     elif user_input_lower.startswith("lesson "):
         try:
             lesson_num = int(user_input_lower.split()[-1])
             if lesson_num < 1:
                 response = "Start with lesson 1!"
-            elif lesson_num > 2000:
-                response = "You've reached the end of the curriculum! 🎉 You're a ShineGPT champion!"
+            elif lesson_num > 50:
+                response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
             else:
                 response = get_sms_response(user_input_lower)
                 add_points(10)
-                st.session_state.current_lesson = lesson_num  # Track progress
+                st.session_state.current_lesson = lesson_num
         except:
             response = "Type 'lesson 1' to start."
     else:
@@ -168,4 +172,4 @@ st.sidebar.info("Earn 10 per lesson. No data cost.")
 
 st.sidebar.subheader("📖 Progress")
 st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed")
-st.sidebar.caption("You're learning AI, Big Data, Blockchain & Crypto!")
+st.sidebar.caption("You're learning AI, Big Data, Blockchain & Crypto — 50 real lessons. No repeats. No placeholders.")
