@@ -1,12 +1,8 @@
 import streamlit as st
 
 # ------------------- SESSION STATE -------------------
-if 'user_points' not in st.session_state:
-    st.session_state.user_points = 0
-if 'current_lesson' not in st.session_state:
-    st.session_state.current_lesson = 1
 if 'mode' not in st.session_state:
-    st.session_state.mode = None  # Will be set by button click
+    st.session_state.mode = None  # None, 'sms', 'online'
 if 'show_about' not in st.session_state:
     st.session_state.show_about = False
 
@@ -69,9 +65,11 @@ def get_lesson_text(lesson_num):
     return lessons.get(lesson_num, "Lesson not found.")
 
 def add_points(points):
+    if 'user_points' not in st.session_state:
+        st.session_state.user_points = 0
     st.session_state.user_points += points
 
-# ------------------- STYLING — YOUR BRAND, YOUR HEART -------------------
+# ------------------- STYLING — PURE, CALM, BEAUTIFUL -------------------
 st.markdown(
     """
     <style>
@@ -88,91 +86,94 @@ st.markdown(
         padding: 0 !important;
     }
 
-    /* ShineGPT Header — CENTERED, BOLD, CALM */
-    .brand-header {
+    /* ShineGPT Brand — Centered, Sacred Space */
+    .brand-container {
         text-align: center;
-        margin: 3rem 0 1rem 0;
+        margin: 4rem 1rem 2rem 1rem;
         padding: 0 2rem;
     }
-    .brand-header h1 {
+    .brand-container h1 {
         color: #D4AF37 !important;
-        font-size: 3rem !important;
-        font-weight: 800 !important;
+        font-size: 3.5rem !important;
+        font-weight: 900 !important;
         margin: 0 !important;
         font-family: 'Arial', sans-serif;
         letter-spacing: -1px;
+        line-height: 1.1;
     }
-    .brand-header p {
+    .brand-container p {
         color: white !important;
-        font-size: 1.5rem !important;
+        font-size: 1.6rem !important;
         font-weight: 400 !important;
-        margin: 0.5rem 0 0.5rem 0 !important;
+        margin: 0.8rem 0 0.8rem 0 !important;
         opacity: 0.9;
+        line-height: 1.5;
     }
     .brand-footer {
         text-align: center;
         margin-top: 1rem;
         color: #D32F2F !important;
-        font-size: 1.3rem !important;
+        font-size: 1.4rem !important;
         font-weight: 700 !important;
         opacity: 0.9;
     }
 
-    /* Button Style — BIG, SOFT, FRIENDLY */
+    /* Button Style — Gentle, Big, Friendly */
     .stButton > button {
         background-color: #D32F2F !important;
         color: white !important;
         font-weight: 700 !important;
-        font-size: 1.6rem !important;
-        padding: 20px 40px !important;
-        margin: 1.5rem auto !important;
+        font-size: 1.8rem !important;
+        padding: 22px 45px !important;
+        margin: 2rem auto !important;
         display: block !important;
-        width: 80% !important;
-        max-width: 500px !important;
-        border-radius: 25px !important;
+        width: 85% !important;
+        max-width: 550px !important;
+        border-radius: 30px !important;
         border: none !important;
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         transition: all 0.3s ease;
     }
     .stButton > button:hover {
         background-color: #b52828 !important;
-        transform: translateY(-2px);
+        transform: translateY(-3px);
     }
 
-    /* SMS Mode Instructions */
+    /* Instruction Text — Soft, Calm */
     .instruction {
         text-align: center;
         color: #ccc;
-        font-size: 1.3rem;
-        margin: 1rem auto;
+        font-size: 1.4rem;
+        margin: 1.5rem auto;
         max-width: 600px;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
-    /* About Box — hidden until clicked */
+    /* About Box */
     .about-box {
         background-color: #111;
-        padding: 2rem;
-        border-radius: 16px;
-        border-left: 4px solid #D4AF37;
+        padding: 2.5rem;
+        border-radius: 20px;
+        border-left: 5px solid #D4AF37;
         margin: 2rem auto;
         max-width: 700px;
         color: #e0e0e0;
-        font-size: 1.2rem;
-        line-height: 1.7;
+        font-size: 1.3rem;
+        line-height: 1.8;
     }
     .about-box h3 {
         color: #D4AF37 !important;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
 
-    /* Mobile friendly */
+    /* Mobile Responsive */
     @media (max-width: 600px) {
-        .brand-header h1 { font-size: 2.5rem !important; }
-        .brand-header p { font-size: 1.3rem !important; }
-        .stButton > button { font-size: 1.4rem !important; padding: 18px 35px !important; }
+        .brand-container h1 { font-size: 2.8rem !important; }
+        .brand-container p { font-size: 1.4rem !important; }
+        .brand-footer { font-size: 1.2rem !important; }
+        .stButton > button { font-size: 1.6rem !important; padding: 20px 40px !important; }
         .instruction { font-size: 1.2rem !important; }
     }
     </style>
@@ -180,12 +181,12 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — ONLY THIS IS SHOWN AT FIRST -------------------
+# ------------------- HOME PAGE — ONLY BRAND AND TWO BUTTONS -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
-    # ------------------- BRAND HEADER -------------------
+    # ------------------- YOUR BRAND — SACRED SPACE -------------------
     st.markdown(
         """
-        <div class="brand-header">
+        <div class="brand-container">
             <h1>SHINEGPT</h1>
             <p>Learn. Earn Knowledge. Empower Yourself.</p>
         </div>
@@ -196,7 +197,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
         unsafe_allow_html=True,
     )
 
-    # ------------------- TWO BIG BUTTONS — NO STRESS, JUST LOVE -------------------
+    # ------------------- TWO BIG, GENTLE BUTTONS -------------------
     col1, col2 = st.columns(2)
 
     with col1:
@@ -207,12 +208,12 @@ if st.session_state.mode is None and not st.session_state.show_about:
         if st.button("🌐 Online Mode", key="btn_online"):
             st.session_state.mode = 'online'
 
-    # ------------------- SOFT, WARM INSTRUCTION BELOW BUTTONS -------------------
+    # ------------------- SOFT INSTRUCTION BELOW -------------------
     st.markdown(
         """
         <div class="instruction">
             No internet? No problem.  
-            Just tap a button and start learning.
+            Just tap a button — and begin.
         </div>
         """,
         unsafe_allow_html=True
@@ -220,14 +221,8 @@ if st.session_state.mode is None and not st.session_state.show_about:
 
 # ------------------- SMS MODE — SIMPLE, SAFE, CALM -------------------
 elif st.session_state.mode == 'sms':
-    # ------------------- HEADLINE -------------------
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
-    
-    # ------------------- INSTRUCTION -------------------
-    st.markdown(
-        "<div class='instruction'>Write 'lesson 1' to begin your journey.</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<div class='instruction'>Write 'lesson 1' to begin your journey.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -277,7 +272,7 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'lesson 1'."
                 st.success(response)
 
-    # ------------------- "Learn More" Button (About) -------------------
+    # ------------------- About Button (Hidden until needed) -------------------
     if st.button("📖 Learn More About ShineGPT", key="about_btn_sms"):
         st.session_state.show_about = True
 
@@ -285,16 +280,10 @@ No internet needed! All lessons work offline.
     if st.button("⬅️ Back to Home", key="back_home_sms"):
         st.session_state.mode = None
 
-# ------------------- ONLINE MODE — CLEAN, SIMPLE, NO CLUTTER -------------------
+# ------------------- ONLINE MODE — CLEAN, KIND, SIMPLE -------------------
 elif st.session_state.mode == 'online':
-    # ------------------- HEADLINE -------------------
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Explore the World</h2>", unsafe_allow_html=True)
-    
-    # ------------------- INSTRUCTION -------------------
-    st.markdown(
-        "<div class='instruction'>Ask ShineGPT anything — like 'What is AI?' or 'How does blockchain work?'</div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<div class='instruction'>Ask ShineGPT anything — like 'What is AI?' or 'How does blockchain work?'</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -304,7 +293,6 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            # Search Wikipedia — safe, no API, no errors
             search_term = user_input.replace(" ", "+")
             wikipedia_url = f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}"
             
@@ -314,11 +302,10 @@ elif st.session_state.mode == 'online':
                 </div>
             """, unsafe_allow_html=True)
 
-    # ------------------- Back Button -------------------
     if st.button("⬅️ Back to Home", key="back_home_online"):
         st.session_state.mode = None
 
-# ------------------- ABOUT PAGE — ONLY SHOWS WHEN CLICKED FROM SMS MODE -------------------
+# ------------------- ABOUT PAGE — ONLY WHEN CLICKED -------------------
 if st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
     
@@ -348,5 +335,5 @@ if st.session_state.show_about:
         st.session_state.show_about = False
         st.session_state.mode = None
 
-# ------------------- FOOTER — SOFT, CALM, LAST WORD -------------------
+# ------------------- FOOTER — A WHISPER OF LOVE -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
