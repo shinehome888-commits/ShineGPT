@@ -5,7 +5,6 @@ if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 
 # ------------------- 50 LESSONS -------------------
-# Replace these with your actual lesson content if needed
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -60,7 +59,7 @@ lessons = {
 }
 
 # ------------------- SMS RESPONSES -------------------
-sms_responses = {}  # Initialize as empty dict
+sms_responses = {}
 
 # AUTO-GENERATE FOR ALL 50 LESSONS
 for i in range(1, 51):
@@ -71,33 +70,47 @@ for i in range(1, 51):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — FULL-WIDTH INPUT -------------------
+# ------------------- STYLING — FULL-WIDTH INPUT & BUTTON -------------------
 st.markdown(
     """
     <style>
-    .stTextInput > div > div > input {
-        font-size: 1.4rem;
-        padding: 20px;
-        border-radius: 12px;
-        border: 2px solid #D4AF37;
-        background-color: #111;
-        color: white;
-        width: 95% !important;
-        max-width: 700px;
-        margin: 1.5rem auto;
-        display: block;
+    /* SMS-STYLE INPUT BOX */
+    div[data-testid="stTextInput"] > div > div > input {
+        font-size: 1.4rem !important;
+        padding: 20px 25px !important;
+        border: 2px solid #D4AF37 !important;
+        border-radius: 20px !important;
+        background-color: #0a0a0a !important;
+        color: #e0e0e0 !important;
+        width: 90% !important;
+        max-width: 700px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2) !important;
+        caret-color: #D4AF37 !important;
     }
+    div[data-testid="stTextInput"] > div > div > input::placeholder {
+        color: #666 !important;
+        font-style: italic !important;
+    }
+
+    /* SEND BUTTON */
     .stButton>button {
         background-color: #D32F2F !important;
         color: white !important;
-        font-weight: 700;
-        font-size: 1.2rem;
-        padding: 15px 30px;
-        margin: 1.5rem auto;
-        display: block;
-        width: 90%;
-        max-width: 400px;
+        font-weight: 700 !important;
+        font-size: 1.2rem !important;
+        padding: 15px 30px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        width: 90% !important;
+        max-width: 400px !important;
+        border-radius: 15px !important;
+        border: none !important;
+        cursor: pointer !important;
     }
+
+    /* SUCCESS MESSAGES */
     .stSuccess {
         max-width: 90%;
         margin: 1.5rem auto;
@@ -106,22 +119,41 @@ st.markdown(
         border-left: 5px solid #D4AF37;
         font-size: 1.4rem;
     }
+
+    /* HEADER STYLING */
+    h1 {
+        color: #D4AF37 !important;
+        text-align: center !important;
+        font-family: 'Arial', sans-serif;
+    }
+    p {
+        color: white !important;
+        text-align: center !important;
+        font-size: 1.2rem !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
 # ------------------- HEADER -------------------
-st.markdown("<h1 style='text-align: center; color: #D4AF37;'>SHINEGPT</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: white;'>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
+st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
+st.markdown("<p>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
+st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
 
 # ------------------- SMS MODE UI -------------------
 st.header("📱 SMS Mode — No Internet Needed!")
 st.info("Type: lesson 1, hello, help, points")
 
-user_input = st.text_input("Type your message:", key="sms_input")
-if st.button("Send (SMS)", key="send_sms") and user_input:
+# Styled SMS input box (looks like a phone message field)
+user_input = st.text_input(
+    label="",
+    key="sms_input",
+    placeholder="Type your message...",
+    label_visibility="collapsed"
+)
+
+if st.button("📩 Send", key="send_sms") and user_input:
     user_input_lower = user_input.strip().lower()
 
     # Custom responses for special commands
