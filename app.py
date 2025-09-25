@@ -1,12 +1,10 @@
 import streamlit as st
-from transformers import AutoTokenizer, AutoModelForCausalLM
-import torch
 
 # ------------------- INITIALIZE SESSION STATE -------------------
 if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 
-# ------------------- 50 OFFLINE LESSONS (Expandable) -------------------
+# ------------------- 50 OFFLINE LESSONS -------------------
 lessons = {
     1: "The 4th Industrial Revolution is when technology like AI, robots, and the internet merge with our physical world to change how we live and work.",
     2: "The 1st Industrial Revolution used steam engines. The 2nd used electricity. The 3rd used computers. The 4th uses smart systems.",
@@ -80,54 +78,10 @@ for i in range(1, 51):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODEL (TINYLLAMA) -------------------
-MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-
-@st.cache_resource
-def load_online_model():
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, trust_remote_code=True)
-        model = AutoModelForCausalLM.from_pretrained(
-            MODEL_NAME,
-            torch_dtype="auto",
-            device_map="auto",
-            trust_remote_code=True,
-            low_cpu_mem_usage=True,
-        )
-        return tokenizer, model
-    except Exception as e:
-        st.warning("⚠️ Online model failed to load. Switching to SMS mode.")
-        return None, None
-
-tokenizer, model = load_online_model()
-
-def generate_response_online(user_input):
-    if not tokenizer or not model:
-        return "❌ Offline mode: No internet. Try typing 'lesson 1'."
-
-    prompt = f"<|system|>\nYou are a helpful AI assistant.<|end|>\n<|user|>\n{user_input}<|end|>\n<|assistant|>\n"
-    inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
-
-    with torch.no_grad():
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=256,
-            temperature=0.7,
-            top_p=0.9,
-            do_sample=True,
-            pad_token_id=tokenizer.eos_token_id,
-            eos_token_id=tokenizer.eos_token_id,
-            max_length=512,
-        )
-
-    response = tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True).strip()
-    response = response.replace("<|end|>", "").strip()
-    return response
-
-# ------------------- MAIN APP — CENTERED, FULL-WIDTH INPUT -------------------
+# ------------------- MAIN APP LAYOUT -------------------
 st.set_page_config(page_title="ShineGPT", page_icon="🌍", layout="centered")
 
-# Custom CSS — FULL-VIEW, LARGE INPUT BOX, NO CUT-OFF
+# Custom CSS — Your Brand Colors
 st.markdown(
     """
     <style>
@@ -135,184 +89,93 @@ st.markdown(
         background-color: #000000;
         color: #ffffff;
         font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
     }
-    .main > div {
-        padding-top: 1rem !important;
-        padding-bottom: 1rem !important;
-    }
-
-    /* FULL-WIDTH, LARGE INPUT */
-    .stTextInput > div > div > input {
-        font-size: 1.5rem !important;
-        text-align: left;
-        padding: 20px !important;
-        border-radius: 14px !important;
-        border: 2px solid #D4AF37 !important; /* Gold border */
-        background-color: #111111 !important;
-        color: #ffffff !important;
-        width: 95% !important;
-        max-width: 700px !important;
-        margin: 1.5rem auto !important;
-        display: block !important;
-        box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
-        height: 80px !important;
-        line-height: 1.5 !important;
-    }
-
-    /* LABEL ABOVE INPUT — BOLD */
-    .stTextInput > label {
-        font-size: 1.4rem !important;
-        color: #ffffff !important;
-        margin-bottom: 0.5rem !important;
-        font-weight: 600;
-        text-align: center;
-    }
-
-    /* SEND BUTTON — RED, CENTERED */
-    .stButton > button {
-        background-color: #D32F2F !important;
-        color: white !important;
-        font-weight: 700 !important;
-        border-radius: 12px !important;
-        font-size: 1.3rem !important;
-        padding: 15px 30px !important;
-        border: none !important;
-        width: 90% !important;
-        max-width: 400px !important;
-        margin: 1.5rem auto !important;
-        display: block !important;
-        box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
-    }
-
-    .stButton > button:hover {
-        background-color: #B71C1C !important;
-    }
-
-    /* SUCCESS RESPONSE — CLEAR, SCROLLABLE */
-    .stSuccess, .stError, .stWarning {
-        font-size: 1.4rem !important;
-        padding: 25px !important;
-        margin: 1.5rem auto !important;
-        max-width: 95% !important;
-        border-radius: 14px !important;
-        background-color: #1a1a1a !important;
-        border: 1px solid #D4AF37 !important;
-        color: #ffffff !important;
-        text-align: left !important;
-        line-height: 1.8 !important;
-        min-height: 120px !important;
-        overflow-y: auto !important;
-        max-height: 300px !important;
-    }
-
-    /* HEADERS — GOLD & WHITE */
     h1, h2, h3, h4, p {
+        color: #ffffff !important;
         text-align: center;
-        color: #ffffff;
+        margin: 0.5rem auto;
         max-width: 800px;
-        margin: 0 auto;
         padding: 0 20px;
     }
-
     h1 {
-        color: #D4AF37 !important;
-        font-size: 3.5rem;
+        font-size: 4rem;
         font-weight: 900;
-        margin-bottom: 5px;
+        margin-bottom: 0.3rem;
+        color: #D4AF37 !important; /* Gold */
         text-shadow: 0 2px 4px rgba(212, 175, 55, 0.3);
     }
-
     h4 {
-        color: #D32F2F !important;
         font-size: 1.3rem;
-        margin-top: 5px;
+        font-weight: 500;
+        margin-top: 0.5rem;
+        color: #D32F2F !important; /* Red */
     }
-
-    /* SIDEBAR — CLEAN */
-    .sidebar .sidebar-content {
-        background-color: #000000 !important;
-        padding: 2rem 1rem;
+    .stTextInput > div > div > input {
+        font-size: 1.4rem;
+        padding: 18px;
+        border-radius: 12px;
+        border: 2px solid #D4AF37;
+        background-color: #111111;
+        color: #ffffff;
+        width: 90%;
+        max-width: 700px;
+        margin: 1.5rem auto;
+        display: block;
     }
-
-    /* REMOVE EXTRA PADDING */
-    .block-container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-        padding-top: 0 !important;
-        max-width: 100% !important;
+    .stButton>button {
+        background-color: #D32F2F !important;
+        color: white !important;
+        font-weight: 700;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        padding: 15px 30px !important;
+        width: 90%;
+        max-width: 400px;
+        margin: 1.5rem auto;
+        display: block;
+    }
+    .stSuccess {
+        max-width: 90%;
+        margin: 1.5rem auto;
+        padding: 25px;
+        border-radius: 14px;
+        background-color: #1a1a1a;
+        border: 1px solid #D4AF37;
+        color: #ffffff;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HEADER — WITH LOGO OR TEXT -------------------
+# ------------------- HEADER -------------------
 col1, col2, col3 = st.columns([1, 2, 1])
-
 with col2:
-    try:
-        st.image("logo.png", use_container_width=True)
-    except:
-        st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
-
-    st.markdown("<p style='color: white;'>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
+    st.markdown("<h1>SHINEGPT</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #ffffff;'>Learn. Earn Knowledge. Empower Yourself.</p>", unsafe_allow_html=True)
     st.markdown("<p style='color: #D32F2F;'>Powered by KS1 Empire Foundation</p>", unsafe_allow_html=True)
 
-# ------------------- TABS — SIMPLE NAVIGATION -------------------
-tab1, tab2, tab3 = st.tabs(["📱 SMS Mode", "💬 Chat with ShineGPT", "ℹ️ About"])
+# ------------------- SMS MODE UI -------------------
+st.header("📱 SMS Mode — No Internet Needed!")
+st.markdown("""
+**This mode works even on a basic phone!**  
+No data? No problem. Just type keywords like:  
+- `lesson 1`  
+- `hello`  
+- `what is ai`  
+- `help`  
+- `points`
+""")
 
-# ------------------- TAB 1: SMS MODE -------------------
-with tab1:
-    st.header("SMS Mode — No Internet Needed!")
-    st.markdown("""
-    This mode works on any phone — even without Wi-Fi.  
-    Just type:  
-    - `lesson 1`  
-    - `hello`  
-    - `points`
-    
-    💡 Tip: Save this page as a bookmark.
-    """)
+user_input = st.text_input("Type your message (SMS-style):", key="sms_input")
+if st.button("Send (SMS)", key="send_sms") and user_input:
+    user_input_lower = user_input.strip().lower()
+    response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'help'.")
 
-    user_input = st.text_input("Type your message:", key="sms_input")
-    if st.button("Send (SMS)", key="send_sms") and user_input:
-        user_input_lower = user_input.strip().lower()
-        response = sms_responses.get(user_input_lower, "I don't understand. Try typing 'help'.")
+    if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
+        add_points(10)
 
-        if user_input_lower.startswith("lesson ") and user_input_lower in sms_responses:
-            add_points(10)
-
-        st.success(response)
-
-# ------------------- TAB 2: CHAT MODE -------------------
-with tab2:
-    st.header("Online Mode — Ask Anything")
-    st.info("💡 Requires internet. Uses TinyLlama AI to respond.")
-
-    user_input = st.text_input("Ask me anything about AI, Blockchain, Web3, Crypto, or Big Data:", key="chat_input")
-
-    if st.button("Send", key="send_chat") and user_input:
-        with st.spinner("Thinking..."):
-            response = generate_response_online(user_input)
-        st.success(response)
-        add_points(5)
-
-# ------------------- TAB 3: ABOUT -------------------
-with tab3:
-    st.header("About ShineGPT")
-    st.write("""
-    ShineGPT is an educational AI app created by **KS1 Empire Foundation**.  
-    It teaches young people in Africa and beyond about **AI, Blockchain, Crypto, Web3, IoT, and Big Data**.  
-
-    🌍 **Dual-Mode Learning**:  
-    - 📱 **SMS Mode**: Works with zero internet — perfect for villages.  
-    - 💬 **Online Mode**: Uses TinyLlama — fast, open, and free.  
-
-    Our mission:  
-    **Learn. Earn Knowledge. Empower Yourself.**
-    """)
+    st.success(response)
 
 # ------------------- DISPLAY POINTS -------------------
 st.sidebar.markdown("---")
