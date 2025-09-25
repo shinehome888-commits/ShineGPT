@@ -234,4 +234,4 @@ st.sidebar.info("Earn 10 per lesson. No data cost.")
 
 st.sidebar.subheader("📖 Progress")
 st.sidebar.write(f"**Lesson {st.session_state.current_lesson}** completed")
-st.sidebar.caption["You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics]
+st.sidebar.caption("You're learning the 4th Industrial Revolution — AI, Big Data, Blockchain, Crypto & Digital Ethics.")
