@@ -283,16 +283,12 @@ elif st.session_state.mode == 'online':
         if user_input:
             # Create a clean search URL based on query
             search_term = user_input.replace(" ", "+")
-            urls = {
-                "wikipedia": f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}",
-                "google": f"https://www.google.com/search?q={search_term}",
-                "scholar": f"https://scholar.google.com/scholar?q={search_term}"
-            }
+            wikipedia_url = f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}"
 
             # Show results in an iframe
             st.markdown(f"""
                 <div class="iframe-container">
-                    <iframe src="{urls['wikipedia']}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="{wikipedia_url}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -302,5 +298,5 @@ elif st.session_state.mode == 'online':
                 unsafe_allow_html=True
             )
 
-# ------------------- FOOTER -------------------
+# ------------------- FOOTER — FULLY CLOSED, NO ERRORS -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
