@@ -1,6 +1,4 @@
 import streamlit as st
-import requests
-import json
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
@@ -70,48 +68,6 @@ def get_lesson_text(lesson_num):
 
 def add_points(points):
     st.session_state.user_points += points
-
-# ------------------- ONLINE MODE: PERPLEXITY AI SEARCH -------------------
-def perplexity_search(query):
-    """
-    Free, no-key, public search via Perplexity.ai
-    Uses their public endpoint (as of 2024) — no login required
-    Returns answer + sources
-    """
-    try:
-        url = "https://api.perplexity.ai/chat/completions"
-        headers = {
-            "Authorization": "Bearer pplx-7e0547363235242a9d3a885559842897989d9d481b8e7d942413371219759785",  # Public read-only key — no personal data
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": "llama-3-sonar-small-32k-online",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a helpful, accurate, and ethical assistant for students in developing countries. Answer clearly, simply, and cite your sources. Avoid jargon. Prioritize free, open resources."
-                },
-                {
-                    "role": "user",
-                    "content": query
-                }
-            ],
-            "temperature": 0.3,
-            "max_tokens": 800,
-            "top_p": 0.9,
-            "return_citations": True
-        }
-        response = requests.post(url, headers=headers, json=data, timeout=10)
-        result = response.json()
-        
-        if 'choices' in result and len(result['choices']) > 0:
-            answer = result['choices'][0]['message']['content']
-            sources = result['choices'][0]['message'].get('citations', [])
-            return answer, sources
-        else:
-            return "Sorry, I couldn't find an answer right now. Try rephrasing your question.", []
-    except Exception as e:
-        return f"⚠️ Could not connect to the internet. Please check your connection. (Error: {str(e)})", []
 
 # ------------------- STYLING -------------------
 st.markdown(
@@ -186,15 +142,31 @@ st.markdown(
         color: white;
         font-size: 1.2rem;
     }
-    .source-link {
+    .resource-btn {
+        background-color: #222 !important;
         color: #D4AF37 !important;
-        text-decoration: none !important;
-        font-size: 0.9rem !important;
-        margin-top: 10px !important;
+        border: 1px solid #D4AF37 !important;
+        font-size: 1.3rem !important;
+        padding: 15px 25px !important;
+        margin: 10px 5px !important;
+        border-radius: 12px !important;
+        text-align: center !important;
         display: block !important;
+        width: 90% !important;
+        max-width: 500px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
     }
-    .source-link:hover {
-        text-decoration: underline !important;
+    .resource-btn:hover {
+        background-color: #333 !important;
+    }
+    .iframe-container {
+        margin: 2rem auto;
+        width: 100%;
+        height: 600px;
+        border: 2px solid #D4AF37;
+        border-radius: 12px;
+        overflow: hidden;
     }
     </style>
     """,
@@ -259,50 +231,63 @@ No internet needed! All lessons work offline.
 
         st.success(response)
 
-# ------------------- ONLINE MODE (LIVING INTERNET PORTAL) -------------------
+# ------------------- ONLINE MODE (EMBEDDED EDUCATIONAL PORTAL) -------------------
 else:
     st.header("🌐 Online Mode — Explore the World of 4IR")
-    st.info("Ask any question about AI, Blockchain, Big Data, Crypto, Ethics — and get free, cited answers.")
+    st.info("Click a button below to explore free, trusted educational resources. No login needed.")
 
-    # Search box
-    query = st.text_input(
-        label="",
-        placeholder="Ask anything: 'How does blockchain prevent fraud?' or 'What is AI bias in Africa?'",
-        key="online_search"
-    )
-
-    if st.button("🔍 Search", key="search_btn") and query:
-        with st.spinner("🔍 Searching the web for you..."):
-            answer, sources = perplexity_search(query)
-        
-        st.success("✅ Found!")
-        st.markdown(answer)
-        
-        if sources:
-            st.markdown("---")
-            st.markdown("📚 **Sources:**")
-            for src in sources[:3]:  # Show top 3 sources
-                if isinstance(src, str):
-                    st.markdown(f"[🔗 {src}]({src})")
-                else:
-                    st.markdown(f"[🔗 {src.get('url', 'Unknown')}]({src.get('url', '#')})")
-
-    # Suggested questions (for beginners)
-    st.markdown("---")
-    st.subheader("💡 Try asking:")
+    # Resource buttons
+    st.markdown("### 📚 Choose a Learning Path:")
     col1, col2, col3 = st.columns(3)
+
     with col1:
-        if st.button("What is AI bias?"):
-            st.session_state.online_search = "What is AI bias?"
-            st.rerun()
+        if st.button("🤖 AI & Machine Learning", key="btn_ai", help="Khan Academy’s free AI course"):
+            st.session_state.selected_resource = "khan_ai"
     with col2:
-        if st.button("How does blockchain work?"):
-            st.session_state.online_search = "How does blockchain work?"
-            st.rerun()
+        if st.button("🔗 Blockchain & Crypto", key="btn_blockchain", help="Blockchain.org — simple, official intro"):
+            st.session_state.selected_resource = "blockchain_org"
     with col3:
-        if st.button("Can I learn coding for free?"):
-            st.session_state.online_search = "Can I learn coding for free?"
+        if st.button("📊 Big Data & Analytics", key="btn_bigdata", help="Wikipedia — clear, open explanations"):
+            st.session_state.selected_resource = "wikipedia_bigdata"
+
+    col4, col5 = st.columns(2)
+    with col4:
+        if st.button("🎓 MIT OpenCourseWare", key="btn_mit", help="Free university-level courses"):
+            st.session_state.selected_resource = "mit_ocw"
+    with col5:
+        if st.button("🔬 Google Scholar", key="btn_scholar", help="Academic papers and research"):
+            st.session_state.selected_resource = "google_scholar"
+
+    # Show embedded content based on button click
+    if 'selected_resource' in st.session_state:
+        resource = st.session_state.selected_resource
+
+        urls = {
+            "khan_ai": "https://www.khanacademy.org/computing",
+            "blockchain_org": "https://www.blockchain.org/",
+            "wikipedia_bigdata": "https://en.wikipedia.org/wiki/Big_data",
+            "mit_ocw": "https://ocw.mit.edu/search/?q=artificial+intelligence",
+            "google_scholar": "https://scholar.google.com/"
+        }
+
+        url = urls.get(resource, "https://en.wikipedia.org/wiki/4th_Industrial_Revolution")
+
+        st.markdown(f"""
+            <div class="iframe-container">
+                <iframe src="{url}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+            </div>
+        """, unsafe_allow_html=True)
+
+        # Add a back button
+        if st.button("↩️ Back to Resources", key="back_resources"):
+            del st.session_state.selected_resource
             st.rerun()
+    else:
+        st.markdown("""
+            <div style='text-align: center; color: #888; padding: 40px; font-size: 1.2rem;'>
+                Click any button above to begin your journey into the 4th Industrial Revolution.
+            </div>
+        """, unsafe_allow_html=True)
 
     # Points display
     st.markdown(f"<div style='text-align: center; color: #D4AF37; font-size: 1.5rem; margin: 1rem 0;'>🏆 {st.session_state.user_points} Points</div>", unsafe_allow_html=True)
@@ -314,8 +299,7 @@ else:
             st.session_state.mode = 'sms'
             st.rerun()
     with col2:
-        if st.button("🔁 Reset Search"):
-            st.session_state.online_search = ""
+        if st.button("🔁 Refresh Page"):
             st.rerun()
 
 # ------------------- SIDEBAR — COMMON FOR BOTH MODES -------------------
