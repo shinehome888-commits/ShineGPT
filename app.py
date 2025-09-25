@@ -13,21 +13,28 @@ def get_lesson_text(lesson_num):
     if lesson_num in lessons:
         return lessons[lesson_num]
     
-    # Generate dynamically for lessons 51-1000 (AI extended)
-    if 51 <= lesson_num <= 1000:
-        topic = "AI" if lesson_num <= 1000 else "Big Data" if lesson_num <= 1500 else "AI Advanced" if lesson_num <= 2000 else "Blockchain"
-        return f"Lesson {lesson_num}: You're learning about {topic} — keep going! This lesson is dynamically generated to save memory."
-    
-    # For lessons 1001-1500 (AI Advanced)
+    # Assign topic based on range
+    if 1 <= lesson_num <= 500:
+        topic = "AI"
+    elif 501 <= lesson_num <= 1000:
+        topic = "Big Data"
     elif 1001 <= lesson_num <= 1500:
-        return f"Lesson {lesson_num}: You're learning advanced AI concepts — well done for reaching here!"
-    
-    # For lessons 1501-2000 (Blockchain)
+        topic = "Advanced AI"
     elif 1501 <= lesson_num <= 2000:
-        return f"Lesson {lesson_num}: You're exploring blockchain — you're becoming a tech leader!"
-    
+        topic = "Blockchain"
     else:
         return "Lesson not found. Type 'lesson 1' to start."
+    
+    # Provide a brief, educational description for each topic
+    descriptions = {
+        "AI": "Artificial Intelligence — machines that learn from data to solve problems.",
+        "Big Data": "Massive datasets that help us understand patterns in the world.",
+        "Advanced AI": "Cutting-edge AI like generative models, agents, and ethical systems.",
+        "Blockchain": "Secure, decentralized ledgers for trust without middlemen."
+    }
+    
+    description = descriptions.get(topic, "")
+    return f"Lesson {lesson_num}: You're learning about {topic} — {description} Keep going!"
 
 # ------------------- SMS RESPONSES — GENERATED ON-DEMAND -------------------
 def get_sms_response(lesson_key):
