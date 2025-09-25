@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 
 # ------------------- SESSION STATE -------------------
 if 'user_points' not in st.session_state:
@@ -8,8 +7,8 @@ if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
 if 'mode' not in st.session_state:
     st.session_state.mode = 'sms'  # Default: SMS Mode
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+if 'search_query' not in st.session_state:
+    st.session_state.search_query = ""
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -72,42 +71,6 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: PERPLEXITY SEARCH -------------------
-def perplexity_search(query):
-    try:
-        url = "https://api.perplexity.ai/chat/completions"
-        headers = {
-            "Authorization": "Bearer pplx-7e0547363235242a9d3a885559842897989d9d481b8e7d942413371219759785",
-            "Content-Type": "application/json"
-        }
-        data = {
-            "model": "llama-3-sonar-small-32k-online",
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a helpful, accurate, and ethical assistant for students in developing countries. Answer clearly, simply, and cite your sources. Avoid jargon. Prioritize free, open resources."
-                },
-                {
-                    "role": "user",
-                    "content": query
-                }
-            ],
-            "temperature": 0.3,
-            "max_tokens": 800,
-            "top_p": 0.9,
-            "return_citations": True
-        }
-        response = requests.post(url, headers=headers, json=data, timeout=10)
-        result = response.json()
-        if 'choices' in result and len(result['choices']) > 0:
-            answer = result['choices'][0]['message']['content']
-            sources = result['choices'][0]['message'].get('citations', [])
-            return answer, sources
-        else:
-            return "Sorry, I couldn't find an answer right now. Try rephrasing your question.", []
-    except Exception as e:
-        return f"⚠️ Could not connect to the internet. Please check your connection. (Error: {str(e)})", []
-
 # ------------------- STYLING — YOUR BRAND, YOUR VISION -------------------
 st.markdown(
     """
@@ -168,7 +131,7 @@ st.markdown(
         font-weight: 700 !important;
     }
 
-    /* Chat input box */
+    /* Input box */
     .stTextInput > div > div > input {
         font-size: 1.4rem !important;
         padding: 18px 24px !important;
@@ -180,13 +143,13 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send button */
+    /* Send button — BOLD, ONE LINE, CENTERED */
     .stButton > button {
         background-color: #D32F2F !important;
         color: white !important;
-        font-weight: 700 !important;
-        font-size: 1.3rem !important;
-        padding: 15px 35px !important;
+        font-weight: 800 !important;
+        font-size: 1.4rem !important;
+        padding: 16px 40px !important;
         margin: 1.5rem auto !important;
         display: block !important;
         width: 80% !important;
@@ -194,6 +157,7 @@ st.markdown(
         border-radius: 18px !important;
         border: none !important;
         cursor: pointer !important;
+        font-family: 'Arial', sans-serif;
     }
 
     /* Success messages */
@@ -207,16 +171,15 @@ st.markdown(
         color: #e0e0e0 !important;
     }
 
-    /* Source links */
-    .source-link {
-        color: #D4AF37 !important;
-        text-decoration: none !important;
-        font-size: 0.9rem !important;
-        margin-top: 8px !important;
-        display: block !important;
-    }
-    .source-link:hover {
-        text-decoration: underline !important;
+    /* iframe container */
+    .iframe-container {
+        margin: 2rem auto;
+        width: 100%;
+        height: 600px;
+        border: 2px solid #D4AF37;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
     }
 
     /* Mobile responsiveness */
@@ -252,7 +215,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- MAIN CONTENT — MODE-BASED INTERFACE -------------------
+# ------------------- SMS MODE — SIMPLE, CLEAN, NO INTERNET -------------------
 if st.session_state.mode == 'sms':
     st.header("📱 SMS Mode — No Internet Needed")
     st.info("Type: lesson 1, hello, help, points")
@@ -263,7 +226,7 @@ if st.session_state.mode == 'sms':
         key="sms_input"
     )
 
-    if st.button("📩 Send", key="send_sms"):
+    if st.button("SEND"):
         if user_input:
             user_input_lower = user_input.strip().lower()
             
@@ -305,9 +268,10 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'help'."
                 st.success(response)
 
+# ------------------- ONLINE MODE — SAFE, EMBEDDED, NO ERRORS -------------------
 elif st.session_state.mode == 'online':
     st.header("🌐 Online Mode — Explore the World of 4IR")
-    st.info("Ask anything: 'How does blockchain work?' or 'What is AI bias in Africa?'")
+    st.info("Ask anything: 'What is AI bias?' or 'How does blockchain work?'")
 
     user_input = st.text_input(
         label="",
@@ -315,19 +279,28 @@ elif st.session_state.mode == 'online':
         key="online_input"
     )
 
-    if st.button("🔍 Search", key="search_btn"):
+    if st.button("SEND"):
         if user_input:
-            with st.spinner("🔍 Searching the web for you..."):
-                answer, sources = perplexity_search(user_input)
-            
-            st.success(answer)
-            
-            if sources:
-                st.markdown("---")
-                st.markdown("📚 **Sources:**")
-                for src in sources[:2]:
-                    if isinstance(src, str):
-                        st.markdown(f'<a href="{src}" class="source-link" target="_blank">🔗 {src}</a>', unsafe_allow_html=True)
+            # Create a clean search URL based on query
+            search_term = user_input.replace(" ", "+")
+            urls = {
+                "wikipedia": f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}",
+                "google": f"https://www.google.com/search?q={search_term}",
+                "scholar": f"https://scholar.google.com/scholar?q={search_term}"
+            }
 
-# ------------------- FOOTER (Optional) -------------------
+            # Show results in an iframe
+            st.markdown(f"""
+                <div class="iframe-container">
+                    <iframe src="{urls['wikipedia']}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+                </div>
+            """, unsafe_allow_html=True)
+
+            # Optional: Add a note
+            st.markdown(
+                "<p style='text-align: center; color: #888; font-size: 1rem;'>💡 Tip: Use Wikipedia for clear explanations. Use Google Scholar for research.</p>",
+                unsafe_allow_html=True
+            )
+
+# ------------------- FOOTER -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
