@@ -7,8 +7,8 @@ if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
 if 'mode' not in st.session_state:
     st.session_state.mode = 'sms'  # Default: SMS Mode
-if 'search_query' not in st.session_state:
-    st.session_state.search_query = ""
+if 'page' not in st.session_state:
+    st.session_state.page = 'home'  # home, about
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -92,6 +92,7 @@ st.markdown(
         padding: 12px 20px !important;
         border-radius: 8px !important;
         margin: 5px 0 !important;
+        text-align: left !important;
     }
     .css-1d391kg .css-1d391kg:hover {
         background-color: #1a1a1a !important;
@@ -134,7 +135,7 @@ st.markdown(
     /* Input box */
     .stTextInput > div > div > input {
         font-size: 1.4rem !important;
-        padding: 18px 24px !important;
+        padding: 16px 20px !important;
         border: 2px solid #D4AF37 !important;
         border-radius: 20px !important;
         background-color: #111 !important;
@@ -143,17 +144,17 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send button — BOLD, ONE LINE, CENTERED */
+    /* Send button — NORMAL SIZE, CLEAN, CENTERED */
     .stButton > button {
         background-color: #D32F2F !important;
         color: white !important;
-        font-weight: 800 !important;
-        font-size: 1.4rem !important;
-        padding: 16px 40px !important;
+        font-weight: 700 !important;
+        font-size: 1.2rem !important;
+        padding: 12px 28px !important;
         margin: 1.5rem auto !important;
         display: block !important;
         width: 80% !important;
-        max-width: 500px !important;
+        max-width: 400px !important;
         border-radius: 18px !important;
         border: none !important;
         cursor: pointer !important;
@@ -164,7 +165,7 @@ st.markdown(
     .stSuccess {
         max-width: 90%;
         margin: 1.5rem auto;
-        padding: 25px;
+        padding: 20px;
         background-color: #1a1a1a;
         border-left: 5px solid #D4AF37;
         font-size: 1.4rem;
@@ -175,11 +176,27 @@ st.markdown(
     .iframe-container {
         margin: 2rem auto;
         width: 100%;
-        height: 600px;
+        height: 500px;
         border: 2px solid #D4AF37;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
+    /* About page styling */
+    .about-content {
+        background-color: #111;
+        padding: 2rem;
+        border-radius: 12px;
+        border-left: 4px solid #D4AF37;
+        margin: 1rem 0;
+        font-size: 1.2rem;
+        line-height: 1.7;
+        color: #e0e0e0;
+    }
+    .about-content h2 {
+        color: #D4AF37 !important;
+        margin-bottom: 1rem;
     }
 
     /* Mobile responsiveness */
@@ -187,6 +204,7 @@ st.markdown(
         .brand-header h1 { font-size: 2.2rem !important; }
         .brand-header p { font-size: 1.2rem !important; }
         .brand-footer { font-size: 1.1rem !important; }
+        .stButton > button { font-size: 1.1rem !important; padding: 10px 24px !important; }
     }
     </style>
     """,
@@ -196,10 +214,14 @@ st.markdown(
 # ------------------- SIDEBAR — CLEAN NAVIGATION MENU -------------------
 with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("🏠 Home"):
+        st.session_state.page = 'home'
     if st.button("📱 SMS Mode"):
-        st.session_state.mode = 'sms'
+        st.session_state.page = 'sms'
     if st.button("🌐 Online Mode"):
-        st.session_state.mode = 'online'
+        st.session_state.page = 'online'
+    if st.button("📖 About ShineGPT"):
+        st.session_state.page = 'about'
 
 # ------------------- MAIN CONTENT — BRAND HEADER -------------------
 st.markdown(
@@ -215,18 +237,27 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- SMS MODE — SIMPLE, CLEAN, NO INTERNET -------------------
-if st.session_state.mode == 'sms':
+# ------------------- HOME PAGE (DEFAULT) -------------------
+if st.session_state.page == 'home':
+    st.header("Welcome to ShineGPT")
+    st.markdown("""
+        <div style='text-align: center; color: #ccc; font-size: 1.3rem; padding: 2rem;'>
+            Choose a mode to begin your journey.
+        </div>
+    """, unsafe_allow_html=True)
+
+# ------------------- SMS MODE -------------------
+elif st.session_state.page == 'sms':
     st.header("📱 SMS Mode — No Internet Needed")
-    st.info("Type: lesson 1, hello, help, points")
+    st.info("Write 'lesson 1' to start.")
 
     user_input = st.text_input(
         label="",
-        placeholder="Type your message...",
+        placeholder="Write 'lesson 1' to start...",
         key="sms_input"
     )
 
-    if st.button("SEND"):
+    if st.button("Send"):
         if user_input:
             user_input_lower = user_input.strip().lower()
             
@@ -246,7 +277,7 @@ No internet needed! All lessons work offline.
                 st.success(response)
                 
             elif user_input_lower == "hello":
-                response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+                response = "Hello! 👋 Write 'lesson 1' to begin your journey with ShineGPT."
                 st.success(response)
                 
             elif user_input_lower.startswith("lesson "):
@@ -262,16 +293,16 @@ No internet needed! All lessons work offline.
                         st.session_state.current_lesson = lesson_num
                     st.success(response)
                 except:
-                    response = "Type 'lesson 1' to start."
+                    response = "Write 'lesson 1' to start."
                     st.success(response)
             else:
-                response = "I don't understand. Try typing 'help'."
+                response = "I don't understand. Try writing 'lesson 1'."
                 st.success(response)
 
-# ------------------- ONLINE MODE — SAFE, EMBEDDED, NO ERRORS -------------------
-elif st.session_state.mode == 'online':
+# ------------------- ONLINE MODE -------------------
+elif st.session_state.page == 'online':
     st.header("🌐 Online Mode — Explore the World of 4IR")
-    st.info("Ask anything: 'What is AI bias?' or 'How does blockchain work?'")
+    st.info("Ask ShineGPT anything.")
 
     user_input = st.text_input(
         label="",
@@ -279,16 +310,16 @@ elif st.session_state.mode == 'online':
         key="online_input"
     )
 
-    if st.button("SEND"):
+    if st.button("Send"):
         if user_input:
-            # Create a clean search URL based on query
+            # Create a clean Wikipedia search URL
             search_term = user_input.replace(" ", "+")
             wikipedia_url = f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}"
 
             # Show results in an iframe
             st.markdown(f"""
                 <div class="iframe-container">
-                    <iframe src="{wikipedia_url}" width="100%" height="600" frameborder="0" allowfullscreen></iframe>
+                    <iframe src="{wikipedia_url}" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -298,5 +329,33 @@ elif st.session_state.mode == 'online':
                 unsafe_allow_html=True
             )
 
-# ------------------- FOOTER — FULLY CLOSED, NO ERRORS -------------------
-st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most. No ads. No tracking. No paywalls.</p>", unsafe_allow_html=True)
+# ------------------- ABOUT PAGE -------------------
+elif st.session_state.page == 'about':
+    st.header("📖 About ShineGPT")
+    st.markdown(
+        """
+        <div class="about-content">
+            <h2>Who We Are</h2>
+            <p>ShineGPT is a free, offline-friendly learning tool built by the <strong>KS1 Empire Foundation</strong> to empower learners in low-connectivity communities around the world.</p>
+
+            <h2>Our Mission</h2>
+            <p>We believe that knowledge should not be locked behind paywalls, expensive devices, or fast internet. ShineGPT brings the power of the 4th Industrial Revolution — AI, Blockchain, Big Data, and Digital Ethics — to anyone with a basic phone and a curious mind.</p>
+
+            <h2>How It Works</h2>
+            <p><strong>📱 SMS Mode:</strong> 50 powerful, offline lessons. Type 'lesson 1' to begin. No internet needed.</p>
+            <p><strong>🌐 Online Mode:</strong> When you have internet, ask ShineGPT anything. It opens a clean Wikipedia search — no ads, no tracking, no login.</p>
+
+            <h2>Why We Built This</h2>
+            <p>We’ve met teachers in villages with no textbooks. Students in refugee camps with no Wi-Fi. Young people who dream of becoming engineers but have no access to resources. ShineGPT was built for them.</p>
+
+            <h2>Our Promise</h2>
+            <p>No ads. No tracking. No data collection. No paywalls. Just pure, free, ethical education — for everyone.</p>
+
+            <p>© 2025 KS1 Empire Foundation — All rights reserved.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+# ------------------- FOOTER -------------------
+st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built for the world that needs it most.</p>", unsafe_allow_html=True)
