@@ -69,7 +69,7 @@ def add_points(points):
         st.session_state.user_points = 0
     st.session_state.user_points += points
 
-# ------------------- STYLING — PURE, CALM, BEAUTIFUL -------------------
+# ------------------- STYLING — FAST, CLEAN, SACRED -------------------
 st.markdown(
     """
     <style>
@@ -86,10 +86,10 @@ st.markdown(
         padding: 0 !important;
     }
 
-    /* ShineGPT Brand — Centered, Sacred Space */
+    /* ShineGPT Brand — Centered, Calm, Sacred */
     .brand-container {
         text-align: center;
-        margin: 4rem 1rem 2rem 1rem;
+        margin: 5rem 1rem 1rem 1rem;
         padding: 0 2rem;
     }
     .brand-container h1 {
@@ -118,27 +118,30 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Button Style — Gentle, Big, Friendly */
-    .stButton > button {
-        background-color: #D32F2F !important;
-        color: white !important;
-        font-weight: 700 !important;
-        font-size: 1.8rem !important;
-        padding: 22px 45px !important;
-        margin: 2rem auto !important;
-        display: block !important;
-        width: 85% !important;
-        max-width: 550px !important;
-        border-radius: 30px !important;
-        border: none !important;
-        cursor: pointer !important;
-        font-family: 'Arial', sans-serif;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        transition: all 0.3s ease;
+    /* Mode Buttons — Tappable Areas, Not Buttons — Fast & Smooth */
+    .mode-card {
+        display: flex;
+        justify-content: center;
+        margin: 3rem 0;
+        gap: 1rem;
     }
-    .stButton > button:hover {
-        background-color: #b52828 !important;
-        transform: translateY(-3px);
+    .mode-btn {
+        background-color: #1a1a1a;
+        color: #D4AF37;
+        border: 2px solid #D4AF37;
+        border-radius: 20px;
+        padding: 20px 35px;
+        font-size: 1.7rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        min-width: 140px;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 8px rgba(212, 175, 55, 0.2);
+    }
+    .mode-btn:hover {
+        background-color: #222;
+        transform: translateY(-2px);
     }
 
     /* Instruction Text — Soft, Calm */
@@ -168,12 +171,53 @@ st.markdown(
         margin-bottom: 1.5rem;
     }
 
+    /* Input Box */
+    .stTextInput > div > div > input {
+        font-size: 1.4rem !important;
+        padding: 16px 20px !important;
+        border: 2px solid #D4AF37 !important;
+        border-radius: 20px !important;
+        background-color: #111 !important;
+        color: white !important;
+        width: 100% !important;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
+    }
+
+    /* Send Button — Small, Clean, Fast */
+    .stButton > button {
+        background-color: #D32F2F !important;
+        color: white !important;
+        font-weight: 700 !important;
+        font-size: 1.3rem !important;
+        padding: 12px 28px !important;
+        margin: 1.5rem auto !important;
+        display: block !important;
+        width: 80% !important;
+        max-width: 400px !important;
+        border-radius: 18px !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-family: 'Arial', sans-serif;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Iframe Container */
+    .iframe-container {
+        margin: 2rem auto;
+        width: 100%;
+        height: 500px;
+        border: 2px solid #D4AF37;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
     /* Mobile Responsive */
     @media (max-width: 600px) {
         .brand-container h1 { font-size: 2.8rem !important; }
         .brand-container p { font-size: 1.4rem !important; }
         .brand-footer { font-size: 1.2rem !important; }
-        .stButton > button { font-size: 1.6rem !important; padding: 20px 40px !important; }
+        .mode-btn { font-size: 1.5rem !important; padding: 18px 30px !important; }
         .instruction { font-size: 1.2rem !important; }
     }
     </style>
@@ -181,9 +225,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — ONLY BRAND AND TWO BUTTONS -------------------
+# ------------------- HOME PAGE — BRAND + TWO TAPABLE AREAS -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
-    # ------------------- YOUR BRAND — SACRED SPACE -------------------
+    # ------------------- YOUR BRAND — SACRED, CENTERED, UNCHANGED -------------------
     st.markdown(
         """
         <div class="brand-container">
@@ -197,29 +241,33 @@ if st.session_state.mode is None and not st.session_state.show_about:
         unsafe_allow_html=True,
     )
 
-    # ------------------- TWO BIG, GENTLE BUTTONS -------------------
+    # ------------------- TWO TAPABLE CARDS — FAST, CLEAN, NO BUTTONS -------------------
+    st.markdown("<div class='mode-card'>", unsafe_allow_html=True)
+    
     col1, col2 = st.columns(2)
-
+    
     with col1:
-        if st.button("📱 SMS Mode", key="btn_sms"):
+        if st.markdown('<div class="mode-btn">📱 SMS Mode</div>', unsafe_allow_html=True):
             st.session_state.mode = 'sms'
-
+    
     with col2:
-        if st.button("🌐 Online Mode", key="btn_online"):
+        if st.markdown('<div class="mode-btn">🌐 Online Mode</div>', unsafe_allow_html=True):
             st.session_state.mode = 'online'
+    
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # ------------------- SOFT INSTRUCTION BELOW -------------------
     st.markdown(
         """
         <div class="instruction">
-            No internet? No problem.  
-            Just tap a button — and begin.
+            Tap one option — then begin learning.  
+            No internet? No problem.
         </div>
         """,
         unsafe_allow_html=True
     )
 
-# ------------------- SMS MODE — SIMPLE, SAFE, CALM -------------------
+# ------------------- SMS MODE — FAST, SIMPLE, CALM -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='instruction'>Write 'lesson 1' to begin your journey.</div>", unsafe_allow_html=True)
@@ -272,15 +320,11 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'lesson 1'."
                 st.success(response)
 
-    # ------------------- About Button (Hidden until needed) -------------------
-    if st.button("📖 Learn More About ShineGPT", key="about_btn_sms"):
-        st.session_state.show_about = True
-
     # ------------------- Back Button -------------------
     if st.button("⬅️ Back to Home", key="back_home_sms"):
         st.session_state.mode = None
 
-# ------------------- ONLINE MODE — CLEAN, KIND, SIMPLE -------------------
+# ------------------- ONLINE MODE — FAST, CLEAN, NO DELAY -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Explore the World</h2>", unsafe_allow_html=True)
     st.markdown("<div class='instruction'>Ask ShineGPT anything — like 'What is AI?' or 'How does blockchain work?'</div>", unsafe_allow_html=True)
@@ -297,15 +341,19 @@ elif st.session_state.mode == 'online':
             wikipedia_url = f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}"
             
             st.markdown(f"""
-                <div style="margin: 2rem auto; width: 100%; height: 500px; border: 2px solid #D4AF37; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);">
+                <div class="iframe-container">
                     <iframe src="{wikipedia_url}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
                 </div>
             """, unsafe_allow_html=True)
 
+    # ------------------- Back Button -------------------
     if st.button("⬅️ Back to Home", key="back_home_online"):
         st.session_state.mode = None
 
-# ------------------- ABOUT PAGE — ONLY WHEN CLICKED -------------------
+# ------------------- FOOTER — NO BUTTONS. JUST YOUR BRAND. -------------------
+# (Already rendered above — no extra elements)
+
+# ------------------- ABOUT PAGE — ONLY WHEN NEEDED -------------------
 if st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
     
@@ -335,5 +383,5 @@ if st.session_state.show_about:
         st.session_state.show_about = False
         st.session_state.mode = None
 
-# ------------------- FOOTER — A WHISPER OF LOVE -------------------
+# ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
