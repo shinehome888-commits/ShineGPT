@@ -1,4 +1,4 @@
-impimport streamlit as st
+import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
@@ -15,8 +15,6 @@ if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'show_about' not in st.session_state:
     st.session_state.show_about = False
-if 'show_connect' not in st.session_state:
-    st.session_state.show_connect = False
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -79,7 +77,7 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: LOAD TINYLLAMA LOCALLY -------------------
+# ------------------- ONLINE MODE: LOAD TINYLLAMA LOCALLY — NO API -------------------
 @st.cache_resource
 def load_model():
     try:
@@ -315,7 +313,7 @@ st.markdown(
 )
 
 # ------------------- HOME PAGE — BRAND + TWO BUTTONS -------------------
-if st.session_state.mode is None and not st.session_state.show_about and not st.session_state.show_connect:
+if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
@@ -329,7 +327,7 @@ if st.session_state.mode is None and not st.session_state.show_about and not st.
         unsafe_allow_html=True,
     )
 
-    if st.button("📱 SMS Mode", key="btn_sms"):
+    if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
         st.session_state.messages = []
         st.rerun()
@@ -339,22 +337,18 @@ if st.session_state.mode is None and not st.session_state.show_about and not st.
         unsafe_allow_html=True
     )
 
-    if st.button("🌐 Online Mode", key="btn_online"):
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from AI."):
         st.session_state.mode = 'online'
         st.session_state.messages = []
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>Have internet? Ask anything — get answers from AI. No login needed.</div>",
+        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from AI. No login needed.</div>",
         unsafe_allow_html=True
     )
 
-    if st.button("📖 About ShineGPT", key="btn_about"):
+    if st.button("📖 About ShineGPT", key="btn_about", help="Why was this app made? Who is it for? Read our story."):
         st.session_state.show_about = True
-        st.rerun()
-
-    if st.button("💬 Connect Anywhere", key="btn_connect"):
-        st.session_state.show_connect = True
         st.rerun()
 
 # ------------------- SMS MODE — ADDICTIVE, CLEAN, MOTIVATING -------------------
@@ -362,7 +356,7 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses and celebrations
+    # Show only AI responses and celebrations — not user input
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -428,6 +422,7 @@ No internet needed! All lessons work offline.
 
         st.rerun()
 
+    # ✅ Always show back button
     if st.button("← Back to Home", key="back_home_sms"):
         st.session_state.mode = None
         st.session_state.messages = []
@@ -438,7 +433,7 @@ elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
-    # Show only AI answers
+    # Show only AI answers — not user input
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -456,80 +451,73 @@ elif st.session_state.mode == 'online':
             st.session_state.messages.append({"role": "shingpt", "content": answer})
         st.rerun()
 
+    # ✅ Always show back button
     if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — STILL GROWING TOGETHER -------------------
+# ------------------- ABOUT PAGE — HONEST, WARM, INSPIRING -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
 
     st.markdown("""
-    ### 🌍 ShineGPT Was Built For Africa — For You
+    ### We Built This For YOU
 
-    This is more than an app.  
-    It's a **revolution in your pocket**.
+    ShineGPT was created for every child in Africa who only has a phone —  
+    but dreams of learning AI, Blockchain, Crypto, and Big Data.
 
     We believe:
-    - Every child in Nigeria, Kenya, Ghana, Uganda deserves to learn
-    - The 4th Industrial Revolution (4IR) — AI, Blockchain, Crypto, Big Data — should be free for all
-    - You don’t need fast Wi-Fi to dream big
+    - 💡 The 4th Industrial Revolution (4IR) should be free
+    - 🌍 Every youth in Lagos, Nairobi, Accra, Kigali deserves to learn
+    - 📱 You don’t need fast Wi-Fi to grow
 
-    With ShineGPT, you can now learn:
-    - 🤖 **AI** — how machines think
-    - 🔗 **Blockchain** — how trust works without banks
-    - 💰 **Crypto** — how money is changing
-    - 📊 **Big Data** — how information shapes our world
-
-    And you don’t need a laptop.  
-    Just your phone. Your mind. Your heart.
-
-    Every lesson earns you 10 points —  
-    because **you’re growing**,  
-    because **you care**,  
-    because **you matter**.
+    With ShineGPT, you can:
+    - Learn AI even without a laptop
+    - Ask about blockchain and get a real answer
+    - Earn 10 points per lesson — because you're growing
+    - Stay curious. Stay brave. Stay shining.
 
     ---
 
-    ### 🌱 Still Growing — Together
+    ### Still Growing — Together
 
     Let’s be honest:  
     ShineGPT isn’t perfect yet.  
-    But we’re building it **with you**, **for you**.
+    But we’re building it **with love**, **for purpose**, **not profit**.
 
-    That’s why we invite:
+    We invite:
     - Students: Tell us what you want to learn next
-    - Teachers: Help create local language versions
+    - Teachers: Help us bring ShineGPT to classrooms
     - Developers: Join our open-source mission
-    - Donors & Investors: Support our nonprofit vision
+    - Donors & Investors: Support our nonprofit dream
 
     Your support helps us:
     - Add more lessons
     - Launch in Swahili, Yoruba, Amharic
     - Reach refugee camps, rural schools, youth centers
 
-    We’re not building for profit.  
-    We’re building for **the future of African youth**.
+    We’re not here for fame.  
+    We’re here for **you**.
 
-    So if you believe in free, simple, dignified education…  
-    Please join us.
+    So keep learning.  
+    Keep sharing.  
+    Keep believing.
 
-    Share. Volunteer. Donate.
-
-    Because this isn’t just our project.  
-    It’s **our shared dream**.
+    Because this isn’t just an app.  
+    It’s **your future**.
 
     ---
 
-    ### 🚀 This Is Just the Beginning
+    ### This Is Just the Beginning
 
     One day, ShineGPT will speak every African language.  
     One day, it will run on $10 phones.  
     One day, it will teach millions.
 
     But today —  
-    We thank **you** for believing.  
+    We say:  
+    **Thank you.**  
     For opening this app.  
     For wanting to grow.
 
@@ -542,87 +530,12 @@ elif st.session_state.show_about:
     but to **lift you**.
 
     — From the heart of Africa,  
-    For every curious mind.
-
-    ✨ With love. Respect. Hope.
+    For every learner who dares to rise.
     """, unsafe_allow_html=False)
 
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("← Back to Home", key="back_home_about"):
-            st.session_state.show_about = False
-            st.rerun()
-    with col2:
-        if st.button("💬 Connect Anywhere", key="go_connect"):
-            st.session_state.show_about = False
-            st.session_state.show_connect = True
-            st.rerun()
-
-# ------------------- CONNECT ANYWHERE — WHATSAPP + APK + PDF -------------------
-elif st.session_state.show_connect:
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌍 Connect Anywhere</h2>", unsafe_allow_html=True)
-    st.info("ShineGPT comes in multiple forms — pick what works for you!")
-
-    st.markdown("### 📲 Learn via WhatsApp")
-    st.markdown("""
-    Want to learn without opening an app?
-
-    ➤ Text **SHINEGPT** on WhatsApp:  
-    `+234 XXX XXX XX XX` *(coming soon)*
-
-    Just send:
-    - `lesson 1`
-    - `What is blockchain?`
-    - `Help me learn AI`
-
-    And get back:
-    - Clear lessons
-    - Real answers
-    - Encouragement
-
-    ✅ Works on any phone  
-    ✅ No internet after setup  
-    ✅ Free forever  
-    """)
-
-    st.markdown("### 📱 Get the Android App (Offline)")
-    st.markdown("""
-    We're packaging ShineGPT as an Android app so you can:
-
-    - Install once
-    - Use forever
-    - No internet? No problem!
-
-    🔽 Download: [shinegpt.org/download](https://shinegpt.org/download)
-
-    Coming soon!
-    """)
-
-    st.markdown("### 📄 Download the Free PDF Guide")
-    st.markdown("""
-    Can't always use the app?
-
-    📥 Get the full **"How to Learn 4IR Without Internet"** guide.
-
-    Includes:
-    - All 50 lessons
-    - Simple explanations
-    - QR codes to ShineGPT
-    - Tips for teachers & parents
-
-    🔽 Download: [shinegpt.org/pdf](https://shinegpt.org/pdf)
-    """)
-
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("← Back to Home", key="back_home_connect"):
-            st.session_state.show_connect = False
-            st.rerun()
-    with col2:
-        if st.button("📖 About ShineGPT", key="go_about"):
-            st.session_state.show_connect = False
-            st.session_state.show_about = True
-            st.rerun()
+    if st.button("← Back to Home", key="back_home_about"):
+        st.session_state.show_about = False
+        st.rerun()
 
 # ------------------- SIDEBAR — POINTS DISPLAY — GLOWING, MOTIVATIONAL -------------------
 st.sidebar.markdown("---")
@@ -632,7 +545,7 @@ st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your fu
 
 st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
-st.sidebar.caption("You're becoming a 4IR Hero!")
+st.sidebar.caption("You’re becoming a 4IR Hero!")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
