@@ -356,7 +356,7 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses — not user messages
+    # Show only AI responses and celebrations — not user messages
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -433,7 +433,7 @@ elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
-    # Show only AI answers — not user questions
+    # Show only AI answers — not user input
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -457,58 +457,51 @@ elif st.session_state.mode == 'online':
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — HUMAN, WARM, SIMPLE — FOR KIDS -------------------
+# ------------------- ABOUT PAGE — HUMAN, WARM, KID-FRIENDLY — NO HTML MESS -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
 
-    st.markdown(
-        """
-        ### We built this for YOU.
+    st.markdown("""
+    ### We Built This For YOU
 
-        ShineGPT was created for every child who has ever been told:  
-        *“You don’t have the right phone.”*  
-        *“You’re too far from school.”*  
-        *“You’re not smart enough.”*
+    ShineGPT was created for every child who has ever been told:  
+    “You don’t have the right phone.”  
+    “You’re too far from school.”  
+    “You’re not smart enough.”
 
-        That’s not true.
+    That’s not true.
 
-        You are smart.  
-        You are curious.  
-        You are brave.
+    You **are** smart.  
+    You **are** curious.  
+    You **are** brave.
 
-        This app was built by the **KS1 Empire Foundation** — a nonprofit that believes knowledge should be free, simple, and available to everyone — no matter where they live.
+    This app was built by **KS1 Empire Foundation** — a nonprofit that believes knowledge should be free, simple, and available to **everyone**, no matter where they live.
 
-        There are:
-        - ❌ No ads  
-        - ❌ No tracking  
-        - ❌ No paywalls  
-        - ❌ No downloads  
+    There are:
+    - ❌ No ads
+    - ❌ No tracking
+    - ❌ No paywalls
+    - ❌ No downloads
 
-        Just a quiet space where you can type one question — and get a clear answer.
+    Just a quiet space where you can type one question — and get a clear answer.
 
-        Every lesson you complete earns you 10 points — not because we want to sell something — but because **you’re growing**.
+    Every lesson you complete earns you 10 points — not because we want to sell something — but because **you’re growing**.
 
-        You don’t need to be rich.  
-        You don’t need fast internet.  
-        You don’t need permission.
+    You don’t need to be rich.  
+    You don’t need fast internet.  
+    You don’t need permission.
 
-        You just need to keep asking.
+    You just need to keep asking.  
+    Keep learning.  
+    Keep believing.
 
-        Keep learning.
+    Because you are not alone.
 
-        Keep believing.
+    ShineGPT is here —  
+    for every learner who dares to dream.
 
-        Keep shining.
-
-        Because you are not alone.
-
-        ShineGPT is here —  
-        for every learner who dares to dream.
-
-        — From our hearts to yours.
-        """,
-        unsafe_allow_html=False  # Use Streamlit's native Markdown rendering
-    )
+    — From our hearts to yours.
+    """, unsafe_allow_html=False)
 
     if st.button("← Back to Home", key="back_home_about"):
         st.session_state.show_about = False
@@ -525,4 +518,4 @@ st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
 st.sidebar.caption("You’re becoming a 4IR Hero!")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
-st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True
+st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
