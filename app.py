@@ -322,7 +322,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>low internet? Type 'lesson 1' to start learning. Works low data.</div>",
+        "<div class='mode-desc'>low internet? Type 'lesson 1' to start learning. Works with low data.</div>",
         unsafe_allow_html=True
     )
 
@@ -332,7 +332,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from AI. No login needed.</div>",
+        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from ShineGPT. No login needed.</div>",
         unsafe_allow_html=True
     )
 
@@ -342,8 +342,8 @@ if st.session_state.mode is None and not st.session_state.show_about:
 
 # ------------------- SMS MODE — ADDICTIVE, CLEAN, MOTIVATING -------------------
 elif st.session_state.mode == 'sms':
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — low data Needed</h2>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. low data needed.</div>", unsafe_allow_html=True)
 
     # Show only AI responses and celebrations — not user input
     for msg in st.session_state.messages:
@@ -497,6 +497,7 @@ elif st.session_state.show_about:
     Keep going.  
     Keep asking.  
     Keep shining.
+    Contact:
     Whatsapp Number +233240254680
     ShineGPT is here —  
     not to replace you,  
