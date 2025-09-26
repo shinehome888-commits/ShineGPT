@@ -356,7 +356,7 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses and celebrations — not user input
+    # Show only AI responses and celebrations — not user messages
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -457,7 +457,7 @@ elif st.session_state.mode == 'online':
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — PASSIONATE, CATCHY, CARING — FOR AFRICA, FOR YOUTH, FOR HOPE -------------------
+# ------------------- ABOUT PAGE — HONEST, PASSIONATE, HUMBLE, APPEALING -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
 
@@ -468,46 +468,80 @@ elif st.session_state.show_about:
     It's a **revolution in your pocket**.
 
     We built ShineGPT because we believe:
-    - 📱 **Every child in Africa deserves to learn** — even if they only have a phone
-    - 💡 **The 4th Industrial Revolution (4IR)** — AI, Blockchain, Crypto, Big Data — should not be locked behind paywalls or fast internet
-    - 🔓 **Knowledge should be free** — for girls in rural Nigeria, boys in refugee camps in Uganda, youth in Kibera, artisans in Accra
+    - 📱 Every child in Africa deserves to learn — even with just a phone
+    - 💡 The 4th Industrial Revolution (4IR): AI, Blockchain, Crypto, Big Data — should not be locked behind fast Wi-Fi or rich schools
+    - 🔓 Knowledge should be **free**, **simple**, and **for all**
 
-    ShineGPT brings the future to you — one lesson at a time.
-
-    With just a phone, you can now learn:
+    With ShineGPT, you can now learn:
     - 🤖 **AI** — how machines think
     - 🔗 **Blockchain** — how trust works without banks
     - 💰 **Crypto** — how money is changing
     - 📊 **Big Data** — how information shapes our world
 
-    These aren’t just tools.  
+    These aren’t just topics.  
     They’re **keys** —  
-    to unlock **education**,  
-    to grow **businesses**,  
-    to empower **communities**,  
-    to make the **impossible possible**.
+    to unlock **education**, **businesses**, **hope**, and **power**.
 
-    And we made it **simple**:  
-    - ❌ No expensive laptop  
-    - ❌ No fast Wi-Fi  
-    - ❌ No monthly subscriptions  
+    And you don’t need a laptop.  
+    You don’t need high-speed internet.  
+    You just need **curiosity**.
 
-    Just **your phone**.  
-    Your **curiosity**.  
-    Your **dreams**.
+    Every lesson earns you **10 points** —  
+    not for rewards —  
+    but to remind you:  
+    **You’re growing.**  
+    **You’re showing up.**  
+    **You matter.**
 
-    Every lesson you complete earns you **10 points** —  
-    not because we want to gamify learning —  
-    but because **you’re growing**.  
-    Because **you’re showing up**.  
-    Because **you care**.
+    ---
 
-    This is your future.  
-    This is your power.  
-    This is your moment.
+    ### 🌱 ShineGPT Is Still Growing
 
-    So keep going.  
-    Keep learning.  
+    Let’s be honest:  
+    This is **not perfect yet**.  
+    ShineGPT is still in development.  
+    But every update brings it closer to what it should be —  
+    a trusted friend for every learner.
+
+    That’s why we invite you — yes, **you** — to help:
+    - 🧠 Students: Tell us what you want to learn next
+    - 👩‍🏫 Teachers: Share ideas to improve lessons
+    - 💻 Developers: Help us keep it open-source and lightweight
+    - ❤️ Donors & Investors: Support our nonprofit mission
+
+    Your support — big or small — helps us:
+    - Add more lessons in local languages
+    - Improve AI accuracy
+    - Reach refugee camps, rural schools, youth centers
+
+    We are not building for profit.  
+    We are building for **the future of African youth**.
+
+    So if you believe in free, simple, dignified education…  
+    Please join us.
+
+    Donate.  
+    Volunteer.  
+    Share ShineGPT.
+
+    Because this isn’t just our project.  
+    It’s **our shared dream**.
+
+    ---
+
+    ### 🚀 This Is Just the Beginning
+
+    One day, we hope ShineGPT speaks Swahili, Yoruba, Zulu, Arabic, Amharic.  
+    One day, it runs on $10 tablets.  
+    One day, it teaches millions.
+
+    But today —  
+    We thank **you** for believing.  
+    For opening this app.  
+    For wanting to grow.
+
+    Keep going.  
+    Keep asking.  
     Keep shining.
 
     ShineGPT is here —  
@@ -515,7 +549,9 @@ elif st.session_state.show_about:
     but to **lift you**.
 
     — From the heart of Africa,  
-    For every learner who dares to rise.
+    For every curious mind.
+
+    ✨ **With love. With respect. With hope.**
     """, unsafe_allow_html=False)
 
     if st.button("← Back to Home", key="back_home_about"):
