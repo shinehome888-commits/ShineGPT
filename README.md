@@ -64,3 +64,40 @@ streamlit
 torch
 transformers
 accelerate
+
+Model used: `TinyLlama/TinyLlama-1.1B-Chat-v1.0` (Apache 2.0)
+
+Deployed on [Hugging Face Spaces](https://huggingface.co/spaces) — free and open.
+
+## 🤝 Want to Help Improve ShineGPT?
+
+We welcome contributions from:
+- Educators
+- Developers
+- Translators (Swahili, Yoruba, Amharic, Arabic, Zulu)
+- Designers
+- Donors who support nonprofit tech for education
+
+All code is MIT licensed.  
+All content is free to share, adapt, and use — as long as it serves learners.
+
+## ❤️ Our Promise
+
+- Run on low data 
+- No ads
+- No surveillance
+- No profit
+- Just pure, kind, human-centered learning
+
+## 🙌 Thanks
+
+To every learner who opens this app and says:  
+“I want to know.”  
+“You made space for me.”
+
+That’s everything.
+
+---
+
+WITH LOVE 
+*Learn. Earn Knowledge. Empower Yourself.*
