@@ -1,4 +1,4 @@
-import streamlit as st
+impimport streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
@@ -86,7 +86,7 @@ def load_model():
         tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
         model = AutoModelForCausalLM.from_pretrained(
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-            torch_dtype=torch.float12,
+            torch_dtype=torch.float16,
             device_map="auto",
             low_cpu_mem_usage=True
         )
@@ -367,7 +367,7 @@ elif st.session_state.mode == 'sms':
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
         elif msg["role"] == "celebration":
-            st.mark to write(f"<div class='celebration'>{msg['content']}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='celebration'>{msg['content']}</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -404,8 +404,10 @@ No internet needed! All lessons work offline.
                     lesson_num = int(user_input_lower.split()[-1])
                     if lesson_num < 1:
                         response = "Start with lesson 1!"
+                        st.session_state.messages.append({"role": "shingpt", "content": response})
                     elif lesson_num > 50:
-                        response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer!"
+                        response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                        st.session_state.messages.append({"role": "shingpt", "content": response})
                     else:
                         response = get_lesson_text(lesson_num)
                         st.session_state.messages.append({"role": "shingpt", "content": response})
@@ -436,6 +438,7 @@ elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
+    # Show only AI answers
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -456,7 +459,7 @@ elif st.session_state.mode == 'online':
     if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
         st.session_state.messages = []
-        st.reru n()
+        st.rerun()
 
 # ------------------- ABOUT PAGE — STILL GROWING TOGETHER -------------------
 elif st.session_state.show_about:
@@ -469,11 +472,11 @@ elif st.session_state.show_about:
     It's a **revolution in your pocket**.
 
     We believe:
-    - Every child in Nigeria, Kenya, Ghana, Uganda, Rwanda deserves to learn
+    - Every child in Nigeria, Kenya, Ghana, Uganda deserves to learn
     - The 4th Industrial Revolution (4IR) — AI, Blockchain, Crypto, Big Data — should be free for all
     - You don’t need fast Wi-Fi to dream big
 
-    With ShineGPT, you can learn:
+    With ShineGPT, you can now learn:
     - 🤖 **AI** — how machines think
     - 🔗 **Blockchain** — how trust works without banks
     - 💰 **Crypto** — how money is changing
@@ -497,11 +500,11 @@ elif st.session_state.show_about:
 
     That’s why we invite:
     - Students: Tell us what you want to learn next
-    - Teachers: Help us create local language versions
-    - Developers: Join our open-source project
-    - Donors & Investors: Support our nonprofit mission
+    - Teachers: Help create local language versions
+    - Developers: Join our open-source mission
+    - Donors & Investors: Support our nonprofit vision
 
-    Your support — any size — helps us:
+    Your support helps us:
     - Add more lessons
     - Launch in Swahili, Yoruba, Amharic
     - Reach refugee camps, rural schools, youth centers
@@ -560,57 +563,66 @@ elif st.session_state.show_connect:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌍 Connect Anywhere</h2>", unsafe_allow_html=True)
     st.info("ShineGPT comes in multiple forms — pick what works for you!")
 
-    st.markdown("### 📲 WhatsApp Mode — Learn Without the App")
+    st.markdown("### 📲 Learn via WhatsApp")
     st.markdown("""
-    Want to learn on WhatsApp?
-    
+    Want to learn without opening an app?
+
     ➤ Text **SHINEGPT** on WhatsApp:  
-    `+234 011 000 0000` *(coming soon)*
-    
-    Or send:  
-    `lesson 1`  
-    `What is blockchain?`  
-    `Help me learn AI`
-    
-    You'll get back:
-    - Lessons
-    - Answers
-    - Motivation
-    
-    ✅ No internet after install  
+    `+234 XXX XXX XX XX` *(coming soon)*
+
+    Just send:
+    - `lesson 1`
+    - `What is blockchain?`
+    - `Help me learn AI`
+
+    And get back:
+    - Clear lessons
+    - Real answers
+    - Encouragement
+
     ✅ Works on any phone  
-    ✅ Free forever
+    ✅ No internet after setup  
+    ✅ Free forever  
     """)
 
-    st.markdown("### 📱 Download the Android App (Coming Soon)")
+    st.markdown("### 📱 Get the Android App (Offline)")
     st.markdown("""
     We're packaging ShineGPT as an Android app so you can:
-    
+
     - Install once
     - Use forever
     - No internet? No problem!
-    
-    🔽 Coming soon: `shinegpt.org/download`
+
+    🔽 Download: [shinegpt.org/download](https://shinegpt.org/download)
+
+    Coming soon!
     """)
 
-    st.markdown("### 📄 Get the Free PDF Guide")
+    st.markdown("### 📄 Download the Free PDF Guide")
     st.markdown("""
-    Want to learn offline?
+    Can't always use the app?
 
-    📥 Download the full **"How to Learn 4IR Without Internet"** guide.
+    📥 Get the full **"How to Learn 4IR Without Internet"** guide.
 
     Includes:
     - All 50 lessons
     - Simple explanations
     - QR codes to ShineGPT
-    - Tips for teachers
+    - Tips for teachers & parents
 
     🔽 Download: [shinegpt.org/pdf](https://shinegpt.org/pdf)
     """)
 
-    if st.button("← Back to Home", key="back_home_connect"):
-        st.session_state.show_connect = False
-        st.rerun()
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("← Back to Home", key="back_home_connect"):
+            st.session_state.show_connect = False
+            st.rerun()
+    with col2:
+        if st.button("📖 About ShineGPT", key="go_about"):
+            st.session_state.show_connect = False
+            st.session_state.show_about = True
+            st.rerun()
 
 # ------------------- SIDEBAR — POINTS DISPLAY — GLOWING, MOTIVATIONAL -------------------
 st.sidebar.markdown("---")
@@ -620,7 +632,7 @@ st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your fu
 
 st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
-st.sidebar.caption("You’re becoming a 4IR Hero!")
+st.sidebar.caption("You're becoming a 4IR Hero!")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
