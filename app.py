@@ -9,8 +9,10 @@ if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
-if 'messages' not in st.session_state:
-    st.session_state.messages = []  # Store chat history
+if 'last_lesson' not in st.session_state:
+    st.session_state.last_lesson = 0
+if 'show_about' not in st.session_state:
+    st.session_state.show_about = False
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -116,7 +118,7 @@ You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. 
     answer = response.split("<|assistant|>")[-1].strip()
     return answer if answer else "I'm not sure. Try asking in a simpler way."
 
-# ------------------- STYLING — CLEAN, STABLE, PERSISTENT -------------------
+# ------------------- STYLING — MAGIC, BEAUTY, ADDICTIVE -------------------
 st.markdown(
     """
     <style>
@@ -243,12 +245,12 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Answer Box — STAYS ON SCREEN */
+    /* Answer Box — CLEAN, ELEGANT, NO CHAT HISTORY CLUTTER */
     .answer-box {
         background-color: #111;
-        padding: 20px;
-        border-radius: 16px;
-        border-left: 4px solid #D4AF37;
+        padding: 25px;
+        border-radius: 18px;
+        border-left: 5px solid #D4AF37;
         margin: 1.5rem auto;
         max-width: 700px;
         color: #e0e0e0;
@@ -256,15 +258,62 @@ st.markdown(
         line-height: 1.7;
         white-space: pre-line;
         border: 1px solid #333;
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
     }
 
-    /* Points Display — BOLD, VISIBLE, ALWAYS THERE */
+    /* Points Display — GOLDEN, GLIMMERING, ADDICTIVE */
     .points-display {
-        font-size: 1.5rem !important;
+        font-size: 1.8rem !important;
         font-weight: 800 !important;
         color: #D4AF37 !important;
         text-align: center !important;
         margin: 0.5rem 0 !important;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+        from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+        to { text-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.7); }
+    }
+
+    /* Celebration Message */
+    .celebration {
+        background-color: #1a1a1a;
+        border: 2px solid #D4AF37;
+        border-radius: 16px;
+        padding: 15px;
+        margin: 1rem auto;
+        max-width: 600px;
+        text-align: center;
+        color: #D4AF37;
+        font-size: 1.3rem;
+        font-weight: 700;
+        animation: bounce 0.8s ease-out;
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* About Page Styling */
+    .about-content {
+        background-color: #111;
+        padding: 2.5rem;
+        border-radius: 18px;
+        border-left: 5px solid #D4AF37;
+        margin: 2rem auto;
+        max-width: 700px;
+        color: #e0e0e0;
+        font-size: 1.3rem;
+        line-height: 1.8;
+    }
+    .about-content h2 {
+        color: #D4AF37 !important;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    .about-content p {
+        margin-bottom: 1.2rem;
     }
 
     /* Mobile Responsive */
@@ -274,7 +323,9 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
-        .points-display { font-size: 1.4rem !important; }
+        .points-display { font-size: 1.6rem !important; }
+        .celebration { font-size: 1.2rem !important; }
+        .about-content { padding: 2rem !important; font-size: 1.2rem !important; }
     }
     </style>
     """,
@@ -282,7 +333,7 @@ st.markdown(
 )
 
 # ------------------- HOME PAGE — BRAND + TWO BUTTONS -------------------
-if st.session_state.mode is None:
+if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
@@ -298,7 +349,7 @@ if st.session_state.mode is None:
 
     if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
-        st.session_state.messages = []  # Reset chat on mode switch
+        st.session_state.messages = []
         st.rerun()
 
     st.markdown(
@@ -308,7 +359,7 @@ if st.session_state.mode is None:
 
     if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from AI. No login needed."):
         st.session_state.mode = 'online'
-        st.session_state.messages = []  # Reset chat on mode switch
+        st.session_state.messages = []
         st.rerun()
 
     st.markdown(
@@ -316,17 +367,21 @@ if st.session_state.mode is None:
         unsafe_allow_html=True
     )
 
-# ------------------- SMS MODE — INSTANT, SIMPLE, RELIABLE -------------------
+    if st.button("📖 About ShineGPT", key="btn_about", help="Learn why ShineGPT was created for learners like you."):
+        st.session_state.show_about = True
+        st.rerun()
+
+# ------------------- SMS MODE — ADDICTIVE, CLEAN, CELEBRATORY -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Display chat history
+    # Display only the AI’s answer — NOT the user’s question
     for msg in st.session_state.messages:
-        if msg["role"] == "user":
-            st.markdown(f"<div style='background-color: #262730; color: white; padding: 14px 18px; border-radius: 18px 18px 0 18px; margin: 10px 0; max-width: 70%; margin-left: auto; font-size: 1.1rem;'>{msg['content']}</div>", unsafe_allow_html=True)
-        else:
+        if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
+        elif msg["role"] == "celebration":
+            st.markdown(f"<div class='celebration'>{msg['content']}</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -337,7 +392,6 @@ elif st.session_state.mode == 'sms':
     if st.button("Send", key="send_sms"):
         if user_input:
             user_input_lower = user_input.strip().lower()
-            st.session_state.messages.append({"role": "user", "content": user_input})
 
             if user_input_lower == "help":
                 response = """
@@ -366,10 +420,13 @@ No internet needed! All lessons work offline.
                     elif lesson_num > 50:
                         response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
                     else:
-                        response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
+                        response = get_lesson_text(lesson_num)
+                        st.session_state.messages.append({"role": "shingpt", "content": response})
                         add_points(10)
                         st.session_state.current_lesson = lesson_num
-                    st.session_state.messages.append({"role": "shingpt", "content": response})
+                        if lesson_num > st.session_state.last_lesson:
+                            st.session_state.last_lesson = lesson_num
+                            st.session_state.messages.append({"role": "celebration", "content": "✨ You earned 10 points! You're becoming a 4IR Hero!"})
                 except:
                     response = "Type 'lesson 1' to start."
                     st.session_state.messages.append({"role": "shingpt", "content": response})
@@ -385,16 +442,14 @@ No internet needed! All lessons work offline.
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — WITH CHAT HISTORY -------------------
+# ------------------- ONLINE MODE — CLEAN, ELEGANT, ADDICTIVE -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
-    # Display chat history
+    # Display only the AI’s answer — NOT the user’s question
     for msg in st.session_state.messages:
-        if msg["role"] == "user":
-            st.markdown(f"<div style='background-color: #262730; color: white; padding: 14px 18px; border-radius: 18px 18px 0 18px; margin: 10px 0; max-width: 70%; margin-left: auto; font-size: 1.1rem;'>{msg['content']}</div>", unsafe_allow_html=True)
-        else:
+        if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
@@ -405,7 +460,6 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            st.session_state.messages.append({"role": "user", "content": user_input})
             with st.spinner("🧠 Thinking..."):
                 answer = ask_tinyllama(user_input)
             st.session_state.messages.append({"role": "shingpt", "content": answer})
@@ -417,14 +471,50 @@ elif st.session_state.mode == 'online':
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- SIDEBAR — POINTS DISPLAY — BOLD, VISIBLE, ALWAYS THERE -------------------
+# ------------------- ABOUT PAGE — STORY, NOT TEXT -------------------
+elif st.session_state.show_about:
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
+    
+    st.markdown(
+        """
+        <div class="about-content">
+            <p>ShineGPT was born in a village where the internet is slow, the phones are old, and the dreams are big.</p>
+            
+            <p>It was built by the <strong>KS1 Empire Foundation</strong> — a nonprofit that believes every child, no matter where they live, deserves to learn about the future.</p>
+            
+            <p>There are no ads. No trackers. No paywalls. No apps to download. Just a quiet space where you can type one question — and get a clear, kind answer.</p>
+            
+            <p>Each lesson you complete earns you 10 points — not for a prize, but because <strong>you’re growing</strong>.</p>
+            
+            <p>You don’t need to be smart. You just need to be curious.</p>
+            
+            <p>This isn’t technology for the rich.</p>
+            <p>This is knowledge for the brave.</p>
+            
+            <p>So keep going.</p>
+            <p>One lesson. One point. One step.</p>
+            <p>You’re not just learning.</p>
+            <p>You’re becoming.</p>
+            
+            <p>— ShineGPT, for learners like you.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button("← Back to Home", key="back_home_about"):
+        st.session_state.show_about = False
+        st.rerun()
+
+# ------------------- SIDEBAR — GOLDEN POINTS DISPLAY — ADDICTIVE, GLIMMERING -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.markdown(f"<div class='points-display'>{st.session_state.user_points} points</div>", unsafe_allow_html=True)
-st.sidebar.info("Earn 10 points per lesson in SMS mode. Online mode gives you knowledge — no points, but endless learning.")
+st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your future.")
 
 st.sidebar.markdown("---")
-st.sidebar.write(f"**Current Lesson**: {st.session_state.current_lesson}/50")
+st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
+st.sidebar.caption("You’re becoming a 4IR Hero.")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
