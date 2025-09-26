@@ -322,11 +322,11 @@ if st.session_state.mode is None and not st.session_state.show_about:
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works low data.</div>",
+        "<div class='mode-desc'>low internet? Type 'lesson 1' to start learning. Works low data.</div>",
         unsafe_allow_html=True
     )
 
-    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from AI."):
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from ShineGPT."):
         st.session_state.mode = 'online'
         st.session_state.messages = []
         st.rerun()
@@ -370,7 +370,7 @@ Available commands:
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
-No internet needed! All lessons work offline.
+low data! All lessons work on low data.
                 """
                 st.session_state.messages.append({"role": "shingpt", "content": response})
                 
