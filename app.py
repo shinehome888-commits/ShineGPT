@@ -1,4 +1,4 @@
-impoimport streamlit as st
+import streamlit as st
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
@@ -9,6 +9,8 @@ if 'user_points' not in st.session_state:
     st.session_state.user_points = 0
 if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
+if 'messages' not in st.session_state:
+    st.session_state.messages = []  # Store chat history
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -72,7 +74,6 @@ def add_points(points):
     st.session_state.user_points += points
 
 # ------------------- ONLINE MODE: LOAD TINYLLAMA LOCALLY — NO API, NO BLOCKS -------------------
-# This model runs entirely inside Hugging Face Space — no external calls
 @st.cache_resource
 def load_model():
     try:
@@ -87,7 +88,6 @@ def load_model():
     except Exception as e:
         return None, None
 
-# Initialize model on first load
 tokenizer, model = load_model()
 
 def ask_tinyllama(question):
@@ -113,11 +113,10 @@ You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. 
         )
 
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    # Extract only the assistant's reply
     answer = response.split("<|assistant|>")[-1].strip()
     return answer if answer else "I'm not sure. Try asking in a simpler way."
 
-# ------------------- STYLING — FAST, CLEAN, RELIABLE -------------------
+# ------------------- STYLING — CLEAN, STABLE, PERSISTENT -------------------
 st.markdown(
     """
     <style>
@@ -244,7 +243,7 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Answer Box */
+    /* Answer Box — STAYS ON SCREEN */
     .answer-box {
         background-color: #111;
         padding: 20px;
@@ -256,6 +255,16 @@ st.markdown(
         font-size: 1.3rem;
         line-height: 1.7;
         white-space: pre-line;
+        border: 1px solid #333;
+    }
+
+    /* Points Display — BOLD, VISIBLE, ALWAYS THERE */
+    .points-display {
+        font-size: 1.5rem !important;
+        font-weight: 800 !important;
+        color: #D4AF37 !important;
+        text-align: center !important;
+        margin: 0.5rem 0 !important;
     }
 
     /* Mobile Responsive */
@@ -265,6 +274,7 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
+        .points-display { font-size: 1.4rem !important; }
     }
     </style>
     """,
@@ -288,6 +298,7 @@ if st.session_state.mode is None:
 
     if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
+        st.session_state.messages = []  # Reset chat on mode switch
         st.rerun()
 
     st.markdown(
@@ -297,6 +308,7 @@ if st.session_state.mode is None:
 
     if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from AI. No login needed."):
         st.session_state.mode = 'online'
+        st.session_state.messages = []  # Reset chat on mode switch
         st.rerun()
 
     st.markdown(
@@ -309,6 +321,13 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
+    # Display chat history
+    for msg in st.session_state.messages:
+        if msg["role"] == "user":
+            st.markdown(f"<div style='background-color: #262730; color: white; padding: 14px 18px; border-radius: 18px 18px 0 18px; margin: 10px 0; max-width: 70%; margin-left: auto; font-size: 1.1rem;'>{msg['content']}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
+
     user_input = st.text_input(
         label="",
         placeholder="Type your message...",
@@ -318,7 +337,8 @@ elif st.session_state.mode == 'sms':
     if st.button("Send", key="send_sms"):
         if user_input:
             user_input_lower = user_input.strip().lower()
-            
+            st.session_state.messages.append({"role": "user", "content": user_input})
+
             if user_input_lower == "help":
                 response = """
 Available commands:
@@ -328,15 +348,15 @@ Available commands:
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
                 """
-                st.success(response)
+                st.session_state.messages.append({"role": "shingpt", "content": response})
                 
             elif user_input_lower == "points":
                 response = f"🎉 You have {st.session_state.user_points} points!"
-                st.success(response)
+                st.session_state.messages.append({"role": "shingpt", "content": response})
                 
             elif user_input_lower == "hello":
                 response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-                st.success(response)
+                st.session_state.messages.append({"role": "shingpt", "content": response})
                 
             elif user_input_lower.startswith("lesson "):
                 try:
@@ -349,23 +369,33 @@ No internet needed! All lessons work offline.
                         response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
                         add_points(10)
                         st.session_state.current_lesson = lesson_num
-                    st.success(response)
+                    st.session_state.messages.append({"role": "shingpt", "content": response})
                 except:
                     response = "Type 'lesson 1' to start."
-                    st.success(response)
+                    st.session_state.messages.append({"role": "shingpt", "content": response})
             else:
                 response = "I don't understand. Try typing 'lesson 1'."
-                st.success(response)
+                st.session_state.messages.append({"role": "shingpt", "content": response})
+
+        st.rerun()
 
     # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
     if st.button("← Back to Home", key="back_home_sms"):
         st.session_state.mode = None
+        st.session_state.messages = []
         st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — USING TINYLLAMA LOCALLY -------------------
+# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — WITH CHAT HISTORY -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
+
+    # Display chat history
+    for msg in st.session_state.messages:
+        if msg["role"] == "user":
+            st.markdown(f"<div style='background-color: #262730; color: white; padding: 14px 18px; border-radius: 18px 18px 0 18px; margin: 10px 0; max-width: 70%; margin-left: auto; font-size: 1.1rem;'>{msg['content']}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -375,15 +405,26 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
+            st.session_state.messages.append({"role": "user", "content": user_input})
             with st.spinner("🧠 Thinking..."):
                 answer = ask_tinyllama(user_input)
-            st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
-        st.rerun()  # Always refresh after send
+            st.session_state.messages.append({"role": "shingpt", "content": answer})
+        st.rerun()
 
     # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
     if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
+        st.session_state.messages = []
         st.rerun()
+
+# ------------------- SIDEBAR — POINTS DISPLAY — BOLD, VISIBLE, ALWAYS THERE -------------------
+st.sidebar.markdown("---")
+st.sidebar.subheader("🏆 Your Points")
+st.sidebar.markdown(f"<div class='points-display'>{st.session_state.user_points} points</div>", unsafe_allow_html=True)
+st.sidebar.info("Earn 10 points per lesson in SMS mode. Online mode gives you knowledge — no points, but endless learning.")
+
+st.sidebar.markdown("---")
+st.sidebar.write(f"**Current Lesson**: {st.session_state.current_lesson}/50")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
