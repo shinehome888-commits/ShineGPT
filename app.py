@@ -202,7 +202,7 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send and Back Buttons — SMALL, BOLD, HORIZONTAL */
+    /* Send and Back Buttons — SMALL, BOLD, HORIZONTAL — HTML BUTTONS */
     .btn-container {
         display: flex;
         justify-content: center;
@@ -211,7 +211,7 @@ st.markdown(
         width: 100%;
         max-width: 600px;
     }
-    .btn-container button {
+    .btn-container .btn {
         font-weight: 700 !important;
         font-size: 1.0rem !important;
         padding: 8px 16px !important;
@@ -220,6 +220,7 @@ st.markdown(
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
         min-width: 100px;
+        text-align: center;
     }
     .btn-container .send-btn {
         background-color: #D32F2F !important;
@@ -230,7 +231,7 @@ st.markdown(
         color: #D4AF37 !important;
         border: 1px solid #D4AF37 !important;
     }
-    .btn-container button:hover {
+    .btn-container .btn:hover {
         opacity: 0.9;
     }
 
@@ -255,7 +256,7 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
-        .btn-container button { font-size: 0.9rem !important; padding: 6px 14px !important; }
+        .btn-container .btn { font-size: 0.9rem !important; padding: 6px 14px !important; }
     }
     </style>
     """,
@@ -307,10 +308,11 @@ elif st.session_state.mode == 'sms':
         key="sms_input"
     )
 
-    # --- HORIZONTAL BUTTONS: Send and Back ---
+    # --- HORIZONTAL HTML BUTTONS: Send and Back ---
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("Send", key="send_sms", class_name="send-btn"):
+        # Use HTML button — no class_name error!
+        if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
             if user_input:
                 user_input_lower = user_input.strip().lower()
                 
@@ -353,7 +355,8 @@ No internet needed! All lessons work offline.
                     st.success(response)
 
     with col2:
-        if st.button("← Back", key="back_home_sms", class_name="back-btn"):
+        # Use HTML button — no class_name error!
+        if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
 
 # ------------------- ONLINE MODE — FAST, CLEAN, TOP ANSWER FROM ENTIRE INTERNET -------------------
@@ -367,10 +370,11 @@ elif st.session_state.mode == 'online':
         key="online_input"
     )
 
-    # --- HORIZONTAL BUTTONS: Send and Back ---
+    # --- HORIZONTAL HTML BUTTONS: Send and Back ---
     col1, col2 = st.columns([1, 1])
     with col1:
-        if st.button("Send", key="send_online", class_name="send-btn"):
+        # Use HTML button — no class_name error!
+        if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
             if user_input:
                 with st.spinner("🔍 Finding the best answer..."):
                     answer = get_google_answer(user_input)
@@ -378,7 +382,8 @@ elif st.session_state.mode == 'online':
                 st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
 
     with col2:
-        if st.button("← Back", key="back_home_online", class_name="back-btn"):
+        # Use HTML button — no class_name error!
+        if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
