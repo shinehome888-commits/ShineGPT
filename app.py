@@ -311,7 +311,6 @@ elif st.session_state.mode == 'sms':
     # --- HORIZONTAL HTML BUTTONS: Send and Back ---
     col1, col2 = st.columns([1, 1])
     with col1:
-        # Use HTML button — no class_name error!
         if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
             if user_input:
                 user_input_lower = user_input.strip().lower()
@@ -355,7 +354,6 @@ No internet needed! All lessons work offline.
                     st.success(response)
 
     with col2:
-        # Use HTML button — no class_name error!
         if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
 
@@ -373,7 +371,6 @@ elif st.session_state.mode == 'online':
     # --- HORIZONTAL HTML BUTTONS: Send and Back ---
     col1, col2 = st.columns([1, 1])
     with col1:
-        # Use HTML button — no class_name error!
         if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
             if user_input:
                 with st.spinner("🔍 Finding the best answer..."):
@@ -382,7 +379,6 @@ elif st.session_state.mode == 'online':
                 st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
 
     with col2:
-        # Use HTML button — no class_name error!
         if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
 
