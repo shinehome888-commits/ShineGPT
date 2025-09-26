@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from bs4 import BeautifulSoup
+import json
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
@@ -71,41 +71,33 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: GET TOP GOOGLE RESULT -------------------
-def get_google_answer(query):
+# ------------------- ONLINE MODE: GET CLEAN WIKIPEDIA SUMMARY -------------------
+def get_wikipedia_summary(query):
     try:
-        search_term = query.replace(" ", "+")
-        url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
+        # Wikipedia API endpoint
+        url = "https://en.wikipedia.org/api/rest_v1/page/summary/"
+        # Clean query for URL
+        search_term = query.replace(" ", "_")
+        full_url = url + search_term
         
         headers = {
-            "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+            "User-Agent": "ShineGPT/1.0 (KS1 Empire Foundation; https://huggingface.co/spaces/your-space)"
         }
         
-        response = requests.get(url, headers=headers, timeout=6)
-        response.raise_for_status()
+        response = requests.get(full_url, headers=headers, timeout=6)
         
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Get the first clear paragraph
-        first_paragraph = soup.find('p')
-        if first_paragraph:
-            text = first_paragraph.get_text().strip()
-            text = " ".join(text.split())
-            if len(text) > 10:
-                return text
-        
-        # Fallback: try main content div
-        main_content = soup.find('div', {'class': ['BNeawe', 's3v9rd', 'AP7Wnd']})
-        if main_content:
-            text = main_content.get_text().strip()
-            text = " ".join(text.split())
-            if len(text) > 10:
-                return text
-        
-        return "I found a page, but couldn't extract a clear answer. Try asking in simple words."
-        
+        if response.status_code == 200:
+            data = response.json()
+            extract = data.get("extract", "").strip()
+            if extract and len(extract) > 10:
+                return extract
+            else:
+                return f"I couldn't find a clear summary for '{query}'. Try asking in simpler words."
+        else:
+            return f"I couldn't find information about '{query}'. Try another question."
+            
     except Exception as e:
-        return f"⚠️ Could not connect to the internet. Please check your connection and try again."
+        return f"⚠️ Could not connect to the internet. Switch to SMS Mode. Type 'lesson 1' to learn offline."
 
 # ------------------- STYLING — FAST, CLEAN, RELIABLE -------------------
 st.markdown(
@@ -217,8 +209,8 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS — USE STREAMLIT DEFAULT STYLE */
-    .back-btn-style {
+    /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS */
+    .stButton > button {
         background-color: #222 !important;
         color: #D4AF37 !important;
         font-weight: 700 !important;
@@ -285,12 +277,12 @@ if st.session_state.mode is None:
         unsafe_allow_html=True
     )
 
-    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get the best answer from the web."):
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from Wikipedia."):
         st.session_state.mode = 'online'
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>Have internet? Ask anything — get the best answer from the web. No login needed.</div>",
+        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from Wikipedia. No login needed.</div>",
         unsafe_allow_html=True
     )
 
@@ -347,15 +339,15 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'lesson 1'."
                 st.success(response)
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO CLASS_NAME, JUST ST.BUTTON
+    # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
     if st.button("← Back to Home", key="back_home_sms"):
         st.session_state.mode = None
         st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE -------------------
+# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — FIXED -------------------
 elif st.session_state.mode == 'online':
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Best Answer from the Web</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get the top answer from the internet.</div>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Clear Answers from Wikipedia</h2>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a simple, clear answer.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -365,11 +357,11 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            answer = get_google_answer(user_input)
+            answer = get_wikipedia_summary(user_input)
             st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
-        st.rerun()  # Always refresh after send — even if empty
+        st.rerun()  # Always refresh after send
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO CLASS_NAME, JUST ST.BUTTON
+    # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
     if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
         st.rerun()
