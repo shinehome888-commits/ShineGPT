@@ -356,7 +356,7 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses and celebrations — not user messages
+    # Show only AI responses and celebrations — not user input
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -457,50 +457,65 @@ elif st.session_state.mode == 'online':
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — HUMAN, WARM, KID-FRIENDLY — NO HTML MESS -------------------
+# ------------------- ABOUT PAGE — PASSIONATE, CATCHY, CARING — FOR AFRICA, FOR YOUTH, FOR HOPE -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
 
     st.markdown("""
-    ### We Built This For YOU
+    ### 🌍 ShineGPT Was Built For Africa — For You
 
-    ShineGPT was created for every child who has ever been told:  
-    “You don’t have the right phone.”  
-    “You’re too far from school.”  
-    “You’re not smart enough.”
+    This is more than an app.  
+    It's a **revolution in your pocket**.
 
-    That’s not true.
+    We built ShineGPT because we believe:
+    - 📱 **Every child in Africa deserves to learn** — even if they only have a phone
+    - 💡 **The 4th Industrial Revolution (4IR)** — AI, Blockchain, Crypto, Big Data — should not be locked behind paywalls or fast internet
+    - 🔓 **Knowledge should be free** — for girls in rural Nigeria, boys in refugee camps in Uganda, youth in Kibera, artisans in Accra
 
-    You **are** smart.  
-    You **are** curious.  
-    You **are** brave.
+    ShineGPT brings the future to you — one lesson at a time.
 
-    This app was built by **KS1 Empire Foundation** — a nonprofit that believes knowledge should be free, simple, and available to **everyone**, no matter where they live.
+    With just a phone, you can now learn:
+    - 🤖 **AI** — how machines think
+    - 🔗 **Blockchain** — how trust works without banks
+    - 💰 **Crypto** — how money is changing
+    - 📊 **Big Data** — how information shapes our world
 
-    There are:
-    - ❌ No ads
-    - ❌ No tracking
-    - ❌ No paywalls
-    - ❌ No downloads
+    These aren’t just tools.  
+    They’re **keys** —  
+    to unlock **education**,  
+    to grow **businesses**,  
+    to empower **communities**,  
+    to make the **impossible possible**.
 
-    Just a quiet space where you can type one question — and get a clear answer.
+    And we made it **simple**:  
+    - ❌ No expensive laptop  
+    - ❌ No fast Wi-Fi  
+    - ❌ No monthly subscriptions  
 
-    Every lesson you complete earns you 10 points — not because we want to sell something — but because **you’re growing**.
+    Just **your phone**.  
+    Your **curiosity**.  
+    Your **dreams**.
 
-    You don’t need to be rich.  
-    You don’t need fast internet.  
-    You don’t need permission.
+    Every lesson you complete earns you **10 points** —  
+    not because we want to gamify learning —  
+    but because **you’re growing**.  
+    Because **you’re showing up**.  
+    Because **you care**.
 
-    You just need to keep asking.  
+    This is your future.  
+    This is your power.  
+    This is your moment.
+
+    So keep going.  
     Keep learning.  
-    Keep believing.
-
-    Because you are not alone.
+    Keep shining.
 
     ShineGPT is here —  
-    for every learner who dares to dream.
+    not to replace you,  
+    but to **lift you**.
 
-    — From our hearts to yours.
+    — From the heart of Africa,  
+    For every learner who dares to rise.
     """, unsafe_allow_html=False)
 
     if st.button("← Back to Home", key="back_home_about"):
