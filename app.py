@@ -109,7 +109,7 @@ def get_google_answer(query):
     except Exception as e:
         return f"⚠️ Could not connect to the internet. Please check your connection and try again."
 
-# ------------------- STYLING — SMALL, ELEGANT, CALM -------------------
+# ------------------- STYLING — CLEAN, SMALL, HORIZONTAL BUTTONS -------------------
 st.markdown(
     """
     <style>
@@ -202,22 +202,36 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send Button — SMALL AND CLEAN */
-    .stButton > button {
-        background-color: #D32F2F !important;
-        color: white !important;
+    /* Send and Back Buttons — SMALL, BOLD, HORIZONTAL */
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem auto;
+        width: 100%;
+        max-width: 600px;
+    }
+    .btn-container button {
         font-weight: 700 !important;
-        font-size: 1.1rem !important;
+        font-size: 1.0rem !important;
         padding: 8px 16px !important;
-        margin: 1rem auto !important;
-        display: block !important;
-        width: 70% !important;
-        max-width: 300px !important;
         border-radius: 12px !important;
         border: none !important;
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        min-width: 100px;
+    }
+    .btn-container .send-btn {
+        background-color: #D32F2F !important;
+        color: white !important;
+    }
+    .btn-container .back-btn {
+        background-color: #222 !important;
+        color: #D4AF37 !important;
+        border: 1px solid #D4AF37 !important;
+    }
+    .btn-container button:hover {
+        opacity: 0.9;
     }
 
     /* Answer Box */
@@ -234,26 +248,6 @@ st.markdown(
         white-space: pre-line;
     }
 
-    /* Back Button — SMALL AND SUBTLE */
-    .back-btn {
-        background-color: #222 !important;
-        color: #D4AF37 !important;
-        font-weight: 600 !important;
-        font-size: 1.1rem !important;
-        padding: 8px 16px !important;
-        margin: 1rem auto !important;
-        display: block !important;
-        width: 70% !important;
-        max-width: 300px !important;
-        border-radius: 12px !important;
-        border: 1px solid #D4AF37 !important;
-        cursor: pointer !important;
-        font-family: 'Arial', sans-serif;
-    }
-    .back-btn:hover {
-        background-color: #333 !important;
-    }
-
     /* Mobile Responsive */
     @media (max-width: 600px) {
         .brand-container h1 { font-size: 2.8rem !important; }
@@ -261,8 +255,7 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
-        .stButton > button { font-size: 1.0rem !important; padding: 6px 14px !important; }
-        .back-btn { font-size: 1.0rem !important; padding: 6px 14px !important; }
+        .btn-container button { font-size: 0.9rem !important; padding: 6px 14px !important; }
     }
     </style>
     """,
@@ -314,51 +307,54 @@ elif st.session_state.mode == 'sms':
         key="sms_input"
     )
 
-    if st.button("Send", key="send_sms"):
-        if user_input:
-            user_input_lower = user_input.strip().lower()
-            
-            if user_input_lower == "help":
-                response = """
+    # --- HORIZONTAL BUTTONS: Send and Back ---
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("Send", key="send_sms", class_name="send-btn"):
+            if user_input:
+                user_input_lower = user_input.strip().lower()
+                
+                if user_input_lower == "help":
+                    response = """
 Available commands:
 - type 'lesson 1' to start
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
-                """
-                st.success(response)
-                
-            elif user_input_lower == "points":
-                response = f"🎉 You have {st.session_state.user_points} points!"
-                st.success(response)
-                
-            elif user_input_lower == "hello":
-                response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-                st.success(response)
-                
-            elif user_input_lower.startswith("lesson "):
-                try:
-                    lesson_num = int(user_input_lower.split()[-1])
-                    if lesson_num < 1:
-                        response = "Start with lesson 1!"
-                    elif lesson_num > 50:
-                        response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
-                    else:
-                        response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
-                        add_points(10)
-                        st.session_state.current_lesson = lesson_num
+                    """
                     st.success(response)
-                except:
-                    response = "Type 'lesson 1' to start."
+                    
+                elif user_input_lower == "points":
+                    response = f"🎉 You have {st.session_state.user_points} points!"
                     st.success(response)
-            else:
-                response = "I don't understand. Try typing 'lesson 1'."
-                st.success(response)
+                    
+                elif user_input_lower == "hello":
+                    response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+                    st.success(response)
+                    
+                elif user_input_lower.startswith("lesson "):
+                    try:
+                        lesson_num = int(user_input_lower.split()[-1])
+                        if lesson_num < 1:
+                            response = "Start with lesson 1!"
+                        elif lesson_num > 50:
+                            response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                        else:
+                            response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
+                            add_points(10)
+                            st.session_state.current_lesson = lesson_num
+                        st.success(response)
+                    except:
+                        response = "Type 'lesson 1' to start."
+                        st.success(response)
+                else:
+                    response = "I don't understand. Try typing 'lesson 1'."
+                    st.success(response)
 
-    # ------------------- Back Button — SMALL -------------------
-    if st.button("← Back", key="back_home_sms", class_name="back-btn"):
-        st.session_state.mode = None
+    with col2:
+        if st.button("← Back", key="back_home_sms", class_name="back-btn"):
+            st.session_state.mode = None
 
 # ------------------- ONLINE MODE — FAST, CLEAN, TOP ANSWER FROM ENTIRE INTERNET -------------------
 elif st.session_state.mode == 'online':
@@ -371,16 +367,19 @@ elif st.session_state.mode == 'online':
         key="online_input"
     )
 
-    if st.button("Send", key="send_online"):
-        if user_input:
-            with st.spinner("🔍 Finding the best answer..."):
-                answer = get_google_answer(user_input)
-            
-            st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
+    # --- HORIZONTAL BUTTONS: Send and Back ---
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        if st.button("Send", key="send_online", class_name="send-btn"):
+            if user_input:
+                with st.spinner("🔍 Finding the best answer..."):
+                    answer = get_google_answer(user_input)
+                
+                st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
 
-    # ------------------- Back Button — SMALL -------------------
-    if st.button("← Back", key="back_home_online", class_name="back-btn"):
-        st.session_state.mode = None
+    with col2:
+        if st.button("← Back", key="back_home_online", class_name="back-btn"):
+            st.session_state.mode = None
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
