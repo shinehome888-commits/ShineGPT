@@ -18,11 +18,11 @@ Just knowledge.
 
 ## 🔧 How It Works
 
-### Mode 1: SMS Mode (Offline)
+### Mode 1: SMS Mode (low data)
 - Learn 50 real lessons without internet
 - Type: `lesson 1`, `lesson 2`, etc.
 - Earn 10 points per lesson
-- Perfect for rural schools, refugee camps, and areas with no data
+- Perfect for rural schools, refugee camps, and areas with low data
 
 ### Mode 2: Online Mode (Connected)
 - Ask anything about AI, blockchain, or 4IR
@@ -52,7 +52,7 @@ This project was SPONSORED BY THE **KS1 EMPIRE FOUNDATION**, a nonprofit focused
 
 ## 🚀 How to Use
 
-1. Click "SMS Mode" → type `lesson 1` → learn offline
+1. Click "SMS Mode" → type `lesson 1` → learn on low data
 2. Click "Online Mode" → ask questions like "What is blockchain?" → get answers
 3. Tap "About ShineGPT" → read our story
 4. Learn. Earn points. Keep going.
