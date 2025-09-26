@@ -128,7 +128,6 @@ st.markdown(
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
-
     /* Background */
     .main {
         background-color: #0a0a0a;
@@ -136,7 +135,6 @@ st.markdown(
         font-family: 'Segoe UI', sans-serif;
         padding: 0 !important;
     }
-
     /* ShineGPT Brand — Centered, Sacred, Unchanged */
     .brand-container {
         text-align: center;
@@ -168,7 +166,6 @@ st.markdown(
         font-weight: 700 !important;
         opacity: 0.9;
     }
-
     /* Mode Buttons — BIG, FAST, ONE-TAP */
     .mode-btn {
         background-color: #1a1a1a;
@@ -190,7 +187,6 @@ st.markdown(
         background-color: #222;
         transform: translateY(-1px);
     }
-
     /* Mode Description */
     .mode-desc {
         text-align: center;
@@ -200,7 +196,6 @@ st.markdown(
         max-width: 600px;
         line-height: 1.6;
     }
-
     /* Input Box */
     .stTextInput > div > div > input {
         font-size: 1.4rem !important;
@@ -212,7 +207,6 @@ st.markdown(
         width: 100% !important;
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
-
     /* Send Button — SMALL, FAST, BOLD */
     .stButton > button {
         background-color: #D32F2F !important;
@@ -229,7 +223,6 @@ st.markdown(
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
     }
-
     /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS */
     .stButton > button {
         background-color: #222 !important;
@@ -246,7 +239,6 @@ st.markdown(
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
     }
-
     /* Answer Box — CLEAN, ELEGANT */
     .answer-box {
         background-color: #111;
@@ -262,7 +254,6 @@ st.markdown(
         border: 1px solid #333;
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
     }
-
     /* Celebration Message */
     .celebration {
         background-color: #1a1a1a;
@@ -281,7 +272,6 @@ st.markdown(
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
     }
-
     /* Points Display — GOLDEN, GLOWING */
     .points-display {
         font-size: 1.8rem !important;
@@ -296,7 +286,6 @@ st.markdown(
         from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
         to { text-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.7); }
     }
-
     /* Mobile Responsive */
     @media (max-width: 600px) {
         .brand-container h1 { font-size: 2.8rem !important; }
@@ -463,72 +452,55 @@ elif st.session_state.show_about:
 
     st.markdown("""
     ### We Built This For YOU
-
     ShineGPT was created for every child in Africa who only has a phone —  
     but dreams of learning AI, Blockchain, Crypto, and Big Data.
-
     We believe:
     - 💡 The 4th Industrial Revolution (4IR) should be free
     - 🌍 Every youth in Lagos, Nairobi, Accra, Kigali deserves to learn
     - 📱 You don’t need fast Wi-Fi to grow
-
     With ShineGPT, you can:
     - Learn AI even without a laptop
     - Ask about blockchain and get a real answer
     - Earn 10 points per lesson — because you're growing
     - Stay curious. Stay brave. Stay shining.
-
     ---
-
     ### Still Growing — Together
-
     Let’s be honest:  
     ShineGPT isn’t perfect yet.  
     But we’re building it **with love**, **for purpose**, **not profit**.
-
     We invite:
     - Students: Tell us what you want to learn next
     - Teachers: Help us bring ShineGPT to classrooms
     - Developers: Join our open-source mission
     - Donors & Investors: Support our nonprofit dream
-
     Your support helps us:
     - Add more lessons
-    - Launch in Swahili, Yoruba, Amharic
+    - Launch Krahn, Grebo, Ga-Adanbe,  Yoruba, Ewe , Fante
     - Reach refugee camps, rural schools, youth centers
-
     We’re not here for fame.  
     We’re here for **you**.
-
     So keep learning.  
     Keep sharing.  
     Keep believing.
-
     Because this isn’t just an app.  
     It’s **your future**.
-
     ---
-
     ### This Is Just the Beginning
-
     One day, ShineGPT will speak every African language.  
     One day, it will run on $10 phones.  
     One day, it will teach millions.
-
+    one day, it will speak to you and hear you
     But today —  
     We say:  
     **Thank you.**  
     For opening this app.  
     For wanting to grow.
-
     Keep going.  
     Keep asking.  
     Keep shining.
-
     ShineGPT is here —  
     not to replace you,  
     but to **lift you**.
-
     — From the heart of Africa,  
     For every learner who dares to rise.
     """, unsafe_allow_html=False)
