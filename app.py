@@ -1,11 +1,12 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
-import re
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
     st.session_state.mode = None  # None, 'sms', 'online'
+if 'user_points' not in st.session_state:
+    st.session_state.user_points = 0
+if 'current_lesson' not in st.session_state:
+    st.session_state.current_lesson = 1
 
 # ------------------- 50 REAL LESSONS ON 4TH INDUSTRIAL REVOLUTION (4IR) -------------------
 lessons = {
@@ -66,45 +67,9 @@ def get_lesson_text(lesson_num):
     return lessons.get(lesson_num, "Lesson not found.")
 
 def add_points(points):
-    if 'user_points' not in st.session_state:
-        st.session_state.user_points = 0
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: GET TOP GOOGLE RESULT -------------------
-def get_google_answer(query):
-    try:
-        search_term = query.replace(" ", "+")
-        url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
-        
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
-        }
-        
-        response = requests.get(url, headers=headers, timeout=8)
-        response.raise_for_status()
-        
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        first_paragraph = soup.find('p')
-        if first_paragraph:
-            text = first_paragraph.get_text().strip()
-            text = re.sub(r'\s+', ' ', text)
-            if len(text) > 10:
-                return text
-        
-        main_content = soup.find('div', {'class': ['BNeawe', 's3v9rd', 'AP7Wnd']})
-        if main_content:
-            text = main_content.get_text().strip()
-            text = re.sub(r'\s+', ' ', text)
-            if len(text) > 10:
-                return text
-        
-        return f"I found a page about '{query}' — but couldn't extract a clear answer. Try asking again in simple words."
-        
-    except Exception as e:
-        return f"⚠️ Could not connect to the internet. Please check your connection and try again."
-
-# ------------------- STYLING — FAST, CLEAN, ONE-TAP RESPONSIVE -------------------
+# ------------------- STYLING — FAST, CLEAN, FOCUSED -------------------
 st.markdown(
     """
     <style>
@@ -153,7 +118,7 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Mode Buttons — BIG, EASY TO TAP, FAST RESPONSE */
+    /* Mode Buttons — BIG, FAST, ONE-TAP */
     .mode-btn {
         background-color: #1a1a1a;
         color: #D4AF37;
@@ -175,7 +140,7 @@ st.markdown(
         transform: translateY(-1px);
     }
 
-    /* Mode Description — ONE SIMPLE SENTENCE */
+    /* Mode Description */
     .mode-desc {
         text-align: center;
         color: #ccc;
@@ -197,38 +162,38 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send and Back Buttons — SMALL, BOLD, HORIZONTAL — HTML BUTTONS */
-    .btn-container {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin: 1.5rem auto;
-        width: 100%;
-        max-width: 600px;
-    }
-    .btn-container .btn {
+    /* Send Button — SMALL, FAST, BOLD */
+    .stButton > button {
+        background-color: #D32F2F !important;
+        color: white !important;
         font-weight: 700 !important;
-        font-size: 1.0rem !important;
-        padding: 8px 16px !important;
+        font-size: 1.2rem !important;
+        padding: 10px 20px !important;
+        margin: 1rem auto !important;
+        display: block !important;
+        width: 70% !important;
+        max-width: 300px !important;
         border-radius: 12px !important;
         border: none !important;
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
-        min-width: 100px;
-        text-align: center;
-        transition: all 0.1s ease;
     }
-    .btn-container .send-btn {
-        background-color: #D32F2F !important;
-        color: white !important;
-    }
-    .btn-container .back-btn {
+
+    /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS */
+    .back-btn {
         background-color: #222 !important;
         color: #D4AF37 !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        padding: 8px 16px !important;
+        margin: 1rem auto !important;
+        display: block !important;
+        width: 70% !important;
+        max-width: 300px !important;
+        border-radius: 12px !important;
         border: 1px solid #D4AF37 !important;
-    }
-    .btn-container .btn:active {
-        transform: scale(0.98);
+        cursor: pointer !important;
+        font-family: 'Arial', sans-serif;
     }
 
     /* Answer Box */
@@ -252,16 +217,14 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
-        .btn-container .btn { font-size: 0.9rem !important; padding: 6px 14px !important; }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — BRAND + TWO WORKING BUTTONS -------------------
+# ------------------- HOME PAGE — BRAND + TWO BUTTONS -------------------
 if st.session_state.mode is None:
-    # ------------------- YOUR BRAND — SACRED, CENTERED, UNCHANGED -------------------
     st.markdown(
         """
         <div class="brand-container">
@@ -275,27 +238,25 @@ if st.session_state.mode is None:
         unsafe_allow_html=True,
     )
 
-    # ------------------- SMS MODE BUTTON — ONE-TAP RESPONSIVE -------------------
     if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
-        st.rerun()  # Force instant refresh — no delay
+        st.rerun()
 
     st.markdown(
         "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works without data.</div>",
         unsafe_allow_html=True
     )
 
-    # ------------------- ONLINE MODE BUTTON — ONE-TAP RESPONSIVE -------------------
     if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get the best answer from the web."):
         st.session_state.mode = 'online'
-        st.rerun()  # Force instant refresh — no delay
+        st.rerun()
 
     st.markdown(
         "<div class='mode-desc'>Have internet? Ask anything — get the best answer from the web. No login needed.</div>",
         unsafe_allow_html=True
     )
 
-# ------------------- SMS MODE — INSTANT RESPONSE -------------------
+# ------------------- SMS MODE — INSTANT, SIMPLE, RELIABLE -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
@@ -306,58 +267,54 @@ elif st.session_state.mode == 'sms':
         key="sms_input"
     )
 
-    # --- HORIZONTAL HTML BUTTONS: Send and Back ---
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
-            if user_input:
-                user_input_lower = user_input.strip().lower()
-                
-                if user_input_lower == "help":
-                    response = """
+    if st.button("Send", key="send_sms"):
+        if user_input:
+            user_input_lower = user_input.strip().lower()
+            
+            if user_input_lower == "help":
+                response = """
 Available commands:
 - type 'lesson 1' to start
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
 No internet needed! All lessons work offline.
-                    """
+                """
+                st.success(response)
+                
+            elif user_input_lower == "points":
+                response = f"🎉 You have {st.session_state.user_points} points!"
+                st.success(response)
+                
+            elif user_input_lower == "hello":
+                response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
+                st.success(response)
+                
+            elif user_input_lower.startswith("lesson "):
+                try:
+                    lesson_num = int(user_input_lower.split()[-1])
+                    if lesson_num < 1:
+                        response = "Start with lesson 1!"
+                    elif lesson_num > 50:
+                        response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                    else:
+                        response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
+                        add_points(10)
+                        st.session_state.current_lesson = lesson_num
                     st.success(response)
-                    
-                elif user_input_lower == "points":
-                    response = f"🎉 You have {st.session_state.user_points} points!"
+                except:
+                    response = "Type 'lesson 1' to start."
                     st.success(response)
-                    
-                elif user_input_lower == "hello":
-                    response = "Hello! 👋 Type 'lesson 1' to begin your journey with ShineGPT."
-                    st.success(response)
-                    
-                elif user_input_lower.startswith("lesson "):
-                    try:
-                        lesson_num = int(user_input_lower.split()[-1])
-                        if lesson_num < 1:
-                            response = "Start with lesson 1!"
-                        elif lesson_num > 50:
-                            response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
-                        else:
-                            response = get_lesson_text(lesson_num) + f"\n\n✨ You earned 10 points! Type 'lesson {lesson_num + 1}' to continue."
-                            add_points(10)
-                            st.session_state.current_lesson = lesson_num
-                        st.success(response)
-                    except:
-                        response = "Type 'lesson 1' to start."
-                        st.success(response)
-                else:
-                    response = "I don't understand. Try typing 'lesson 1'."
-                    st.success(response)
-            st.rerun()  # Force instant refresh after send
+            else:
+                response = "I don't understand. Try typing 'lesson 1'."
+                st.success(response)
 
-    with col2:
-        if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
-            st.session_state.mode = None
-            st.rerun()  # Force instant refresh
+    # ✅ ALWAYS SHOW BACK BUTTON — NO EXCEPTIONS
+    if st.button("← Back to Home", key="back_home_sms", class_name="back-btn"):
+        st.session_state.mode = None
+        st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT RESPONSE -------------------
+# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Best Answer from the Web</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get the top answer from the internet.</div>", unsafe_allow_html=True)
@@ -368,20 +325,41 @@ elif st.session_state.mode == 'online':
         key="online_input"
     )
 
-    # --- HORIZONTAL HTML BUTTONS: Send and Back ---
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.markdown('<button class="btn send-btn">Send</button>', unsafe_allow_html=True):
-            if user_input:
-                with st.spinner("🔍 Finding the best answer..."):
-                    answer = get_google_answer(user_input)
-                st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
-            st.rerun()  # Force instant refresh after send
+    if st.button("Send", key="send_online"):
+        if user_input:
+            try:
+                search_term = user_input.replace(" ", "+")
+                url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
+                
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+                }
+                
+                response = requests.get(url, headers=headers, timeout=6)
+                response.raise_for_status()
+                
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                first_paragraph = soup.find('p')
+                if first_paragraph:
+                    text = first_paragraph.get_text().strip()
+                    text = " ".join(text.split())
+                    if len(text) > 10:
+                        st.markdown(f"<div class='answer-box'>{text}</div>", unsafe_allow_html=True)
+                        st.rerun()
+                
+                st.markdown("<div class='answer-box'>I found a page, but couldn't extract a clear answer. Try asking in simple words.</div>", unsafe_allow_html=True)
+                st.rerun()
+                
+            except:
+                st.markdown("<div class='answer-box'>⚠️ Could not connect to the internet. Please check your connection and try again.</div>", unsafe_allow_html=True)
+                st.rerun()
 
-    with col2:
-        if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
-            st.session_state.mode = None
-            st.rerun()  # Force instant refresh
+    # ✅ ALWAYS SHOW BACK BUTTON — NO EXCEPTIONS
+    if st.button("← Back to Home", key="back_home_online", class_name="back-btn"):
+        st.session_state.mode = None
+        st.rerun()
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
