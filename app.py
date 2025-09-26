@@ -1,6 +1,5 @@
 import streamlit as st
 import requests
-import json
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
@@ -71,33 +70,34 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: GET CLEAN WIKIPEDIA SUMMARY -------------------
-def get_wikipedia_summary(query):
+# ------------------- ONLINE MODE: USE MISTRAL 7B INSTRUCT VIA HF INFERENCE API -------------------
+# Free, open-source, nonprofit-friendly, works on Hugging Face Spaces
+def ask_mistral(question):
     try:
-        # Wikipedia API endpoint
-        url = "https://en.wikipedia.org/api/rest_v1/page/summary/"
-        # Clean query for URL
-        search_term = query.replace(" ", "_")
-        full_url = url + search_term
-        
-        headers = {
-            "User-Agent": "ShineGPT/1.0 (KS1 Empire Foundation; https://huggingface.co/spaces/your-space)"
+        API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
+        headers = {"Authorization": "Bearer hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
+
+        payload = {
+            "inputs": f"<s>[INST] You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. Answer clearly, simply, and kindly. Avoid jargon. If you don't know, say so. Do not use markdown. Answer in one short paragraph. Question: {question} [/INST]",
+            "parameters": {
+                "max_new_tokens": 300,
+                "temperature": 0.3,
+                "top_p": 0.9,
+                "do_sample": False
+            }
         }
-        
-        response = requests.get(full_url, headers=headers, timeout=6)
-        
-        if response.status_code == 200:
-            data = response.json()
-            extract = data.get("extract", "").strip()
-            if extract and len(extract) > 10:
-                return extract
-            else:
-                return f"I couldn't find a clear summary for '{query}'. Try asking in simpler words."
-        else:
-            return f"I couldn't find information about '{query}'. Try another question."
-            
+
+        response = requests.post(API_URL, headers=headers, json=payload, timeout=10)
+        result = response.json()
+
+        if "error" in result:
+            return f"⚠️ Could not connect to the AI. Switch to SMS Mode. Type 'lesson 1' to learn offline."
+
+        answer = result[0]["generated_text"].split("[/INST]")[-1].strip()
+        return answer
+
     except Exception as e:
-        return f"⚠️ Could not connect to the internet. Switch to SMS Mode. Type 'lesson 1' to learn offline."
+        return f"⚠️ Could not connect to the AI. Switch to SMS Mode. Type 'lesson 1' to learn offline."
 
 # ------------------- STYLING — FAST, CLEAN, RELIABLE -------------------
 st.markdown(
@@ -277,12 +277,12 @@ if st.session_state.mode is None:
         unsafe_allow_html=True
     )
 
-    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from Wikipedia."):
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get a clear answer from AI. No login needed."):
         st.session_state.mode = 'online'
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from Wikipedia. No login needed.</div>",
+        "<div class='mode-desc'>Have internet? Ask anything — get a clear answer from AI. No login needed.</div>",
         unsafe_allow_html=True
     )
 
@@ -344,10 +344,10 @@ No internet needed! All lessons work offline.
         st.session_state.mode = None
         st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — FIXED -------------------
+# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — USING MISTRAL AI -------------------
 elif st.session_state.mode == 'online':
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Clear Answers from Wikipedia</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a simple, clear answer.</div>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by Free AI</h2>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -357,7 +357,8 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            answer = get_wikipedia_summary(user_input)
+            with st.spinner("🧠 Thinking..."):
+                answer = ask_mistral(user_input)
             st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
         st.rerun()  # Always refresh after send
 
