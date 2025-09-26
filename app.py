@@ -1,4 +1,6 @@
 import streamlit as st
+import requests
+from bs4 import BeautifulSoup
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
@@ -69,7 +71,43 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — FAST, CLEAN, FOCUSED -------------------
+# ------------------- ONLINE MODE: GET TOP GOOGLE RESULT -------------------
+def get_google_answer(query):
+    try:
+        search_term = query.replace(" ", "+")
+        url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+        }
+        
+        response = requests.get(url, headers=headers, timeout=6)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Get the first clear paragraph
+        first_paragraph = soup.find('p')
+        if first_paragraph:
+            text = first_paragraph.get_text().strip()
+            text = " ".join(text.split())
+            if len(text) > 10:
+                return text
+        
+        # Fallback: try main content div
+        main_content = soup.find('div', {'class': ['BNeawe', 's3v9rd', 'AP7Wnd']})
+        if main_content:
+            text = main_content.get_text().strip()
+            text = " ".join(text.split())
+            if len(text) > 10:
+                return text
+        
+        return "I found a page, but couldn't extract a clear answer. Try asking in simple words."
+        
+    except Exception as e:
+        return f"⚠️ Could not connect to the internet. Please check your connection and try again."
+
+# ------------------- STYLING — FAST, CLEAN, RELIABLE -------------------
 st.markdown(
     """
     <style>
@@ -179,13 +217,13 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS */
-    .back-btn {
+    /* Back Button — ALWAYS VISIBLE, ALWAYS WORKS — USE STREAMLIT DEFAULT STYLE */
+    .back-btn-style {
         background-color: #222 !important;
         color: #D4AF37 !important;
         font-weight: 700 !important;
         font-size: 1.1rem !important;
-        padding: 8px 16px !important;
+        padding: 10px 20px !important;
         margin: 1rem auto !important;
         display: block !important;
         width: 70% !important;
@@ -309,8 +347,8 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'lesson 1'."
                 st.success(response)
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO EXCEPTIONS
-    if st.button("← Back to Home", key="back_home_sms", class_name="back-btn"):
+    # ✅ ALWAYS SHOW BACK BUTTON — NO CLASS_NAME, JUST ST.BUTTON
+    if st.button("← Back to Home", key="back_home_sms"):
         st.session_state.mode = None
         st.rerun()
 
@@ -327,37 +365,12 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            try:
-                search_term = user_input.replace(" ", "+")
-                url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
-                
-                headers = {
-                    "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
-                }
-                
-                response = requests.get(url, headers=headers, timeout=6)
-                response.raise_for_status()
-                
-                from bs4 import BeautifulSoup
-                soup = BeautifulSoup(response.text, 'html.parser')
-                
-                first_paragraph = soup.find('p')
-                if first_paragraph:
-                    text = first_paragraph.get_text().strip()
-                    text = " ".join(text.split())
-                    if len(text) > 10:
-                        st.markdown(f"<div class='answer-box'>{text}</div>", unsafe_allow_html=True)
-                        st.rerun()
-                
-                st.markdown("<div class='answer-box'>I found a page, but couldn't extract a clear answer. Try asking in simple words.</div>", unsafe_allow_html=True)
-                st.rerun()
-                
-            except:
-                st.markdown("<div class='answer-box'>⚠️ Could not connect to the internet. Please check your connection and try again.</div>", unsafe_allow_html=True)
-                st.rerun()
+            answer = get_google_answer(user_input)
+            st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
+        st.rerun()  # Always refresh after send — even if empty
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO EXCEPTIONS
-    if st.button("← Back to Home", key="back_home_online", class_name="back-btn"):
+    # ✅ ALWAYS SHOW BACK BUTTON — NO CLASS_NAME, JUST ST.BUTTON
+    if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
         st.rerun()
 
