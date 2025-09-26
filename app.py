@@ -120,7 +120,7 @@ You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. 
     answer = response.split("<|assistant|>")[-1].strip()
     return answer if answer else "I'm not sure. Try asking in a simpler way."
 
-# ------------------- STYLING — CLEAN, ADDICTIVE, PROFESSIONAL -------------------
+# ------------------- STYLING — CLEAN, CALM, HUMAN -------------------
 st.markdown(
     """
     <style>
@@ -247,7 +247,7 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Answer Box — CLEAN, ELEGANT, NO CLUTTER */
+    /* Answer Box — CLEAN, ELEGANT */
     .answer-box {
         background-color: #111;
         padding: 25px;
@@ -261,21 +261,6 @@ st.markdown(
         white-space: pre-line;
         border: 1px solid #333;
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
-    }
-
-    /* Points Display — GOLDEN, GLOWING, ADDICTIVE */
-    .points-display {
-        font-size: 1.8rem !important;
-        font-weight: 800 !important;
-        color: #D4AF37 !important;
-        text-align: center !important;
-        margin: 0.5rem 0 !important;
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-        animation: glow 1.5s ease-in-out infinite alternate;
-    }
-    @keyframes glow {
-        from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
-        to { text-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.7); }
     }
 
     /* Celebration Message */
@@ -297,33 +282,19 @@ st.markdown(
         50% { transform: translateY(-10px); }
     }
 
-    /* About Page Styling */
-    .about-content {
-        background-color: #111;
-        padding: 2.5rem;
-        border-radius: 18px;
-        border-left: 5px solid #D4AF37;
-        margin: 2rem auto;
-        max-width: 700px;
-        color: #e0e0e0;
-        font-size: 1.3rem;
-        line-height: 1.8;
-    }
-    .about-content h2 {
+    /* Points Display — GOLDEN, GLOWING */
+    .points-display {
+        font-size: 1.8rem !important;
+        font-weight: 800 !important;
         color: #D4AF37 !important;
-        margin-bottom: 1.5rem;
-        text-align: center;
+        text-align: center !important;
+        margin: 0.5rem 0 !important;
+        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        animation: glow 1.5s ease-in-out infinite alternate;
     }
-    .about-content p {
-        margin-bottom: 1.2rem;
-        color: #e0e0e0;
-        line-height: 1.7;
-    }
-    .about-content strong {
-        color: #D4AF37;
-    }
-    .about-content em {
-        color: #ccc;
+    @keyframes glow {
+        from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+        to { text-shadow: 0 0 20px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.7); }
     }
 
     /* Mobile Responsive */
@@ -335,7 +306,6 @@ st.markdown(
         .mode-desc { font-size: 1.2rem !important; }
         .points-display { font-size: 1.6rem !important; }
         .celebration { font-size: 1.2rem !important; }
-        .about-content { padding: 2rem; font-size: 1.2rem !important; }
     }
     </style>
     """,
@@ -377,7 +347,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
         unsafe_allow_html=True
     )
 
-    if st.button("📖 About ShineGPT", key="btn_about", help="Learn why ShineGPT was created for learners like you."):
+    if st.button("📖 About ShineGPT", key="btn_about", help="Learn why ShineGPT was made for learners like you."):
         st.session_state.show_about = True
         st.rerun()
 
@@ -386,7 +356,7 @@ elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses and celebrations — no user input shown
+    # Show only AI responses — not user messages
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -463,7 +433,7 @@ elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
-    # Show only AI responses — no user input shown
+    # Show only AI answers — not user questions
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -487,37 +457,57 @@ elif st.session_state.mode == 'online':
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — CLEAR, HUMAN, BEAUTIFUL -------------------
+# ------------------- ABOUT PAGE — HUMAN, WARM, SIMPLE — FOR KIDS -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
-    
+
     st.markdown(
         """
-        <div class="about-content">
-            <p>ShineGPT was created for you —<br>the child in the village with no internet,<br>the student with a cracked screen,<br>the learner who was told the future isn’t for you.</p>
-            
-            <p>It was built by the <strong>KS1 Empire Foundation</strong> — a nonprofit that believes every child, no matter where they live, deserves to learn about the future.</p>
-            
-            <p>There are no ads.<br>No trackers.<br>No paywalls.<br>No app to download.<br>Just a quiet space where you can type one question —<br>and get a clear, kind answer.</p>
-            
-            <p>Each lesson you complete earns you 10 points —<br>not for a prize,<br>but because <strong>you’re growing</strong>.</p>
-            
-            <p>You don’t need to be smart.<br>You just need to be curious.</p>
-            
-            <p>This isn’t technology for the rich.</p>
-            <p>This is knowledge for the brave.</p>
-            
-            <p>So keep going.</p>
-            <p>One lesson. One point. One step.</p>
-            <p>You’re not just learning.</p>
-            <p>You’re becoming.</p>
-            
-            <p style='margin-top: 3rem; text-align: center; font-style: italic; color: #D4AF37; font-size: 1.4rem;'>
-                — ShineGPT, for learners like you.
-            </p>
-        </div>
+        ### We built this for YOU.
+
+        ShineGPT was created for every child who has ever been told:  
+        *“You don’t have the right phone.”*  
+        *“You’re too far from school.”*  
+        *“You’re not smart enough.”*
+
+        That’s not true.
+
+        You are smart.  
+        You are curious.  
+        You are brave.
+
+        This app was built by the **KS1 Empire Foundation** — a nonprofit that believes knowledge should be free, simple, and available to everyone — no matter where they live.
+
+        There are:
+        - ❌ No ads  
+        - ❌ No tracking  
+        - ❌ No paywalls  
+        - ❌ No downloads  
+
+        Just a quiet space where you can type one question — and get a clear answer.
+
+        Every lesson you complete earns you 10 points — not because we want to sell something — but because **you’re growing**.
+
+        You don’t need to be rich.  
+        You don’t need fast internet.  
+        You don’t need permission.
+
+        You just need to keep asking.
+
+        Keep learning.
+
+        Keep believing.
+
+        Keep shining.
+
+        Because you are not alone.
+
+        ShineGPT is here —  
+        for every learner who dares to dream.
+
+        — From our hearts to yours.
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=False  # Use Streamlit's native Markdown rendering
     )
 
     if st.button("← Back to Home", key="back_home_about"):
@@ -535,4 +525,4 @@ st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
 st.sidebar.caption("You’re becoming a 4IR Hero!")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
-st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
+st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True
