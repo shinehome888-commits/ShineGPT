@@ -73,7 +73,6 @@ def add_points(points):
 # ------------------- ONLINE MODE: GET TOP GOOGLE RESULT -------------------
 def get_google_answer(query):
     try:
-        # Clean query for URL
         search_term = query.replace(" ", "+")
         url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
         
@@ -86,16 +85,13 @@ def get_google_answer(query):
         
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Try to find the first paragraph from the top result
         first_paragraph = soup.find('p')
         if first_paragraph:
             text = first_paragraph.get_text().strip()
-            # Clean up extra spaces and newlines
             text = re.sub(r'\s+', ' ', text)
             if len(text) > 10:
                 return text
         
-        # Fallback: try to get the main content div
         main_content = soup.find('div', {'class': ['BNeawe', 's3v9rd', 'AP7Wnd']})
         if main_content:
             text = main_content.get_text().strip()
@@ -103,13 +99,12 @@ def get_google_answer(query):
             if len(text) > 10:
                 return text
         
-        # Last fallback: return a helpful message
         return f"I found a page about '{query}' — but couldn't extract a clear answer. Try asking again in simple words."
         
     except Exception as e:
         return f"⚠️ Could not connect to the internet. Please check your connection and try again."
 
-# ------------------- STYLING — CLEAN, SMALL, HORIZONTAL BUTTONS -------------------
+# ------------------- STYLING — FAST, CLEAN, ONE-TAP RESPONSIVE -------------------
 st.markdown(
     """
     <style>
@@ -158,7 +153,7 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Mode Buttons — BIG, EASY TO TAP */
+    /* Mode Buttons — BIG, EASY TO TAP, FAST RESPONSE */
     .mode-btn {
         background-color: #1a1a1a;
         color: #D4AF37;
@@ -173,11 +168,11 @@ st.markdown(
         width: 85%;
         max-width: 500px;
         box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
-        transition: all 0.2s ease;
+        transition: all 0.1s ease;
     }
     .mode-btn:hover {
         background-color: #222;
-        transform: translateY(-2px);
+        transform: translateY(-1px);
     }
 
     /* Mode Description — ONE SIMPLE SENTENCE */
@@ -221,6 +216,7 @@ st.markdown(
         font-family: 'Arial', sans-serif;
         min-width: 100px;
         text-align: center;
+        transition: all 0.1s ease;
     }
     .btn-container .send-btn {
         background-color: #D32F2F !important;
@@ -231,8 +227,8 @@ st.markdown(
         color: #D4AF37 !important;
         border: 1px solid #D4AF37 !important;
     }
-    .btn-container .btn:hover {
-        opacity: 0.9;
+    .btn-container .btn:active {
+        transform: scale(0.98);
     }
 
     /* Answer Box */
@@ -279,25 +275,27 @@ if st.session_state.mode is None:
         unsafe_allow_html=True,
     )
 
-    # ------------------- SMS MODE BUTTON + EXPLANATION -------------------
+    # ------------------- SMS MODE BUTTON — ONE-TAP RESPONSIVE -------------------
     if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
+        st.rerun()  # Force instant refresh — no delay
 
     st.markdown(
         "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works without data.</div>",
         unsafe_allow_html=True
     )
 
-    # ------------------- ONLINE MODE BUTTON + EXPLANATION -------------------
+    # ------------------- ONLINE MODE BUTTON — ONE-TAP RESPONSIVE -------------------
     if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get the best answer from the web."):
         st.session_state.mode = 'online'
+        st.rerun()  # Force instant refresh — no delay
 
     st.markdown(
         "<div class='mode-desc'>Have internet? Ask anything — get the best answer from the web. No login needed.</div>",
         unsafe_allow_html=True
     )
 
-# ------------------- SMS MODE — SIMPLE, FAST, WORKS -------------------
+# ------------------- SMS MODE — INSTANT RESPONSE -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
@@ -352,12 +350,14 @@ No internet needed! All lessons work offline.
                 else:
                     response = "I don't understand. Try typing 'lesson 1'."
                     st.success(response)
+            st.rerun()  # Force instant refresh after send
 
     with col2:
         if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
+            st.rerun()  # Force instant refresh
 
-# ------------------- ONLINE MODE — FAST, CLEAN, TOP ANSWER FROM ENTIRE INTERNET -------------------
+# ------------------- ONLINE MODE — INSTANT RESPONSE -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Best Answer from the Web</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get the top answer from the internet.</div>", unsafe_allow_html=True)
@@ -375,12 +375,13 @@ elif st.session_state.mode == 'online':
             if user_input:
                 with st.spinner("🔍 Finding the best answer..."):
                     answer = get_google_answer(user_input)
-                
                 st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
+            st.rerun()  # Force instant refresh after send
 
     with col2:
         if st.markdown('<button class="btn back-btn">← Back</button>', unsafe_allow_html=True):
             st.session_state.mode = None
+            st.rerun()  # Force instant refresh
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
