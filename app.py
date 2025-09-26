@@ -1,4 +1,7 @@
 import streamlit as st
+import requests
+from bs4 import BeautifulSoup
+import re
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
@@ -67,7 +70,46 @@ def add_points(points):
         st.session_state.user_points = 0
     st.session_state.user_points += points
 
-# ------------------- STYLING — FAST, CLEAN, CALM -------------------
+# ------------------- ONLINE MODE: GET TOP GOOGLE RESULT -------------------
+def get_google_answer(query):
+    try:
+        # Clean query for URL
+        search_term = query.replace(" ", "+")
+        url = f"https://www.google.com/search?q={search_term}&btnI=I%27m+Feeling+Lucky"
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Linux; Android 10; SM-A205U) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+        }
+        
+        response = requests.get(url, headers=headers, timeout=8)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Try to find the first paragraph from the top result
+        first_paragraph = soup.find('p')
+        if first_paragraph:
+            text = first_paragraph.get_text().strip()
+            # Clean up extra spaces and newlines
+            text = re.sub(r'\s+', ' ', text)
+            if len(text) > 10:
+                return text
+        
+        # Fallback: try to get the main content div
+        main_content = soup.find('div', {'class': ['BNeawe', 's3v9rd', 'AP7Wnd']})
+        if main_content:
+            text = main_content.get_text().strip()
+            text = re.sub(r'\s+', ' ', text)
+            if len(text) > 10:
+                return text
+        
+        # Last fallback: return a helpful message
+        return f"I found a page about '{query}' — but couldn't extract a clear answer. Try asking again in simple words."
+        
+    except Exception as e:
+        return f"⚠️ Could not connect to the internet. Please check your connection and try again."
+
+# ------------------- STYLING — SMALL, ELEGANT, CALM -------------------
 st.markdown(
     """
     <style>
@@ -116,7 +158,7 @@ st.markdown(
         opacity: 0.9;
     }
 
-    /* Mode Buttons — BIG, EASY TO TAP, FAST TO CLICK */
+    /* Mode Buttons — BIG, EASY TO TAP */
     .mode-btn {
         background-color: #1a1a1a;
         color: #D4AF37;
@@ -160,32 +202,56 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2) !important;
     }
 
-    /* Send Button — Small, Clean, Fast */
+    /* Send Button — SMALL AND CLEAN */
     .stButton > button {
         background-color: #D32F2F !important;
         color: white !important;
         font-weight: 700 !important;
-        font-size: 1.3rem !important;
-        padding: 12px 28px !important;
-        margin: 1.5rem auto !important;
+        font-size: 1.1rem !important;
+        padding: 8px 16px !important;
+        margin: 1rem auto !important;
         display: block !important;
-        width: 80% !important;
-        max-width: 400px !important;
-        border-radius: 18px !important;
+        width: 70% !important;
+        max-width: 300px !important;
+        border-radius: 12px !important;
         border: none !important;
         cursor: pointer !important;
         font-family: 'Arial', sans-serif;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    /* Iframe Container */
-    .iframe-container {
-        margin: 2rem auto;
-        width: 100%;
-        height: 500px;
-        border: 2px solid #D4AF37;
+    /* Answer Box */
+    .answer-box {
+        background-color: #111;
+        padding: 20px;
         border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+        border-left: 4px solid #D4AF37;
+        margin: 1.5rem auto;
+        max-width: 700px;
+        color: #e0e0e0;
+        font-size: 1.3rem;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
+    /* Back Button — SMALL AND SUBTLE */
+    .back-btn {
+        background-color: #222 !important;
+        color: #D4AF37 !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        padding: 8px 16px !important;
+        margin: 1rem auto !important;
+        display: block !important;
+        width: 70% !important;
+        max-width: 300px !important;
+        border-radius: 12px !important;
+        border: 1px solid #D4AF37 !important;
+        cursor: pointer !important;
+        font-family: 'Arial', sans-serif;
+    }
+    .back-btn:hover {
+        background-color: #333 !important;
     }
 
     /* Mobile Responsive */
@@ -195,6 +261,8 @@ st.markdown(
         .brand-footer { font-size: 1.2rem !important; }
         .mode-btn { font-size: 1.6rem !important; padding: 20px 30px !important; }
         .mode-desc { font-size: 1.2rem !important; }
+        .stButton > button { font-size: 1.0rem !important; padding: 6px 14px !important; }
+        .back-btn { font-size: 1.0rem !important; padding: 6px 14px !important; }
     }
     </style>
     """,
@@ -227,11 +295,11 @@ if st.session_state.mode is None:
     )
 
     # ------------------- ONLINE MODE BUTTON + EXPLANATION -------------------
-    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get answers from Wikipedia."):
+    if st.button("🌐 Online Mode", key="btn_online", help="Have internet? Ask anything — get the best answer from the web."):
         st.session_state.mode = 'online'
 
     st.markdown(
-        "<div class='mode-desc'>Have internet? Ask anything — get answers from Wikipedia. No login needed.</div>",
+        "<div class='mode-desc'>Have internet? Ask anything — get the best answer from the web. No login needed.</div>",
         unsafe_allow_html=True
     )
 
@@ -288,14 +356,14 @@ No internet needed! All lessons work offline.
                 response = "I don't understand. Try typing 'lesson 1'."
                 st.success(response)
 
-    # ------------------- Back Button -------------------
-    if st.button("⬅️ Back to Home", key="back_home_sms"):
+    # ------------------- Back Button — SMALL -------------------
+    if st.button("← Back", key="back_home_sms", class_name="back-btn"):
         st.session_state.mode = None
 
-# ------------------- ONLINE MODE — FAST, CLEAN, WORKS -------------------
+# ------------------- ONLINE MODE — FAST, CLEAN, TOP ANSWER FROM ENTIRE INTERNET -------------------
 elif st.session_state.mode == 'online':
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Explore the World</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' or 'How does blockchain work?'</div>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Best Answer from the Web</h2>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get the top answer from the internet.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
         label="",
@@ -305,17 +373,13 @@ elif st.session_state.mode == 'online':
 
     if st.button("Send", key="send_online"):
         if user_input:
-            search_term = user_input.replace(" ", "+")
-            wikipedia_url = f"https://en.wikipedia.org/wiki/Special:Search?search={search_term}"
+            with st.spinner("🔍 Finding the best answer..."):
+                answer = get_google_answer(user_input)
             
-            st.markdown(f"""
-                <div class="iframe-container">
-                    <iframe src="{wikipedia_url}" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-                </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
 
-    # ------------------- Back Button -------------------
-    if st.button("⬅️ Back to Home", key="back_home_online"):
+    # ------------------- Back Button — SMALL -------------------
+    if st.button("← Back", key="back_home_online", class_name="back-btn"):
         st.session_state.mode = None
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
