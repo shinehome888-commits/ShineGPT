@@ -1,5 +1,6 @@
-import streamlit as st
-import requests
+impoimport streamlit as st
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
 
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
@@ -70,34 +71,51 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- ONLINE MODE: USE MISTRAL 7B INSTRUCT VIA HF INFERENCE API -------------------
-# Free, open-source, nonprofit-friendly, works on Hugging Face Spaces
-def ask_mistral(question):
+# ------------------- ONLINE MODE: LOAD TINYLLAMA LOCALLY — NO API, NO BLOCKS -------------------
+# This model runs entirely inside Hugging Face Space — no external calls
+@st.cache_resource
+def load_model():
     try:
-        API_URL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2"
-        headers = {"Authorization": "Bearer hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"}
-
-        payload = {
-            "inputs": f"<s>[INST] You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. Answer clearly, simply, and kindly. Avoid jargon. If you don't know, say so. Do not use markdown. Answer in one short paragraph. Question: {question} [/INST]",
-            "parameters": {
-                "max_new_tokens": 300,
-                "temperature": 0.3,
-                "top_p": 0.9,
-                "do_sample": False
-            }
-        }
-
-        response = requests.post(API_URL, headers=headers, json=payload, timeout=10)
-        result = response.json()
-
-        if "error" in result:
-            return f"⚠️ Could not connect to the AI. Switch to SMS Mode. Type 'lesson 1' to learn offline."
-
-        answer = result[0]["generated_text"].split("[/INST]")[-1].strip()
-        return answer
-
+        tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+        model = AutoModelForCausalLM.from_pretrained(
+            "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+            torch_dtype=torch.float16,
+            device_map="auto",
+            low_cpu_mem_usage=True
+        )
+        return tokenizer, model
     except Exception as e:
-        return f"⚠️ Could not connect to the AI. Switch to SMS Mode. Type 'lesson 1' to learn offline."
+        return None, None
+
+# Initialize model on first load
+tokenizer, model = load_model()
+
+def ask_tinyllama(question):
+    if tokenizer is None or model is None:
+        return "⚠️ Could not load the AI. Switch to SMS Mode. Type 'lesson 1' to learn offline."
+
+    prompt = f"""<|system|>
+You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. Answer clearly, simply, and kindly. Avoid jargon. If you don't know, say so. Do not use markdown. Answer in one short paragraph.
+<|user|>
+{question}
+<|assistant|>"""
+
+    inputs = tokenizer(prompt, return_tensors="pt").to("cuda" if torch.cuda.is_available() else "cpu")
+
+    with torch.no_grad():
+        outputs = model.generate(
+            inputs.input_ids,
+            max_new_tokens=200,
+            temperature=0.3,
+            top_p=0.9,
+            do_sample=True,
+            pad_token_id=tokenizer.eos_token_id
+        )
+
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    # Extract only the assistant's reply
+    answer = response.split("<|assistant|>")[-1].strip()
+    return answer if answer else "I'm not sure. Try asking in a simpler way."
 
 # ------------------- STYLING — FAST, CLEAN, RELIABLE -------------------
 st.markdown(
@@ -344,9 +362,9 @@ No internet needed! All lessons work offline.
         st.session_state.mode = None
         st.rerun()
 
-# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — USING MISTRAL AI -------------------
+# ------------------- ONLINE MODE — INSTANT, SIMPLE, RELIABLE — USING TINYLLAMA LOCALLY -------------------
 elif st.session_state.mode == 'online':
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by Free AI</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
     user_input = st.text_input(
@@ -358,7 +376,7 @@ elif st.session_state.mode == 'online':
     if st.button("Send", key="send_online"):
         if user_input:
             with st.spinner("🧠 Thinking..."):
-                answer = ask_mistral(user_input)
+                answer = ask_tinyllama(user_input)
             st.markdown(f"<div class='answer-box'>{answer}</div>", unsafe_allow_html=True)
         st.rerun()  # Always refresh after send
 
