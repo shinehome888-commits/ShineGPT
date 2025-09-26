@@ -11,6 +11,8 @@ if 'current_lesson' not in st.session_state:
     st.session_state.current_lesson = 1
 if 'last_lesson' not in st.session_state:
     st.session_state.last_lesson = 0
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
 if 'show_about' not in st.session_state:
     st.session_state.show_about = False
 
@@ -118,7 +120,7 @@ You are ShineGPT, a friendly AI teacher for students in low-connectivity areas. 
     answer = response.split("<|assistant|>")[-1].strip()
     return answer if answer else "I'm not sure. Try asking in a simpler way."
 
-# ------------------- STYLING — MAGIC, BEAUTY, ADDICTIVE -------------------
+# ------------------- STYLING — CLEAN, ADDICTIVE, PROFESSIONAL -------------------
 st.markdown(
     """
     <style>
@@ -245,7 +247,7 @@ st.markdown(
         font-family: 'Arial', sans-serif;
     }
 
-    /* Answer Box — CLEAN, ELEGANT, NO CHAT HISTORY CLUTTER */
+    /* Answer Box — CLEAN, ELEGANT, NO CLUTTER */
     .answer-box {
         background-color: #111;
         padding: 25px;
@@ -261,7 +263,7 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
     }
 
-    /* Points Display — GOLDEN, GLIMMERING, ADDICTIVE */
+    /* Points Display — GOLDEN, GLOWING, ADDICTIVE */
     .points-display {
         font-size: 1.8rem !important;
         font-weight: 800 !important;
@@ -314,6 +316,14 @@ st.markdown(
     }
     .about-content p {
         margin-bottom: 1.2rem;
+        color: #e0e0e0;
+        line-height: 1.7;
+    }
+    .about-content strong {
+        color: #D4AF37;
+    }
+    .about-content em {
+        color: #ccc;
     }
 
     /* Mobile Responsive */
@@ -325,7 +335,7 @@ st.markdown(
         .mode-desc { font-size: 1.2rem !important; }
         .points-display { font-size: 1.6rem !important; }
         .celebration { font-size: 1.2rem !important; }
-        .about-content { padding: 2rem !important; font-size: 1.2rem !important; }
+        .about-content { padding: 2rem; font-size: 1.2rem !important; }
     }
     </style>
     """,
@@ -371,12 +381,12 @@ if st.session_state.mode is None and not st.session_state.show_about:
         st.session_state.show_about = True
         st.rerun()
 
-# ------------------- SMS MODE — ADDICTIVE, CLEAN, CELEBRATORY -------------------
+# ------------------- SMS MODE — ADDICTIVE, CLEAN, MOTIVATING -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. No internet needed.</div>", unsafe_allow_html=True)
 
-    # Display only the AI’s answer — NOT the user’s question
+    # Show only AI responses and celebrations — no user input shown
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -392,6 +402,7 @@ elif st.session_state.mode == 'sms':
     if st.button("Send", key="send_sms"):
         if user_input:
             user_input_lower = user_input.strip().lower()
+            st.session_state.messages.append({"role": "user", "content": user_input})
 
             if user_input_lower == "help":
                 response = """
@@ -417,8 +428,10 @@ No internet needed! All lessons work offline.
                     lesson_num = int(user_input_lower.split()[-1])
                     if lesson_num < 1:
                         response = "Start with lesson 1!"
+                        st.session_state.messages.append({"role": "shingpt", "content": response})
                     elif lesson_num > 50:
                         response = "You've completed all 50 real lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                        st.session_state.messages.append({"role": "shingpt", "content": response})
                     else:
                         response = get_lesson_text(lesson_num)
                         st.session_state.messages.append({"role": "shingpt", "content": response})
@@ -426,7 +439,10 @@ No internet needed! All lessons work offline.
                         st.session_state.current_lesson = lesson_num
                         if lesson_num > st.session_state.last_lesson:
                             st.session_state.last_lesson = lesson_num
-                            st.session_state.messages.append({"role": "celebration", "content": "✨ You earned 10 points! You're becoming a 4IR Hero!"})
+                            st.session_state.messages.append({
+                                "role": "celebration",
+                                "content": "✨ You earned 10 points! You're becoming a 4IR Hero!"
+                            })
                 except:
                     response = "Type 'lesson 1' to start."
                     st.session_state.messages.append({"role": "shingpt", "content": response})
@@ -436,18 +452,18 @@ No internet needed! All lessons work offline.
 
         st.rerun()
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
+    # ✅ Always show back button
     if st.button("← Back to Home", key="back_home_sms"):
         st.session_state.mode = None
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ONLINE MODE — CLEAN, ELEGANT, ADDICTIVE -------------------
+# ------------------- ONLINE MODE — CLEAN, SIMPLE, ANSWERS STAY -------------------
 elif st.session_state.mode == 'online':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>🌐 Online Mode — Powered by TinyLlama AI</h2>", unsafe_allow_html=True)
     st.markdown("<div class='mode-desc'>Ask anything — like 'What is AI?' — and get a clear, kind answer.</div>", unsafe_allow_html=True)
 
-    # Display only the AI’s answer — NOT the user’s question
+    # Show only AI responses — no user input shown
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
@@ -465,28 +481,28 @@ elif st.session_state.mode == 'online':
             st.session_state.messages.append({"role": "shingpt", "content": answer})
         st.rerun()
 
-    # ✅ ALWAYS SHOW BACK BUTTON — NO ERRORS
+    # ✅ Always show back button
     if st.button("← Back to Home", key="back_home_online"):
         st.session_state.mode = None
         st.session_state.messages = []
         st.rerun()
 
-# ------------------- ABOUT PAGE — STORY, NOT TEXT -------------------
+# ------------------- ABOUT PAGE — CLEAR, HUMAN, BEAUTIFUL -------------------
 elif st.session_state.show_about:
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
     
     st.markdown(
         """
         <div class="about-content">
-            <p>ShineGPT was born in a village where the internet is slow, the phones are old, and the dreams are big.</p>
+            <p>ShineGPT was created for you —<br>the child in the village with no internet,<br>the student with a cracked screen,<br>the learner who was told the future isn’t for you.</p>
             
             <p>It was built by the <strong>KS1 Empire Foundation</strong> — a nonprofit that believes every child, no matter where they live, deserves to learn about the future.</p>
             
-            <p>There are no ads. No trackers. No paywalls. No apps to download. Just a quiet space where you can type one question — and get a clear, kind answer.</p>
+            <p>There are no ads.<br>No trackers.<br>No paywalls.<br>No app to download.<br>Just a quiet space where you can type one question —<br>and get a clear, kind answer.</p>
             
-            <p>Each lesson you complete earns you 10 points — not for a prize, but because <strong>you’re growing</strong>.</p>
+            <p>Each lesson you complete earns you 10 points —<br>not for a prize,<br>but because <strong>you’re growing</strong>.</p>
             
-            <p>You don’t need to be smart. You just need to be curious.</p>
+            <p>You don’t need to be smart.<br>You just need to be curious.</p>
             
             <p>This isn’t technology for the rich.</p>
             <p>This is knowledge for the brave.</p>
@@ -496,7 +512,9 @@ elif st.session_state.show_about:
             <p>You’re not just learning.</p>
             <p>You’re becoming.</p>
             
-            <p>— ShineGPT, for learners like you.</p>
+            <p style='margin-top: 3rem; text-align: center; font-style: italic; color: #D4AF37; font-size: 1.4rem;'>
+                — ShineGPT, for learners like you.
+            </p>
         </div>
         """,
         unsafe_allow_html=True
@@ -506,15 +524,15 @@ elif st.session_state.show_about:
         st.session_state.show_about = False
         st.rerun()
 
-# ------------------- SIDEBAR — GOLDEN POINTS DISPLAY — ADDICTIVE, GLIMMERING -------------------
+# ------------------- SIDEBAR — POINTS DISPLAY — GLOWING, MOTIVATIONAL -------------------
 st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
-st.sidebar.markdown(f"<div class='points-display'>{st.session_state.user_points} points</div>", unsafe_allow_html=True)
+st.sidebar.markdown(f"<div class='points-display'>{st.session_state.user_points}</div>", unsafe_allow_html=True)
 st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your future.")
 
 st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50")
-st.sidebar.caption("You’re becoming a 4IR Hero.")
+st.sidebar.caption("You’re becoming a 4IR Hero!")
 
 # ------------------- FOOTER WHISPER — LAST WORD -------------------
 st.markdown("<br><br><p style='text-align: center; color: #888; font-size: 0.9rem;'>ShineGPT — Built with love for every curious mind.</p>", unsafe_allow_html=True)
