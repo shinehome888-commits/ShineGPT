@@ -316,13 +316,13 @@ if st.session_state.mode is None and not st.session_state.show_about:
         unsafe_allow_html=True,
     )
 
-    if st.button("📱 SMS Mode", key="btn_sms", help="No internet? Type 'lesson 1' to start learning."):
+    if st.button("📱 SMS Mode", key="btn_sms", help="low internet? Type 'lesson 1' to start learning."):
         st.session_state.mode = 'sms'
         st.session_state.messages = []
         st.rerun()
 
     st.markdown(
-        "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works without data.</div>",
+        "<div class='mode-desc'>No internet? Type 'lesson 1' to start learning. Works low data.</div>",
         unsafe_allow_html=True
     )
 
@@ -469,7 +469,6 @@ elif st.session_state.show_about:
     ShineGPT isn’t perfect yet.  
     But we’re building it **with love**, **for purpose**, **not profit**.
     We invite:
-    - Students: Tell us what you want to learn next
     - Teachers: Help us bring ShineGPT to classrooms
     - Developers: Join our open-source mission
     - Donors & Investors: Support our nonprofit dream
@@ -498,6 +497,7 @@ elif st.session_state.show_about:
     Keep going.  
     Keep asking.  
     Keep shining.
+    Whatsapp Number +233240254680
     ShineGPT is here —  
     not to replace you,  
     but to **lift you**.
