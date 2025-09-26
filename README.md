@@ -1,10 +1,10 @@
-# ShineGPT
+# SHINEGPT
 
 A free, offline-first AI tutor for youth in ALKEBULAN {AFRICA} and underserved communities.  
 Built with care. Built for the 4th Industrial Revolution (4IR).  
 low internet? No problem.
 
-## 🌟 What Is ShineGPT?
+## 🌟 What Is SHINEGPT?
 
 ShineGPT is a lightweight, educational app that teaches:
 - Artificial Intelligence (AI)
