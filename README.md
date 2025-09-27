@@ -48,7 +48,7 @@ We believe:
 - Technology should empower, not exclude
 - The 4th Industrial Revolution must include everyone
 
-This project was SPONSORED BY THE **KS1 EMPIRE FOUNDATION**, a nonprofit focused on digital literacy and equitable access to technology.
+This project was SPONSORED BY THE **KS1 EMPIRE GROUP & FOUNDATION**, a nonprofit focused on digital literacy and equitable access to technology.
 
 ## 🚀 How to Use
 
