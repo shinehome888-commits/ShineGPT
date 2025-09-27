@@ -452,7 +452,7 @@ elif st.session_state.show_about:
 
     st.markdown("""
     ### We Built This For YOU
-    ShineGPT was created for every child in Africa who only has a phone —  
+    ShineGPT was created for every child in Alkebulan {Africa} who only has a phone —  
     but dreams of learning AI, Blockchain, Crypto, Web3, Big Data and More .
     We believe:
     - 💡 The 4th Industrial Revolution (4IR) should be free
@@ -467,7 +467,8 @@ elif st.session_state.show_about:
     ### Still Growing — Together
     Let’s be honest:  
     ShineGPT isn’t perfect yet.  
-    But we’re building it **with love**, **for purpose**, **not profit**.
+    But we’re still building it **with love**, **for purpose**, **not profit**.
+    The Momentum Never Stop
     We invite:
     - Teachers: Help us bring ShineGPT to classrooms
     - Developers: Join our open-source mission
