@@ -456,7 +456,7 @@ elif st.session_state.show_about:
     but dreams of learning AI, Blockchain, Crypto, and Big Data.
     We believe:
     - 💡 The 4th Industrial Revolution (4IR) should be free
-    - 🌍 Every youth in Lagos, Nairobi, Accra, Kigali deserves to learn
+    - 🌍 Every youth in Monrovia, Accra, Lagos, Nairobi, Kigali deserves to learn
     - 📱 You don’t need fast Wi-Fi to grow
     With ShineGPT, you can:
     - Learn AI even without a laptop
