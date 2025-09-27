@@ -453,7 +453,7 @@ elif st.session_state.show_about:
     st.markdown("""
     ### We Built This For YOU
     ShineGPT was created for every child in Africa who only has a phone —  
-    but dreams of learning AI, Blockchain, Crypto, and Big Data.
+    but dreams of learning AI, Blockchain, Crypto, Web3, Big Data and More .
     We believe:
     - 💡 The 4th Industrial Revolution (4IR) should be free
     - 🌍 Every youth in Monrovia, Accra, Lagos, Nairobi, Kigali deserves to learn
@@ -476,10 +476,10 @@ elif st.session_state.show_about:
     - Improve ShineGPT to its full potential
     - Add more lessons in different African Local Languages
     - Launch Krahn, Grebo, Ga-Adanbe,  Yoruba, Ewe , Fante lessons 
-    - Reach refugee camps, rural schools, youth centers, the streets, gettos and every connor of the earth
+    - Reach refugee camps, rural schools, youth centers, the streets, ghettos and every connor of the earth
     - Help the poor and those in need with food shalter and the right to education
     - Bring the fourth Industrial Revolution {4IR} in towns and villages in Alkebulan {AFRICA}
-    - Empower the younth and give them the tools to be builder of things 
+    - Empower the younth and give them the tools to be builder of things on chain
     We’re not here for fame.  
     We’re here for **you**.
     So keep learning.  
@@ -501,13 +501,12 @@ elif st.session_state.show_about:
     Keep going.  
     Keep asking.  
     Keep shining.
-    Contact:
-    Whatsapp Number: +233240254680
+    Contact/Whatsapp: +233240254680
     ShineGPT is here —  
     not to replace you,  
     but to **lift you**.
-    — From the heart of Africa,  
-    For every learner who dares to rise.
+    — From the Heart Of Ks1 Empire Foundation,  
+    To Every Kid Who Dares To Rise In The Fourth Industrial Revolution {4IR}.
     """, unsafe_allow_html=False)
 
     if st.button("← Back to Home", key="back_home_about"):
