@@ -343,7 +343,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
 # ------------------- SMS MODE — ADDICTIVE, CLEAN, MOTIVATING -------------------
 elif st.session_state.mode == 'sms':
     st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📱 SMS Mode — low data Needed</h2>", unsafe_allow_html=True)
-    st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. low data needed.</div>", unsafe_allow_html=True)
+    st.markdown("<div class='mode-desc'>Type 'lesson 1' to begin. low internet needed.</div>", unsafe_allow_html=True)
 
     # Show only AI responses and celebrations — not user input
     for msg in st.session_state.messages:
@@ -370,7 +370,7 @@ Available commands:
 - type 'lesson 2', 'lesson 3', etc. to continue
 - type 'points' to check your earned points
 - type 'hello' to greet ShineGPT
-low data! All lessons work on low data.
+low internet needed! All lessons work offline.
                 """
                 st.session_state.messages.append({"role": "shingpt", "content": response})
                 
@@ -473,9 +473,13 @@ elif st.session_state.show_about:
     - Developers: Join our open-source mission
     - Donors & Investors: Support our nonprofit dream
     Your support helps us:
-    - Add more lessons
-    - Launch Krahn, Grebo, Ga-Adanbe,  Yoruba, Ewe , Fante
-    - Reach refugee camps, rural schools, youth centers
+    - Improve ShineGPT to its full potential
+    - Add more lessons in different African Local Languages
+    - Launch Krahn, Grebo, Ga-Adanbe,  Yoruba, Ewe , Fante lessons 
+    - Reach refugee camps, rural schools, youth centers, the streets, gettos and every connor of the earth
+    - Help the poor and those in need with food shalter and the right to education
+    - Bring the fourth Industrial Revolution {4IR} in towns and villages in Alkebulan {AFRICA}
+    - Empower the younth and give them the tools to be builder of things 
     We’re not here for fame.  
     We’re here for **you**.
     So keep learning.  
@@ -498,7 +502,7 @@ elif st.session_state.show_about:
     Keep asking.  
     Keep shining.
     Contact:
-    Whatsapp Number +233240254680
+    Whatsapp Number: +233240254680
     ShineGPT is here —  
     not to replace you,  
     but to **lift you**.
