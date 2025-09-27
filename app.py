@@ -310,7 +310,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
             <p>Learn. Earn Knowledge. Empower Yourself.</p>
         </div>
         <div class="brand-footer">
-            Powered by KS1 Empire Foundation
+            Sponsored By The KS1 Empire Group & Foundation
         </div>
         """,
         unsafe_allow_html=True,
@@ -489,9 +489,9 @@ elif st.session_state.show_about:
     It’s **your future**.
     ---
     ### This Is Just the Beginning
-    One day, ShineGPT will speak every African language.  
+    One day, ShineGPT will speak every African languages and the world at large.  
     One day, it will run on $10 phones.  
-    One day, it will teach millions.
+    One day, it will teach millions and even billions of people.
     one day, it will speak to you and hear you
     But today —  
     We say:  
@@ -505,7 +505,7 @@ elif st.session_state.show_about:
     ShineGPT is here —  
     not to replace you,  
     but to **lift you**.
-    — From the Heart Of Ks1 Empire Foundation,  
+    — From The Heart Of Ks1 Empire Group And Foundation,  
     To Every Kid Who Dares To Rise In The Fourth Industrial Revolution {4IR}.
     """, unsafe_allow_html=False)
 
