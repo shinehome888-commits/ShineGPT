@@ -37,7 +37,7 @@ Just knowledge.
 - 🌍 Focus on African learners and low-connectivity regions
 - 🚫 No complex setup, no login, no data needed
 - 🖋️ All content written in plain, easy-to-understand English
-- 🛠️ Open-source — contact the KS1 EMPIRE FOUNDATION if you want to contribute to this project.
+- 🛠️ Open-source — contact the KS1 Empire Group & Foundation if you want to contribute to this project.
 
 ## 🎯 Why We Built This
 
@@ -48,7 +48,7 @@ We believe:
 - Technology should empower, not exclude
 - The 4th Industrial Revolution must include everyone
 
-This project was SPONSORED BY THE **KS1 EMPIRE GROUP & FOUNDATION**, a nonprofit focused on digital literacy and equitable access to technology.
+This project was SPONSORED BY **KS1 Empire Group & Foundation**, a nonprofit focused on digital literacy and equitable access to technology.
 
 ## 🚀 How to Use
 
