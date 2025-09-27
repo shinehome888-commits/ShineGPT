@@ -97,5 +97,5 @@ That’s everything.
 
 ---
 
-WITH LOVE 
+With Love 
 *Learn. Earn Knowledge. Empower Yourself.*
