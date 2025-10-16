@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>ShineGPT</title>
+    <meta name="description" content="A free AI tutor for African youth. Learn The Fourth Industrial Revolution {4IR} And More With Low Internet.">
+
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -14,41 +16,61 @@
             line-height: 1.7;
             text-align: center;
         }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 3rem 2rem;
+            padding: 3rem 1.5rem;
         }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin: 1rem auto;
+            border-radius: 14px;
+            box-shadow: 0 6px 12px rgba(30, 58, 138, 0.3); /* Changed from gold/red glow to deep blue tint */
+            display: block;
+        }
+
         h1 {
             color: #D4AF37;
             font-size: 3.5rem;
+            margin: 1rem 0 0.5rem 0;
+            font-weight: 900;
+        }
+
+        p.tagline {
+            font-size: 1.4rem;
+            color: white;
             margin: 0.5rem 0;
         }
-        p.tagline {
-            color: white;
-            font-size: 1.4rem;
-            margin: 1rem 0;
-        }
+
+        /* ✅ CHANGED: Was red — now deep blue */
         .brand-footer {
-            color: #D32F2F;
+            color: #1E3A8A; /* Deep Blue */
             font-weight: 700;
             font-size: 1.3rem;
             margin: 1rem 0;
         }
+
         .btn {
-            background-color: #D32F2F;
+            background-color: #1E3A8A;   /* Deep Blue */
             color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
             padding: 16px 32px;
-            margin: 1.5rem 1rem;
             border-radius: 12px;
             text-decoration: none;
-            font-weight: 700;
             display: inline-block;
+            margin: 1.5rem 1rem;
             transition: all 0.2s ease;
         }
+
         .btn:hover {
             transform: translateY(-3px);
+            background-color: #254a9a; /* Slightly lighter on hover */
         }
+
         .features {
             display: flex;
             justify-content: center;
@@ -56,6 +78,7 @@
             margin: 3rem 0;
             flex-wrap: wrap;
         }
+
         .feature {
             background-color: #111;
             padding: 1.5rem;
@@ -65,64 +88,120 @@
             text-align: left;
             color: #e0e0e0;
         }
+
+        section#about {
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: #111;
+            border-radius: 16px;
+            max-width: 800px;
+            text-align: left;
+        }
+
         footer {
             margin-top: 4rem;
             color: #888;
-            font-size: 1rem;
+            font-size: 0.9rem;
             padding-bottom: 2rem;
         }
+
+        .qr-code {
+            max-width: 200px;
+            margin: 2rem auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3); /* Deep blue shadow */
+        }
+
         @media (max-width: 600px) {
             h1 { font-size: 2.8rem; }
-            .container { padding: 2rem; }
-            .btn { font-size: 1.1rem; padding: 14px 28px; }
+            .container { padding: 2rem 1rem; }
+            .btn { 
+                font-size: 1.1rem; 
+                padding: 14px 28px; 
+                margin: 1rem; 
+            }
+            .features { gap: 1rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+
+        <!-- ShineGPT Logo -->
+        <img src="https://raw.githubusercontent.com/shinehome888/shinegpt-web/main/logo.png"
+             alt="ShineGPT Logo"
+             class="logo"
+             onerror="this.style.display='none'; this.alt='Logo not found'">
+
+        <!-- App Name -->
         <h1>SHINEGPT</h1>
         <p class="tagline">Learn. Earn Knowledge. Empower Yourself.</p>
-        <p class="brand-footer">Powered by KS1 Empire Foundation</p>
+        <p class="brand-footer">Sponsored By KS1 Empire Group & Foundation</p>
 
-        <p>A free AI tutor for African youth and learners in low-connectivity areas.</p>
+        <p>A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas.</p>
 
-        <!-- Buttons -->
-        <a href="https://huggingface.co/spaces/Shinehome888/ShineGPT" target="_blank" class="btn">📱 Open App</a>
-        <a href="#about" class="btn">📖 Learn More</a>
+        <!-- Launch Button -->
+        <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn">📱 Open ShineGPT App</a>
+
+        <!-- Dream Domain -->
+        <p style="color: #D4AF37; font-size: 1.3rem; margin: 2rem 0;">
+            🌐 Dream Domain: <strong>shinegpt.ai</strong><br>
+            <small style="color: #aaa;">Coming soon via Web3 and AI</small>
+        </p>
 
         <!-- Features -->
         <div class="features">
             <div class="feature">
-                <h3>📚 50 Real Lessons</h3>
-                <p>No internet? No problem. Learn AI, Blockchain, Big Data — anytime, anywhere.</p>
+                <h3>📚 50 Real Lessons for Now (1,000,000 Coming Soon)</h3>
+                <p>Low data? Still learn about AI, Blockchain, Big Data, Crypto & 4IR.</p>
             </div>
             <div class="feature">
                 <h3>💡 Ask Anything</h3>
-                <p>Have internet? Get smart answers using open-source AI.</p>
+                <p>Have data? Get clear answers using ShineGPT AI.</p>
             </div>
             <div class="feature">
                 <h3>🏆 Earn Points</h3>
-                <p>Track your progress. Stay motivated. Keep growing.</p>
+                <p>Track progress. Stay motivated. Grow every day.</p>
             </div>
         </div>
 
         <!-- About Section -->
-        <section id="about" style="margin: 4rem 0;">
-            <h2 style="color: #D4AF37;">About ShineGPT</h2>
-            <p>We built ShineGPT for every child who only has a phone but dreams of learning about AI, blockchain, and the future.</p>
-            <p>It works low internet. It costs nothing. It’s made with love.</p>
-            <p>This is education that doesn’t wait for permission.</p>
-            <p><strong>For Africa. For youth. For change.</strong></p>
+        <section id="about">
+            <h2>About ShineGPT</h2>
+            <p>We built ShineGPT for every child who only has a phone but dreams of learning AI, blockchain, crypto, Big Data, and the future.</p>
+            <p>This app works with low or no data. It costs nothing. It's made with love.</p>
+            <p>This is education that doesn't wait for permission.</p>
+            <p><strong>For Alkebulan. For youth. For change.</strong></p>
         </section>
 
         <!-- Final Call to Action -->
-        <a href="https://huggingface.co/spaces/Shinehome888/ShineGPT" target="_blank" class="btn">Launch ShineGPT Now</a>
+        <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn">Launch ShineGPT Now</a>
 
         <!-- Footer -->
         <footer>
-            <p>© 2025 ShineGPT | A nonprofit project by KS1 Empire Foundation</p>
-            <p>Open source. Free forever. Built for good.</p>
+            © 2025 ShineGPT | A nonprofit project by KS1 Empire Group & Foundation<br>
+            Open source. Free forever. Built for good.<br>
+            <em>“Education should be a light, not a luxury.”</em>
         </footer>
     </div>
+
+    <!-- Script for WhatsApp form -->
+    <script>
+        function sendMessage() {
+            const phone = document.getElementById("phoneInput").value.trim();
+
+            if (!phone || !phone.startsWith("+")) {
+                alert("Please enter your full WhatsApp number, like +233240254680");
+                return;
+            }
+
+            const message = encodeURIComponent(
+                "Hello! I'm ready to get started with ShineGPT. Please send me the private link."
+            );
+            const url = `https://wa.me/+233240254680?text=${message}`;
+
+            window.open(url, '_blank');
+        }
+    </script>
 </body>
 </html>
