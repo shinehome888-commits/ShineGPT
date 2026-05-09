@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background-color: #000;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a4a, #0a0a2a); /* Beautiful gradient background */
             color: white;
             line-height: 1.6;
         }
@@ -26,7 +25,10 @@
         header {
             text-align: center;
             padding: 60px 20px;
-            background: #000;
+            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
+            border-bottom: 2px solid #D4AF37;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         .logo {
             color: #D4AF37;
@@ -34,52 +36,50 @@
             font-weight: 900;
             letter-spacing: -2px;
             margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.7); /* Glowing effect */
         }
         .tagline {
             font-size: 1.8rem;
-            color: white;
+            color: #ffffff;
             margin-bottom: 30px;
             opacity: 0.9;
-        }
-        .sponsor {
-            color: #1E3A8A;
-            font-size: 1.4rem;
-            font-weight: 700;
-            opacity: 0.9;
-            margin-bottom: 20px;
+            font-weight: 400;
         }
         .description {
-            color: #ccc;
+            color: #e0e0ff;
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto 40px;
             line-height: 1.8;
+            font-style: italic;
+        }
+        /* Announcement Banner */
+        .announcement {
+            background: linear-gradient(to right, #D4AF37, #FFD700);
+            color: #0a0a2a;
+            text-align: center;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         /* Features Section */
         .features {
             padding: 80px 20px;
             text-align: center;
-            background: #000;
+            background: rgba(10, 10, 42, 0.5); /* Semi-transparent background */
+            margin: 40px 0;
+            border-radius: 20px;
         }
         .section-title {
-            color: #1E3A8A; /* Blue color */
+            color: #D4AF37; /* Gold color for headings */
             font-size: 2.5rem;
             margin-bottom: 50px;
             text-align: center;
-            text-shadow: 
-                0 1px 0 #ccc,
-                0 2px 0 #c9c9c9,
-                0 3px 0 #bbb,
-                0 4px 0 #b9b9b9,
-                0 5px 0 #aaa,
-                0 6px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(0,0,0,.1),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(0,0,0,.2),
-                0 5px 10px rgba(0,0,0,.25),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.15);
-            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); /* Subtle glow */
         }
         .feature-grid {
             display: grid;
@@ -89,15 +89,16 @@
             margin: 0 auto;
         }
         .feature-card {
-            background: #111;
+            background: rgba(30, 30, 70, 0.8); /* Semi-transparent card background */
             border-radius: 15px;
             padding: 30px;
-            border: 1px solid #333;
+            border: 1px solid #444488;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px); /* Frosted glass effect */
         }
         .feature-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
         }
         .feature-icon {
             font-size: 3rem;
@@ -110,30 +111,15 @@
             margin-bottom: 15px;
         }
         .feature-desc {
-            color: #ccc;
+            color: #ccccff;
             font-size: 1.1rem;
         }
         /* How It Works */
         .how-it-works {
             padding: 80px 20px;
-            background: #000;
-        }
-        .how-it-works .section-title {
-            color: #1E3A8A; /* Blue color */
-            text-shadow: 
-                0 1px 0 #ccc,
-                0 2px 0 #c9c9c9,
-                0 3px 0 #bbb,
-                0 4px 0 #b9b9b9,
-                0 5px 0 #aaa,
-                0 6px 1px rgba(0,0,0,.1),
-                0 0 5px rgba(0,0,0,.1),
-                0 1px 3px rgba(0,0,0,.3),
-                0 3px 5px rgba(0,0,0,.2),
-                0 5px 10px rgba(0,0,0,.25),
-                0 10px 10px rgba(0,0,0,.2),
-                0 20px 20px rgba(0,0,0,.15);
-            letter-spacing: 1px;
+            background: rgba(10, 10, 42, 0.5); /* Semi-transparent background */
+            margin: 40px 0;
+            border-radius: 20px;
         }
         .steps {
             display: flex;
@@ -144,22 +130,23 @@
             margin: 0 auto;
         }
         .step-card {
-            background: #111;
+            background: rgba(30, 30, 70, 0.8); /* Semi-transparent card background */
             border-radius: 15px;
             padding: 30px;
             width: 250px;
             text-align: center;
-            border: 1px solid #333;
+            border: 1px solid #444488;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px); /* Frosted glass effect */
         }
         .step-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
         }
         .step-number {
             display: inline-block;
             background: #D4AF37;
-            color: #0a0a0a;
+            color: #0a0a2a;
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -174,17 +161,20 @@
             margin-bottom: 15px;
         }
         .step-desc {
-            color: #ccc;
+            color: #ccccff;
         }
         /* Launch Button */
         .launch-section {
             text-align: center;
             padding: 60px 20px;
-            background: #000;
+            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
+            margin: 40px 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
         .launch-btn {
-            background-color: #1E3A8A;
-            color: white;
+            background: linear-gradient(to right, #D4AF37, #FFD700); /* Gold gradient */
+            color: #0a0a2a;
             border: none;
             padding: 20px 50px;
             font-size: 1.5rem;
@@ -194,21 +184,29 @@
             font-weight: 700;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
         }
         .launch-btn:hover {
-            background-color: #2563eb;
             transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
         }
         /* Footer */
         footer {
             text-align: center;
             padding: 40px 20px;
-            background: #000;
-            border-top: 1px solid #333;
+            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
+            border-top: 1px solid #444488;
+            border-radius: 20px 20px 0 0;
+            margin-top: 40px;
         }
         .copyright {
-            color: #888;
+            color: #8888cc;
             font-size: 0.9rem;
+        }
+        .built-with {
+            color: #ccccff;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -218,10 +216,16 @@
         <div class="container">
             <div class="logo">SHINEGPT</div>
             <div class="tagline">Learn. Earn Knowledge. Empower Yourself.</div>
-            <div class="sponsor">Sponsored By The KS1 Empire Group & Foundation</div>
             <div class="description">A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas</div>
         </div>
     </header>
+
+    <!-- Announcement Banner -->
+    <div class="container">
+        <div class="announcement">
+            🚀 SHINEGPT UPGRADE: Now featuring 50,000 structured lessons! (Previously 50 lessons)
+        </div>
+    </div>
 
     <!-- Features Section -->
     <section class="features">
@@ -281,10 +285,9 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p class="copyright">@2026 ShineGPT - A nonprofit project by KS1 Empire Group & Foundation (KS1EGF)</p>
+            <p class="copyright">@2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="built-with">Built with love for every curious mind</p>
         </div>
     </footer>
 </body>
 </html>
-```
