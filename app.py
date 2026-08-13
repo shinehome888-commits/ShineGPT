@@ -1,8 +1,5 @@
 import streamlit as st
 
-# 🔧 DEBUG: Remove this line after confirming app is running latest code
-st.write("✅ LIVE: ShineGPT loaded with latest code — logo section next 👇")
-
 # ------------------- SESSION STATE -------------------
 if 'mode' not in st.session_state:
     st.session_state.mode = None
@@ -15,114 +12,97 @@ if 'messages' not in st.session_state:
 if 'show_about' not in st.session_state:
     st.session_state.show_about = False
 
-# ------------------- 50 LESSONS (SAMPLE — EXPAND AS NEEDED) -------------------
+# ------------------- 50 SAMPLE LESSONS (EXPAND AS NEEDED) -------------------
 lessons = {
     1: "The 4th Industrial Revolution (4IR) is the fusion of digital, physical, and biological technologies that is transforming how we live, work, and relate to one another.",
     2: "AI (Artificial Intelligence) is at the heart of 4IR — machines that learn, reason, and make decisions like humans — without being explicitly programmed.",
     3: "Machine Learning is a subset of AI that uses data to train systems to recognize patterns — like identifying spam emails or recommending videos.",
-    # Add more lessons as needed...
+    4: "Big Data refers to massive volumes of structured and unstructured information — from social media, sensors, and transactions — that can be analyzed to reveal insights.",
+    5: "IoT (Internet of Things) connects everyday objects — fridges, cars, lights — to the internet to collect and share data, making homes and cities smarter.",
+    # Add more lessons here...
 }
 
 # ------------------- SMS RESPONSES -------------------
 sms_responses = {
     "hello": "Hello! I'm ShineGPT. Type 'lesson 1' to start learning.",
-    "help": "Type: 'lesson 1', 'lesson 2', ..., 'points', 'hello'",
-    "points": f"You have {st.session_state.user_points} points. Earn 10 per lesson!",
+    "hi": "Hi there! Type 'lesson 1' to begin your first lesson.",
+    "help": "Type: 'lesson 1', 'lesson 2', ..., 'points' to learn or check your score.",
+    "thank you": "You're welcome! Keep learning. Type 'lesson 1' to continue.",
+    "thanks": "You're welcome! Learning is power. Try 'lesson 1'.",
+    "bye": "Goodbye! Come back soon. Remember: Knowledge is your superpower.",
+    "points": f"You have {st.session_state.user_points} points. Earn 10 per lesson. Type 'lesson 1' to start!",
 }
 
 # Auto-generate lesson responses
 for i in range(1, 51):
-    sms_responses[f"lesson {i}"] = lessons.get(i, "Lesson not found.") + f"\n\n✨ +10 points!"
+    lesson_text = lessons.get(i, "Lesson not found.")
+    sms_responses[f"lesson {i}"] = lesson_text + f"\n\n✨ You earned 10 points! Type 'lesson {i+1}' to continue."
 
 # ------------------- HELPER FUNCTIONS -------------------
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — SIMPLE, RELIABLE, WHITE BACKGROUND -------------------
+# ------------------- STYLING — DARK THEME, LOGO FOCUSED -------------------
 st.markdown(
     """
     <style>
     /* Hide Streamlit chrome */
     #MainMenu, footer, header {visibility: hidden;}
     
-    /* PURE WHITE BACKGROUND */
+    /* DARK BACKGROUND — YOUR BRAND */
     .main {
-        background-color: #ffffff !important;
-        color: #000000 !important;
+        background-color: #000000 !important;
+        color: #ffffff !important;
         font-family: 'Segoe UI', Arial, sans-serif;
     }
     
-    /* Falling "ShineGPT" text — subtle, non-intrusive */
-    .falling-text {
-        position: fixed;
-        top: -50px;
-        left: 50%;
-        transform: translateX(-50%);
-        color: rgba(212, 175, 55, 0.1);
-        font-size: 6rem;
-        font-weight: 900;
-        pointer-events: none;
-        z-index: 1;
-        animation: fall 25s linear infinite;
-        white-space: nowrap;
-    }
-    @keyframes fall {
-        0% { top: -50px; opacity: 0; }
-        10% { opacity: 0.2; }
-        90% { opacity: 0.2; }
-        100% { top: 100vh; opacity: 0; }
-    }
-    
-    /* Logo container */
+    /* Logo container — centered */
     .brand-box {
         text-align: center;
         padding: 2rem 1rem;
-        background: #fff;
-        border-radius: 16px;
         margin: 1rem auto;
         max-width: 400px;
-        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
     }
     
     /* Logo with 3D gold glow */
     .logo-img {
-        max-width: 280px;
+        max-width: 300px;
         height: auto;
         display: block;
         margin: 0 auto 1rem auto;
-        /* 3D depth via layered shadows */
+        /* 3D depth via layered drop-shadows */
         filter: 
             drop-shadow(0 1px 0 #b89e2c)
             drop-shadow(0 2px 0 #a68d27)
             drop-shadow(0 3px 0 #947c22)
             drop-shadow(0 4px 0 #826b1d)
             drop-shadow(0 5px 0 #705a18)
-            drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+            drop-shadow(0 0 25px rgba(212, 175, 55, 0.4));
         /* Gentle floating animation */
         animation: float 6s ease-in-out infinite;
     }
     @keyframes float {
         0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+        50% { transform: translateY(-6px); }
     }
     
-    /* Trademark text */
+    /* Trademark text — red, bold */
     .trademark {
-        color: #D32F2F;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-top: 0.5rem;
-        text-align: center;
+        color: #D32F2F !important;
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        margin-top: 0.5rem !important;
+        text-align: center !important;
     }
     
-    /* Input box — clean, accessible */
+    /* Input box — dark theme, gold border */
     .stTextInput input {
         font-size: 1.3rem !important;
         padding: 14px !important;
         border: 2px solid #D4AF37 !important;
         border-radius: 12px !important;
-        background: #fff !important;
-        color: #000 !important;
+        background-color: #111111 !important;
+        color: #ffffff !important;
         width: 100% !important;
         max-width: 500px;
         margin: 1rem auto !important;
@@ -131,7 +111,7 @@ st.markdown(
     
     /* Send button — red, bold */
     .stButton button {
-        background: #D32F2F !important;
+        background-color: #D32F2F !important;
         color: white !important;
         font-weight: 700 !important;
         font-size: 1.1rem !important;
@@ -143,20 +123,23 @@ st.markdown(
         margin: 1rem auto !important;
         display: block !important;
     }
+    .stButton button:hover {
+        background-color: #B71C1C !important;
+    }
     
-    /* Response box — readable */
+    /* Response box — dark, readable */
     .stSuccess, .answer-box {
-        background: #f9f9f9 !important;
+        background-color: #1a1a1a !important;
         border-left: 4px solid #D4AF37 !important;
         border-radius: 8px !important;
         padding: 16px !important;
         margin: 1rem auto !important;
         max-width: 600px !important;
-        color: #222 !important;
+        color: #ffffff !important;
         font-size: 1.2rem !important;
     }
     
-    /* Points display */
+    /* Points display — gold */
     .points {
         color: #D4AF37 !important;
         font-weight: 800 !important;
@@ -164,23 +147,37 @@ st.markdown(
         text-align: center !important;
     }
     
+    /* Headers — gold */
+    h2, h3 {
+        color: #D4AF37 !important;
+        text-align: center;
+    }
+    
+    /* Body text — white on dark */
+    p, li, div {
+        color: #ffffff !important;
+    }
+    
+    /* Sidebar — dark */
+    .sidebar .sidebar-content {
+        background-color: #000000 !important;
+        border-right: 1px solid #333;
+    }
+    
     /* Mobile responsive */
     @media (max-width: 600px) {
-        .falling-text { font-size: 3rem !important; }
-        .logo-img { max-width: 200px !important; }
+        .logo-img { max-width: 220px !important; }
         .stButton button { width: 70% !important; }
+        .stTextInput input { font-size: 1.2rem !important; }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — LOGO + FALLING TEXT + TRADEMARK -------------------
+# ------------------- HOME PAGE — LOGO ONLY + TRADEMARK -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
-    # Falling background text
-    st.markdown('<div class="falling-text">ShineGPT</div>', unsafe_allow_html=True)
-    
-    # Logo section with FALLBACK if image fails
+    # Logo section — NO text title, just your image
     st.markdown(
         """
         <div class="brand-box">
@@ -188,7 +185,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
                 src="https://i.ibb.co/rKkwTtgw/IMG-7801.jpg" 
                 alt="ShineGPT Logo" 
                 class="logo-img"
-                onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%2280%22 viewBox=%220 0 280 80%22><rect width=%22280%22 height=%2280%22 fill=%22%23D4AF37%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2224%22 font-weight=%22bold%22 font-family=%22Arial%22>SHINEGPT</text></svg>';"
+                onerror="this.style.display='none';"
             >
             <p class="trademark">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
         </div>
@@ -209,7 +206,7 @@ if st.session_state.mode is None and not st.session_state.show_about:
             st.session_state.messages = []
             st.rerun()
     
-    st.markdown("<p style='text-align:center; color:#666; margin:1rem 0;'>Type 'lesson 1' to begin. 50+ lessons available.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#ccc; margin:1.5rem 0;'>Type 'lesson 1' to begin learning. 50+ lessons available.</p>", unsafe_allow_html=True)
     
     if st.button("📖 About", key="btn_about"):
         st.session_state.show_about = True
@@ -217,15 +214,16 @@ if st.session_state.mode is None and not st.session_state.show_about:
 
 # ------------------- SMS MODE -------------------
 elif st.session_state.mode == 'sms':
-    st.markdown("<h2 style='text-align:center; color:#D4AF37;'>📱 SMS Mode</h2>", unsafe_allow_html=True)
-    
+    st.markdown("<h2 style='text-align:center;'>📱 SMS Mode — No Internet Needed</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#ccc;'>Type 'lesson 1', 'help', or 'points'</p>", unsafe_allow_html=True)
+
     # Show message history
     for msg in st.session_state.messages:
         if msg["role"] == "shingpt":
             st.markdown(f"<div class='answer-box'>{msg['content']}</div>", unsafe_allow_html=True)
     
     # Input + Send
-    user_input = st.text_input("", placeholder="Type 'lesson 1', 'help', or 'points'...", key="sms_input")
+    user_input = st.text_input("", placeholder="Type your message...", key="sms_input")
     if st.button("Send", key="send_sms") and user_input:
         txt = user_input.strip().lower()
         st.session_state.messages.append({"role": "user", "content": user_input})
@@ -247,7 +245,7 @@ elif st.session_state.mode == 'sms':
 
 # ------------------- ONLINE MODE (PLACEHOLDER) -------------------
 elif st.session_state.mode == 'online':
-    st.markdown("<h2 style='text-align:center; color:#D4AF37;'>🌐 Online Mode</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>🌐 Online Mode</h2>", unsafe_allow_html=True)
     st.info("Coming soon! For now, use SMS Mode to learn.")
     if st.button("← Home", key="back_online"):
         st.session_state.mode = None
@@ -255,13 +253,13 @@ elif st.session_state.mode == 'online':
 
 # ------------------- ABOUT PAGE -------------------
 elif st.session_state.show_about:
-    st.markdown("<h2 style='text-align:center; color:#D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
     st.markdown("""
     ShineGPT is a free, nonprofit educational app by **KS1 Empire Global Foundation**.  
     Learn AI, Blockchain, Web3, IoT, and more — even without internet.  
     Earn points. Grow your knowledge. Empower your future.  
     Built with love for every curious mind in Africa and beyond. 🌍✨
-    """)
+    """, unsafe_allow_html=False)
     if st.button("← Home", key="back_about"):
         st.session_state.show_about = False
         st.rerun()
@@ -271,3 +269,12 @@ st.sidebar.markdown("---")
 st.sidebar.subheader("🏆 Your Points")
 st.sidebar.markdown(f"<div class='points'>{st.session_state.user_points}</div>", unsafe_allow_html=True)
 st.sidebar.info("Earn 10 points per lesson. No data cost in SMS Mode.")
+
+# ------------------- FOOTER WATERMARK -------------------
+st.markdown(
+    "<br><p style='text-align:center; color:#666; font-size:0.8rem;'>"
+    "@2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF).<br>"
+    "Built With Love For Every Curious Mind."
+    "</p>",
+    unsafe_allow_html=True
+)
