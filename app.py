@@ -393,23 +393,23 @@ st.markdown(
         50% { transform: translateY(-6px) scale(1.02); }
     }
     
-    .brand-container p {
+    /* Motto text under logo */
+    .motto {
         color: white !important;
         font-size: 1.4rem !important;
-        font-weight: 400 !important;
-        margin: 0.5rem 0 0.5rem 0 !important;
-        opacity: 0.9;
+        font-weight: 500 !important;
+        margin: 0.5rem 0 !important;
+        text-align: center;
         line-height: 1.4;
     }
     
-    /* Trademark text — exact text you requested */
+    /* Trademark text */
     .trademark {
-        color: #D4AF37 !important;
-        font-size: 1rem !important;
-        font-weight: 500 !important;
-        margin-top: 0.8rem !important;
+        color: #D32F2F !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        margin-top: 0.5rem !important;
         text-align: center;
-        letter-spacing: 0.5px;
     }
     
     /* Mode Buttons — BIG, FAST, ONE-TAP */
@@ -556,13 +556,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — LOGO + TWO BUTTONS + TRADEMARK -------------------
+# ------------------- HOME PAGE — LOGO + MOTTO + TRADEMARK + FOOTER -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
             <img src="https://i.ibb.co/rKkwTtgw/IMG-7801.jpg" alt="ShineGPT Logo" class="logo-3d" onerror="this.style.display='none';">
-            <p class="trademark">@2026 ShineGPT - Built With Love For Every Curious Mind.</p>
+            <p class="motto">Learn, Earn Knowledge and Empower Yourself.</p>
+            <p class="trademark">Powered by KS1 Empire Global Foundation (KS1EGF).</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -782,3 +783,11 @@ st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your fu
 st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50,000")
 st.sidebar.caption("You're becoming a 4IR Hero!")
+
+# ------------------- FOOTER WATERMARK — EXACT TEXT YOU REQUESTED -------------------
+st.markdown(
+    "<br><br><p style='text-align: center; color: #888; font-size: 0.85rem; line-height: 1.4; padding: 0 20px;'>"
+    "@2026 ShineGPT - Built With Love For Every Curious Mind."
+    "</p>",
+    unsafe_allow_html=True
+)
