@@ -335,7 +335,7 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — CLEAN, CALM, HUMAN + 3D LOGO + FLOATING ANIMATION -------------------
+# ------------------- STYLING — LOGO SIZE, SPIN ANIMATION, 3D, TRADEMARK -------------------
 st.markdown(
     """
     <style>
@@ -355,19 +355,18 @@ st.markdown(
     /* ShineGPT Brand — Logo Container */
     .brand-container {
         text-align: center;
-        margin: 3rem 1rem 1rem 1rem;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.1); /* White transparent background */
+        margin: 2rem 1rem 1rem 1rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         backdrop-filter: blur(10px);
-        animation: float 8s ease-in-out infinite;
         position: relative;
         z-index: 10;
     }
     
-    /* Logo with 3D gold glow + floating */
+    /* Logo — PERFECT SIZE + 3D + SPIN ON LOAD */
     .logo-3d {
-        max-width: 300px;
+        max-width: 200px !important; /* Perfect size */
         height: auto;
         display: block;
         margin: 0 auto 1rem auto;
@@ -379,59 +378,38 @@ st.markdown(
             drop-shadow(0 4px 0 #826b1d)
             drop-shadow(0 5px 0 #705a18)
             drop-shadow(0 0 25px rgba(212, 175, 55, 0.4));
-        /* Floating animation */
-        animation: floatText 6s ease-in-out infinite;
+        /* Spin animation on load */
+        animation: spinOnLoad 2s ease-out forwards, floatText 6s ease-in-out infinite 2s;
+    }
+    
+    @keyframes spinOnLoad {
+        0% { transform: rotate(0deg) scale(0.9); opacity: 0; }
+        50% { transform: rotate(180deg) scale(1); opacity: 1; }
+        100% { transform: rotate(360deg) scale(1); opacity: 1; }
+    }
+    
+    @keyframes floatText {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-6px) scale(1.02); }
     }
     
     .brand-container p {
         color: white !important;
-        font-size: 1.6rem !important;
+        font-size: 1.4rem !important;
         font-weight: 400 !important;
-        margin: 0.8rem 0 0.8rem 0 !important;
+        margin: 0.5rem 0 0.5rem 0 !important;
         opacity: 0.9;
-        line-height: 1.5;
+        line-height: 1.4;
     }
     
-    /* Trademark text */
+    /* Trademark text — exact text you requested */
     .trademark {
-        color: #D32F2F !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        margin-top: 1rem !important;
+        color: #D4AF37 !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        margin-top: 0.8rem !important;
         text-align: center;
-    }
-    
-    /* Floating animation for the whole brand container */
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0); }
-        25% { transform: translate(10px, 10px); }
-        50% { transform: translate(0, 20px); }
-        75% { transform: translate(-10px, 10px); }
-    }
-    
-    /* Floating animation for the logo/text itself */
-    @keyframes floatText {
-        0%, 100% { transform: translateY(0) scale(1); }
-        50% { transform: translateY(-10px) scale(1.02); }
-    }
-    
-    /* Background floating particles effect */
-    .brand-container::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        animation: pulse 4s ease-in-out infinite;
-        z-index: -1;
-        pointer-events: none;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(1.1); }
+        letter-spacing: 0.5px;
     }
     
     /* Mode Buttons — BIG, FAST, ONE-TAP */
@@ -571,21 +549,20 @@ st.markdown(
         .mode-desc { font-size: 1.2rem !important; }
         .points-display { font-size: 1.6rem !important; }
         .celebration { font-size: 1.2rem !important; }
-        .logo-3d { max-width: 220px !important; }
+        .logo-3d { max-width: 160px !important; }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — LOGO + TWO BUTTONS -------------------
+# ------------------- HOME PAGE — LOGO + TWO BUTTONS + TRADEMARK -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
             <img src="https://i.ibb.co/rKkwTtgw/IMG-7801.jpg" alt="ShineGPT Logo" class="logo-3d" onerror="this.style.display='none';">
-            <p>Learn. Earn Knowledge. Empower Yourself.</p>
-            <p class="trademark">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
+            <p class="trademark">@2026 ShineGPT - Built With Love For Every Curious Mind.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -805,12 +782,3 @@ st.sidebar.info("Earn 10 points per lesson. Every point is a step toward your fu
 st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50,000")
 st.sidebar.caption("You're becoming a 4IR Hero!")
-
-# ------------------- FOOTER WATERMARK — UPDATED TEXT -------------------
-st.markdown(
-    "<br><br><p style='text-align: center; color: #888; font-size: 0.85rem; line-height: 1.4; padding: 0 20px;'>"
-    "@2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF).<br>"
-    "ShineGPT - Built With Love For Every Curious Mind."
-    "</p>",
-    unsafe_allow_html=True
-)
