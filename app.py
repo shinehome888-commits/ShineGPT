@@ -403,15 +403,6 @@ st.markdown(
         line-height: 1.4;
     }
     
-    /* Trademark text */
-    .trademark {
-        color: #D32F2F !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-        margin-top: 0.5rem !important;
-        text-align: center;
-    }
-    
     /* Mode Buttons — BIG, FAST, ONE-TAP */
     .mode-btn {
         background-color: #1a1a1a;
@@ -556,14 +547,13 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — LOGO + MOTTO + TRADEMARK + FOOTER -------------------
+# ------------------- HOME PAGE — LOGO + MOTTO -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
             <img src="https://i.ibb.co/rKkwTtgw/IMG-7801.jpg" alt="ShineGPT Logo" class="logo-3d" onerror="this.style.display='none';">
             <p class="motto">Learn, Earn Knowledge and Empower Yourself.</p>
-            <p class="trademark">Powered by KS1 Empire Global Foundation (KS1EGF).</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -647,7 +637,7 @@ elif st.session_state.mode == 'sms':
                         response = "Start with lesson 1! 50,000 lessons available."
                         st.session_state.messages.append({"role": "shingpt", "content": response})
                     elif lesson_num > 50000:
-                        response = "You've reached the end of available lessons! 🎉 You're a ShineGPT pioneer! Type 'points' to see your progress."
+                        response = "You've reached the end of available lessons!  You're a ShineGPT pioneer! Type 'points' to see your progress."
                         st.session_state.messages.append({"role": "shingpt", "content": response})
                     else:
                         response = get_lesson_text(lesson_num)
@@ -709,7 +699,7 @@ elif st.session_state.mode == 'online':
 
 # ------------------- ABOUT PAGE — HONEST, WARM, INSPIRING -------------------
 elif st.session_state.show_about:
-    st.markdown("<h2 style='text-align: center; color: #D4AF37;'>📖 About ShineGPT</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #D4AF37;'> About ShineGPT</h2>", unsafe_allow_html=True)
 
     st.markdown("""
     ### We Built This For YOU
@@ -784,10 +774,11 @@ st.sidebar.markdown("---")
 st.sidebar.write(f"**Lesson Progress**: {st.session_state.current_lesson}/50,000")
 st.sidebar.caption("You're becoming a 4IR Hero!")
 
-# ------------------- FOOTER WATERMARK — EXACT TEXT YOU REQUESTED -------------------
+# ------------------- FOOTER WATERMARK — UPDATED LAYOUT -------------------
 st.markdown(
     "<br><br><p style='text-align: center; color: #888; font-size: 0.85rem; line-height: 1.4; padding: 0 20px;'>"
-    "@2026 ShineGPT - Built With Love For Every Curious Mind."
+    "@2026 ShineGPT - Built With Love For Every Curious Mind.<br>"
+    "Powered by KS1 Empire Global Foundation (KS1EGF)."
     "</p>",
     unsafe_allow_html=True
 )
