@@ -335,7 +335,7 @@ def get_lesson_text(lesson_num):
 def add_points(points):
     st.session_state.user_points += points
 
-# ------------------- STYLING — CLEAN, CALM, HUMAN + 3D SHINEGPT + FLOATING ANIMATION -------------------
+# ------------------- STYLING — CLEAN, CALM, HUMAN + 3D LOGO + FLOATING ANIMATION -------------------
 st.markdown(
     """
     <style>
@@ -352,7 +352,7 @@ st.markdown(
         padding: 0 !important;
     }
     
-    /* ShineGPT Brand — 3D, Animated, Floating */
+    /* ShineGPT Brand — Logo Container */
     .brand-container {
         text-align: center;
         margin: 3rem 1rem 1rem 1rem;
@@ -365,29 +365,20 @@ st.markdown(
         z-index: 10;
     }
     
-    .brand-container h1 {
-        color: #D4AF37 !important;
-        font-size: 4rem !important;
-        font-weight: 900 !important;
-        margin: 0 !important;
-        font-family: 'Arial', sans-serif;
-        letter-spacing: -1px;
-        line-height: 1.1;
-        /* 3D Text Effect */
-        text-shadow: 
-            0 1px 0 #ccc,
-            0 2px 0 #c9c9c9,
-            0 3px 0 #bbb,
-            0 4px 0 #b9b9b9,
-            0 5px 0 #aaa,
-            0 6px 1px rgba(0,0,0,.1),
-            0 0 5px rgba(0,0,0,.1),
-            0 1px 3px rgba(0,0,0,.3),
-            0 3px 5px rgba(0,0,0,.2),
-            0 5px 10px rgba(0,0,0,.25),
-            0 10px 10px rgba(0,0,0,.2),
-            0 20px 20px rgba(0,0,0,.15),
-            0 0 20px rgba(212, 175, 55, 0.5); /* Gold glow */
+    /* Logo with 3D gold glow + floating */
+    .logo-3d {
+        max-width: 300px;
+        height: auto;
+        display: block;
+        margin: 0 auto 1rem auto;
+        /* 3D depth via layered drop-shadows */
+        filter: 
+            drop-shadow(0 1px 0 #b89e2c)
+            drop-shadow(0 2px 0 #a68d27)
+            drop-shadow(0 3px 0 #947c22)
+            drop-shadow(0 4px 0 #826b1d)
+            drop-shadow(0 5px 0 #705a18)
+            drop-shadow(0 0 25px rgba(212, 175, 55, 0.4));
         /* Floating animation */
         animation: floatText 6s ease-in-out infinite;
     }
@@ -401,6 +392,15 @@ st.markdown(
         line-height: 1.5;
     }
     
+    /* Trademark text */
+    .trademark {
+        color: #D32F2F !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        margin-top: 1rem !important;
+        text-align: center;
+    }
+    
     /* Floating animation for the whole brand container */
     @keyframes float {
         0%, 100% { transform: translate(0, 0); }
@@ -409,7 +409,7 @@ st.markdown(
         75% { transform: translate(-10px, 10px); }
     }
     
-    /* Floating animation for the text itself */
+    /* Floating animation for the logo/text itself */
     @keyframes floatText {
         0%, 100% { transform: translateY(0) scale(1); }
         50% { transform: translateY(-10px) scale(1.02); }
@@ -571,19 +571,21 @@ st.markdown(
         .mode-desc { font-size: 1.2rem !important; }
         .points-display { font-size: 1.6rem !important; }
         .celebration { font-size: 1.2rem !important; }
+        .logo-3d { max-width: 220px !important; }
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# ------------------- HOME PAGE — BRAND + TWO BUTTONS (NO SPONSOR TEXT) -------------------
+# ------------------- HOME PAGE — LOGO + TWO BUTTONS -------------------
 if st.session_state.mode is None and not st.session_state.show_about:
     st.markdown(
         """
         <div class="brand-container">
-            <h1>SHINEGPT</h1>
+            <img src="https://i.ibb.co/rKkwTtgw/IMG-7801.jpg" alt="ShineGPT Logo" class="logo-3d" onerror="this.style.display='none';">
             <p>Learn. Earn Knowledge. Empower Yourself.</p>
+            <p class="trademark">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
         </div>
         """,
         unsafe_allow_html=True,
