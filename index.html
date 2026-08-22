@@ -11,6 +11,10 @@
             box-sizing: border-box;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+        
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #050510;
@@ -99,66 +103,200 @@
             position: relative;
         }
         
-        /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 30px 40px;
-            background: rgba(10, 10, 30, 0.5);
+        /* ============ NAVIGATION MENU ============ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 40px;
+            background: rgba(5, 5, 16, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 15px 40px;
+            background: rgba(5, 5, 16, 0.95);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
         
         .nav-logo {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             background: linear-gradient(135deg, #D4AF37, #FFD700);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: 2px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
         
-        .nav-status {
+        .nav-logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-menu {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.3);
+            list-style: none;
+        }
+        
+        .nav-item {
+            position: relative;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
             border-radius: 50px;
-            font-size: 0.85rem;
-            color: #22c55e;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #22c55e;
-            animation: pulse 2s infinite;
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+            border-radius: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
+        .nav-link:hover {
+            color: #D4AF37;
         }
         
-        /* Hero Section */
+        .nav-link:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-link.active {
+            color: #D4AF37;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .nav-launch {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            color: #050510 !important;
+            font-weight: 700 !important;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+        
+        .nav-launch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+        
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: #D4AF37;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+        
+        /* Mobile Menu */
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 350px;
+                height: 100vh;
+                background: rgba(5, 5, 16, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+                border-left: 1px solid rgba(212, 175, 55, 0.3);
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            }
+            
+            .nav-menu.active {
+                right: 0;
+            }
+            
+            .nav-link {
+                font-size: 1.2rem;
+                padding: 15px 30px;
+            }
+            
+            .nav-launch {
+                padding: 15px 40px;
+                font-size: 1.1rem;
+            }
+            
+            .navbar {
+                padding: 15px 20px;
+            }
+        }
+        
+        /* ============ HERO SECTION ============ */
         .hero {
-            min-height: 90vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 80px 20px;
+            padding: 120px 20px 80px;
             position: relative;
         }
         
@@ -173,6 +311,7 @@
             margin-bottom: 30px;
             backdrop-filter: blur(10px);
             letter-spacing: 1px;
+            animation: fadeInDown 0.8s ease;
         }
         
         .hero-title {
@@ -186,12 +325,22 @@
             background-clip: text;
             letter-spacing: -3px;
             transform-style: preserve-3d;
-            animation: titleFloat 6s ease-in-out infinite;
+            animation: titleFloat 6s ease-in-out infinite, fadeInUp 1s ease;
         }
         
         @keyframes titleFloat {
             0%, 100% { transform: translateY(0) rotateX(0deg); }
             50% { transform: translateY(-10px) rotateX(2deg); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .hero-tagline {
@@ -200,6 +349,7 @@
             margin-bottom: 20px;
             font-weight: 300;
             letter-spacing: 2px;
+            animation: fadeInUp 1.2s ease;
         }
         
         .hero-description {
@@ -208,6 +358,7 @@
             max-width: 700px;
             margin: 0 auto 50px;
             line-height: 1.8;
+            animation: fadeInUp 1.4s ease;
         }
         
         /* CTA Buttons */
@@ -217,6 +368,7 @@
             flex-wrap: wrap;
             justify-content: center;
             margin-bottom: 60px;
+            animation: fadeInUp 1.6s ease;
         }
         
         .btn-primary {
@@ -334,6 +486,7 @@
         section {
             padding: 100px 20px;
             position: relative;
+            scroll-margin-top: 80px;
         }
         
         .section-header {
@@ -691,12 +844,8 @@
         
         /* Responsive */
         @media (max-width: 768px) {
-            nav {
-                padding: 20px;
-            }
-            
             .hero {
-                padding: 60px 20px;
+                padding: 100px 20px 60px;
             }
             
             .cta-group {
@@ -727,17 +876,32 @@
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
     
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-logo">SHINEGPT</div>
-        <div class="nav-status">
-            <span class="status-dot"></span>
-            <span>Online Mode Active</span>
+    <!-- ============ NAVIGATION MENU ============ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-logo" onclick="scrollToSection('home')">SHINEGPT</div>
+        
+        <ul class="nav-menu" id="navMenu">
+            <li class="nav-item"><a href="#home" class="nav-link active" onclick="closeMenu()">Home</a></li>
+            <li class="nav-item"><a href="#upgrade" class="nav-link" onclick="closeMenu()">Upgrade</a></li>
+            <li class="nav-item"><a href="#features" class="nav-link" onclick="closeMenu()">Features</a></li>
+            <li class="nav-item"><a href="#how-it-works" class="nav-link" onclick="closeMenu()">How It Works</a></li>
+            <li class="nav-item"><a href="#launch" class="nav-link" onclick="closeMenu()">Launch</a></li>
+            <li class="nav-item">
+                <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="nav-launch">
+                    🚀 Try Now
+                </a>
+            </li>
+        </ul>
+        
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
     
-    <!-- Hero Section -->
-    <section class="hero">
+    <!-- ============ HOME / HERO SECTION ============ -->
+    <section class="hero" id="home">
         <div class="container">
             <div class="hero-badge">🚀 2026 EDITION • NOW LIVE</div>
             <h1 class="hero-title">SHINEGPT</h1>
@@ -773,8 +937,8 @@
         </div>
     </section>
     
-    <!-- Upgrade Announcement -->
-    <section class="upgrade-section">
+    <!-- ============ UPGRADE ANNOUNCEMENT ============ -->
+    <section class="upgrade-section" id="upgrade">
         <div class="container">
             <div class="upgrade-card">
                 <div class="upgrade-content">
@@ -792,7 +956,7 @@
         </div>
     </section>
     
-    <!-- Features Section -->
+    <!-- ============ FEATURES SECTION ============ -->
     <section id="features">
         <div class="container">
             <div class="section-header">
@@ -856,8 +1020,8 @@
         </div>
     </section>
     
-    <!-- How It Works -->
-    <section>
+    <!-- ============ HOW IT WORKS ============ -->
+    <section id="how-it-works">
         <div class="container">
             <div class="section-header">
                 <div class="section-label">Process</div>
@@ -893,8 +1057,8 @@
         </div>
     </section>
     
-    <!-- Final CTA -->
-    <section class="cta-section">
+    <!-- ============ LAUNCH CTA SECTION ============ -->
+    <section class="cta-section" id="launch">
         <div class="container">
             <div class="cta-card">
                 <h2 class="cta-title">Ready to Shine?</h2>
@@ -909,7 +1073,7 @@
         </div>
     </section>
     
-    <!-- Footer -->
+    <!-- ============ FOOTER ============ -->
     <footer>
         <div class="container">
             <div class="footer-logo">SHINEGPT</div>
@@ -919,5 +1083,73 @@
             <p class="footer-love">Built with love for every curious mind</p>
         </div>
     </footer>
+    
+    <script>
+        // Mobile menu toggle
+        function toggleMenu() {
+            const menu = document.getElementById('navMenu');
+            const hamburger = document.getElementById('hamburger');
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+        
+        function closeMenu() {
+            const menu = document.getElementById('navMenu');
+            const hamburger = document.getElementById('hamburger');
+            menu.classList.remove('active');
+            hamburger.classList.remove('active');
+        }
+        
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+            closeMenu();
+        }
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // Update active menu item based on scroll position
+            updateActiveMenu();
+        });
+        
+        // Update active menu item
+        function updateActiveMenu() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('navMenu');
+            const hamburger = document.getElementById('hamburger');
+            if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+                closeMenu();
+            }
+        });
+    </script>
 </body>
 </html>
