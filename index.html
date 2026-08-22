@@ -3,290 +3,921 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShineGPT - Learn 4IR Technologies</title>
+    <title>ShineGPT - The Future of 4IR Learning</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
         body {
-            background: linear-gradient(135deg, #0a0a2a, #1a1a4a, #0a0a2a); /* Beautiful gradient background */
-            color: white;
-            line-height: 1.6;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #050510;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 1000px;
         }
+        
+        /* Animated 3D Background */
+        .bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at top, rgba(30, 58, 138, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+                linear-gradient(180deg, #050510 0%, #0a0a2a 50%, #050510 100%);
+        }
+        
+        /* Floating 3D Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 20s infinite ease-in-out;
+            z-index: -1;
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #D4AF37, transparent);
+            top: 10%;
+            left: -100px;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #1E3A8A, transparent);
+            top: 40%;
+            right: -150px;
+            animation-delay: -7s;
+        }
+        
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #6366f1, transparent);
+            bottom: 10%;
+            left: 20%;
+            animation-delay: -14s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.95); }
+        }
+        
+        /* Grid Overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
         }
-        /* Header */
-        header {
-            text-align: center;
-            padding: 60px 20px;
-            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
-            border-bottom: 2px solid #D4AF37;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 40px;
+            background: rgba(10, 10, 30, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo {
-            color: #D4AF37;
-            font-size: 4rem;
-            font-weight: 900;
-            letter-spacing: -2px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.7); /* Glowing effect */
-        }
-        .tagline {
+        
+        .nav-logo {
             font-size: 1.8rem;
-            color: #ffffff;
-            margin-bottom: 30px;
-            opacity: 0.9;
-            font-weight: 400;
+            font-weight: 900;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
         }
-        .description {
-            color: #e0e0ff;
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-            font-style: italic;
+        
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #22c55e;
         }
-        /* Announcement Banner */
-        .announcement {
-            background: linear-gradient(to right, #D4AF37, #FFD700);
-            color: #0a0a2a;
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 800px;
-            border-radius: 15px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        /* Features Section */
-        .features {
             padding: 80px 20px;
+            position: relative;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #D4AF37;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            letter-spacing: 1px;
+        }
+        
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #D4AF37 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -3px;
+            transform-style: preserve-3d;
+            animation: titleFloat 6s ease-in-out infinite;
+        }
+        
+        @keyframes titleFloat {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(2deg); }
+        }
+        
+        .hero-tagline {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 700px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+        }
+        
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 60px;
+        }
+        
+        .btn-primary {
+            position: relative;
+            padding: 20px 50px;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            color: #050510;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 
+                0 10px 40px rgba(212, 175, 55, 0.4),
+                0 0 0 0 rgba(212, 175, 55, 0.5);
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 20px 60px rgba(212, 175, 55, 0.6),
+                0 0 0 5px rgba(212, 175, 55, 0.2);
+        }
+        
+        .btn-secondary {
+            padding: 20px 50px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-3px);
+        }
+        
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        .stat-card {
             text-align: center;
-            background: rgba(10, 10, 42, 0.5); /* Semi-transparent background */
-            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
         }
-        .section-title {
-            color: #D4AF37; /* Gold color for headings */
-            font-size: 2.5rem;
-            margin-bottom: 50px;
+        
+        .stat-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        /* Section Styling */
+        section {
+            padding: 100px 20px;
+            position: relative;
+        }
+        
+        .section-header {
             text-align: center;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5); /* Subtle glow */
+            margin-bottom: 80px;
         }
-        .feature-grid {
+        
+        .section-label {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #D4AF37;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+        
+        /* Feature Cards */
+        .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
+        
         .feature-card {
-            background: rgba(30, 30, 70, 0.8); /* Semi-transparent card background */
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid #444488;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(10px); /* Frosted glass effect */
+            position: relative;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            overflow: hidden;
         }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: 0;
+        }
+        
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+            transform: translateY(-15px) rotateX(5deg) rotateY(-5deg);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(212, 175, 55, 0.2);
         }
+        
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+        
         .feature-icon {
-            font-size: 3rem;
-            color: #D4AF37;
+            font-size: 3.5rem;
             margin-bottom: 20px;
+            display: inline-block;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+            position: relative;
+            z-index: 1;
         }
+        
         .feature-title {
-            color: #D4AF37;
             font-size: 1.5rem;
+            font-weight: 700;
+            color: #D4AF37;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* How It Works */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .step-card {
+            position: relative;
+            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.15);
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            color: #050510;
+            border-radius: 50%;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 25px;
+            box-shadow: 
+                0 10px 30px rgba(212, 175, 55, 0.4),
+                inset 0 -3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #ffffff;
             margin-bottom: 15px;
         }
-        .feature-desc {
-            color: #ccccff;
-            font-size: 1.1rem;
+        
+        .step-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
         }
-        /* How It Works */
-        .how-it-works {
+        
+        /* Upgrade Announcement */
+        .upgrade-section {
             padding: 80px 20px;
-            background: rgba(10, 10, 42, 0.5); /* Semi-transparent background */
-            margin: 40px 0;
-            border-radius: 20px;
+            text-align: center;
         }
-        .steps {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 30px;
-            max-width: 1000px;
+        
+        .upgrade-card {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, 
+                rgba(212, 175, 55, 0.1) 0%, 
+                rgba(30, 58, 138, 0.1) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        
+        .upgrade-card:hover {
+            transform: rotateX(2deg) rotateY(-2deg);
+        }
+        
+        .upgrade-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                rgba(212, 175, 55, 0.1) 60deg,
+                transparent 120deg
+            );
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .upgrade-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .upgrade-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.5);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: #D4AF37;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        
+        .upgrade-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .upgrade-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            max-width: 700px;
             margin: 0 auto;
         }
-        .step-card {
-            background: rgba(30, 30, 70, 0.8); /* Semi-transparent card background */
-            border-radius: 15px;
-            padding: 30px;
-            width: 250px;
+        
+        .upgrade-number {
+            font-size: clamp(4rem, 10vw, 7rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0 10px;
+            letter-spacing: -3px;
+        }
+        
+        .upgrade-label {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 20px;
             text-align: center;
-            border: 1px solid #444488;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(10px); /* Frosted glass effect */
         }
-        .step-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        
+        .cta-card {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, 
+                rgba(30, 58, 138, 0.2) 0%, 
+                rgba(212, 175, 55, 0.1) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            backdrop-filter: blur(20px);
         }
-        .step-number {
-            display: inline-block;
-            background: #D4AF37;
-            color: #0a0a2a;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            line-height: 50px;
-            font-weight: bold;
-            font-size: 1.5rem;
+        
+        .cta-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
             margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .step-title {
-            color: #D4AF37;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
+        
+        .cta-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
         }
-        .step-desc {
-            color: #ccccff;
-        }
-        /* Launch Button */
-        .launch-section {
-            text-align: center;
-            padding: 60px 20px;
-            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
-            margin: 40px 0;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .launch-btn {
-            background: linear-gradient(to right, #D4AF37, #FFD700); /* Gold gradient */
-            color: #0a0a2a;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-        }
-        .launch-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
-        }
+        
         /* Footer */
         footer {
+            padding: 60px 20px 40px;
             text-align: center;
-            padding: 40px 20px;
-            background: rgba(10, 10, 42, 0.8); /* Semi-transparent background */
-            border-top: 1px solid #444488;
-            border-radius: 20px 20px 0 0;
-            margin-top: 40px;
+            border-top: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(20px);
         }
-        .copyright {
-            color: #8888cc;
-            font-size: 0.9rem;
+        
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #D4AF37, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
         }
-        .built-with {
-            color: #ccccff;
+        
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        .footer-divider {
+            width: 100px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+            margin: 30px auto;
+        }
+        
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.5);
             font-size: 0.9rem;
-            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .footer-love {
+            color: rgba(212, 175, 55, 0.7);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 20px;
+            }
+            
+            .hero {
+                padding: 60px 20px;
+            }
+            
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            section {
+                padding: 60px 20px;
+            }
+            
+            .upgrade-card, .cta-card {
+                padding: 40px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
+    <!-- Background Elements -->
+    <div class="bg-canvas"></div>
+    <div class="grid-overlay"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-logo">SHINEGPT</div>
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            <span>Online Mode Active</span>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
         <div class="container">
-            <div class="logo">SHINEGPT</div>
-            <div class="tagline">Learn. Earn Knowledge. Empower Yourself.</div>
-            <div class="description">A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas</div>
+            <div class="hero-badge">🚀 2026 EDITION • NOW LIVE</div>
+            <h1 class="hero-title">SHINEGPT</h1>
+            <p class="hero-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
+            <p class="hero-description">
+                A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas. 
+                Powered by open-source AI, built for the future.
+            </p>
+            <div class="cta-group">
+                <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn-primary">
+                    🚀 LAUNCH SHINEGPT
+                </a>
+                <a href="#features" class="btn-secondary">
+                    ✨ Explore Features
+                </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Structured Lessons</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">AI Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Free & Open</div>
+                </div>
+            </div>
         </div>
-    </header>
-
-    <!-- Announcement Banner -->
-    <div class="container">
-        <div class="announcement">
-            🚀 SHINEGPT UPGRADE: Now featuring 50,000 structured lessons! (Previously 50 lessons)
+    </section>
+    
+    <!-- Upgrade Announcement -->
+    <section class="upgrade-section">
+        <div class="container">
+            <div class="upgrade-card">
+                <div class="upgrade-content">
+                    <div class="upgrade-badge">⚡ MAJOR UPGRADE</div>
+                    <h2 class="upgrade-title">ShineGPT Has Evolved</h2>
+                    <div class="upgrade-number">50,000</div>
+                    <div class="upgrade-label">Structured Lessons</div>
+                    <p class="upgrade-description" style="margin-top: 30px;">
+                        From 50 lessons to <strong>50,000</strong> — we've expanded our curriculum 1000x. 
+                        Now covering AI, Blockchain, IoT, Big Data, Web3, and every technology shaping our world. 
+                        The future of learning is here.
+                    </p>
+                </div>
+            </div>
         </div>
-    </div>
-
+    </section>
+    
     <!-- Features Section -->
-    <section class="features">
+    <section id="features">
         <div class="container">
-            <h2 class="section-title">Why ShineGPT?</h2>
-            <div class="feature-grid">
+            <div class="section-header">
+                <div class="section-label">Features</div>
+                <h2 class="section-title">Why ShineGPT?</h2>
+                <p class="section-subtitle">
+                    Built for learners who dare to rise in the Fourth Industrial Revolution.
+                </p>
+            </div>
+            
+            <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📚</div>
-                    <h3 class="feature-title">50,000 Structured Lessons</h3>
-                    <p class="feature-desc">Comprehensive lessons covering AI, Blockchain, IoT, Big Data, Web3, and more. Learn at your own pace.</p>
+                    <div class="feature-icon">🧠</div>
+                    <h3 class="feature-title">Online AI Chat</h3>
+                    <p class="feature-desc">
+                        Ask anything and get intelligent, instant answers powered by open-source AI. 
+                        Fast, responsive, and always learning.
+                    </p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="feature-title">SMS & Online Modes</h3>
-                    <p class="feature-desc">Low-data SMS mode for anywhere, anytime learning. Online mode for interactive Q&A (currently updating).</p>
+                    <div class="feature-icon">📚</div>
+                    <h3 class="feature-title">50,000 Lessons</h3>
+                    <p class="feature-desc">
+                        Comprehensive curriculum covering AI, Blockchain, IoT, Big Data, Web3, and more. 
+                        Learn at your own pace, anytime.
+                    </p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
                     <h3 class="feature-title">4IR Focused</h3>
-                    <p class="feature-desc">Specialized in Fourth Industrial Revolution technologies - AI, Blockchain, IoT, Big Data, and more.</p>
+                    <p class="feature-desc">
+                        Specialized in Fourth Industrial Revolution technologies — the skills that will 
+                        define the next century of human progress.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3 class="feature-title">Built for Africa</h3>
+                    <p class="feature-desc">
+                        Designed for low-connectivity areas. Lightweight, accessible, and empowering 
+                        youth across Alkebulan and beyond.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-title">Earn Points</h3>
+                    <p class="feature-desc">
+                        Get 10 points per lesson completed. Track your progress, level up, and become 
+                        a certified 4IR Hero.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3 class="feature-title">100% Open Source</h3>
+                    <p class="feature-desc">
+                        A nonprofit project. Free forever. Built with love for every curious mind 
+                        who dares to dream bigger.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
-
+    
     <!-- How It Works -->
-    <section class="how-it-works">
+    <section>
         <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <div class="steps">
+            <div class="section-header">
+                <div class="section-label">Process</div>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">
+                    Three simple steps to begin your 4IR journey.
+                </p>
+            </div>
+            
+            <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3 class="step-title">Choose Mode</h3>
-                    <p class="step-desc">Select SMS mode for learning, Online Mode is currently being updated. Thanks for your patience.</p>
+                    <h3 class="step-title">Launch ShineGPT</h3>
+                    <p class="step-desc">
+                        Click the launch button to open the AI-powered learning platform instantly.
+                    </p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <h3 class="step-title">Start Learning</h3>
-                    <p class="step-desc">Type 'lesson 1' to begin with 50,000 structured lessons</p>
+                    <h3 class="step-title">Ask Anything</h3>
+                    <p class="step-desc">
+                        Chat with ShineGPT about AI, Blockchain, IoT, Big Data, or any 4IR topic.
+                    </p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <h3 class="step-title">Earn Points</h3>
-                    <p class="step-desc">Get 10 points per lesson. Track your progress as you advance</p>
+                    <h3 class="step-title">Learn & Earn</h3>
+                    <p class="step-desc">
+                        Explore 50,000 structured lessons and earn points as you master each topic.
+                    </p>
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Launch Button -->
-    <section class="launch-section">
-        <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank">
-            <button class="launch-btn">LAUNCH SHINEGPT</button>
-        </a>
+    
+    <!-- Final CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <h2 class="cta-title">Ready to Shine?</h2>
+                <p class="cta-subtitle">
+                    Join thousands of learners already building their future with ShineGPT. 
+                    The 4th Industrial Revolution waits for no one.
+                </p>
+                <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn-primary">
+                    🚀 LAUNCH SHINEGPT NOW
+                </a>
+            </div>
+        </div>
     </section>
-
+    
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p class="copyright">@2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
-            <p class="built-with">Built with love for every curious mind</p>
+            <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
+            <p class="footer-love">Built with love for every curious mind</p>
         </div>
     </footer>
 </body>
+</html>
