@@ -91,13 +91,35 @@
             display: flex; justify-content: space-between; align-items: center;
         }
         
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .nav-logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #D4AF37;
+            animation: rotateLogo 10s linear infinite;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            transform-style: preserve-3d;
+        }
+        
+        @keyframes rotateLogo {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+        
         .nav-logo {
             font-size: 1.6rem; font-weight: 900;
             background: linear-gradient(135deg, #D4AF37, #FFD700);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             letter-spacing: 2px; cursor: pointer; transition: transform 0.3s ease;
         }
-        .nav-logo:hover { transform: scale(1.05) rotateY(10deg); }
+        .nav-logo:hover { transform: scale(1.05); }
         
         .nav-menu { display: flex; align-items: center; gap: 8px; list-style: none; }
         
@@ -120,6 +142,28 @@
         }
         .nav-launch:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5); }
         
+        /* Language Selector */
+        .lang-selector {
+            position: relative;
+            margin-right: 15px;
+        }
+        
+        .lang-selector select {
+            background: rgba(212, 175, 55, 0.2);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            color: #D4AF37;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .lang-selector select:focus {
+            outline: none;
+            border-color: #D4AF37;
+        }
+        
         .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; z-index: 1001; }
         .hamburger span { width: 28px; height: 3px; background: #D4AF37; border-radius: 3px; transition: all 0.3s ease; }
         .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
@@ -138,10 +182,63 @@
             .nav-link { font-size: 1.2rem; padding: 15px 30px; }
             .navbar { padding: 15px 20px; }
             .bg-logo { width: 95vw; max-width: 500px; opacity: 0.12; }
+            .nav-logo-img { width: 40px; height: 40px; }
+        }
+        
+        /* ============ LIVE TESTIMONIAL TICKER ============ */
+        .testimonial-ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(5, 5, 16, 0.95);
+            border-top: 2px solid #D4AF37;
+            padding: 15px 0;
+            z-index: 998;
+            overflow: hidden;
+        }
+        
+        .ticker-content {
+            display: flex;
+            animation: scrollLeft 30s linear infinite;
+            white-space: nowrap;
+        }
+        
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 50px;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+        
+        .ticker-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #D4AF37;
+        }
+        
+        .ticker-text {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .ticker-name {
+            color: #D4AF37;
+            font-weight: 600;
+        }
+        
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
         
         /* ============ FLOATING ACTION BUTTONS ============ */
-        .fab-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        .fab-container { position: fixed; bottom: 100px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
         .fab-btn {
             width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 1.6rem; color: white; text-decoration: none; border: 2px solid rgba(255, 255, 255, 0.15);
@@ -161,7 +258,7 @@
         .fab-btn:hover .fab-tooltip { opacity: 1; transform: translateX(-10px); }
         
         @media (max-width: 768px) {
-            .fab-container { bottom: 20px; right: 20px; }
+            .fab-container { bottom: 80px; right: 20px; }
             .fab-btn { width: 55px; height: 55px; font-size: 1.4rem; }
             .fab-tooltip { display: none; }
         }
@@ -324,6 +421,63 @@
         .feature-title { font-size: 1.3rem; font-weight: 700; color: #D4AF37; margin-bottom: 12px; position: relative; z-index: 1; }
         .feature-desc { font-size: 0.95rem; color: rgba(255, 255, 255, 0.7); line-height: 1.6; position: relative; z-index: 1; }
         
+        /* ============ TESTIMONIALS PAGE ============ */
+        #page-testimonials { justify-content: flex-start; align-items: center; padding-top: 120px; }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.4s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-10px) translateZ(20px);
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
+        }
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #D4AF37;
+        }
+        .testimonial-info h4 {
+            color: #D4AF37;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        .testimonial-info .age {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        .testimonial-text {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-style: italic;
+        }
+        .testimonial-rating {
+            color: #D4AF37;
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        
         /* ============ HOW IT WORKS PAGE ============ */
         #page-how { justify-content: center; align-items: center; text-align: center; }
         .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; max-width: 1000px; width: 100%; margin: 0 auto; }
@@ -379,6 +533,7 @@
             .upgrade-before-after { flex-direction: column; }
             .arrow-icon { transform: rotate(90deg); }
             .page { padding: 100px 15px 0; }
+            .testimonial-ticker { display: none; }
         }
     </style>
 </head>
@@ -402,20 +557,46 @@
     </div>
 
     <nav class="navbar">
-        <div class="nav-logo" onclick="showPage('home')">SHINEGPT</div>
-        <ul class="nav-menu" id="navMenu">
-            <li><a class="nav-link active" data-page="home" onclick="showPage('home')">Home</a></li>
-            <li><a class="nav-link" data-page="upgrade" onclick="showPage('upgrade')">Upgrade</a></li>
-            <li><a class="nav-link" data-page="features" onclick="showPage('features')">Features</a></li>
-            <li><a class="nav-link" data-page="how" onclick="showPage('how')">How It Works</a></li>
-            <li><a class="nav-link" data-page="launch" onclick="showPage('launch')">Launch</a></li>
-            <li><a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="nav-launch">🚀 Try Now</a></li>
-        </ul>
-        <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        <div class="nav-left">
+            <img src="https://i.ibb.co/Q14PcyZ/IMG-7801.jpg" alt="ShineGPT" class="nav-logo-img">
+            <div class="nav-logo" onclick="showPage('home')">SHINEGPT</div>
+        </div>
+        
+        <div style="display: flex; align-items: center;">
+            <div class="lang-selector">
+                <select id="languageSelect" onchange="changeLanguage()">
+                    <option value="en">🌍 English</option>
+                    <option value="fr">🇷 Français</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="sw">🇹🇿 Kiswahili</option>
+                    <option value="yo">🇬 Yorùbá</option>
+                </select>
+            </div>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a class="nav-link active" data-page="home" onclick="showPage('home')">Home</a></li>
+                <li><a class="nav-link" data-page="upgrade" onclick="showPage('upgrade')">Upgrade</a></li>
+                <li><a class="nav-link" data-page="features" onclick="showPage('features')">Features</a></li>
+                <li><a class="nav-link" data-page="testimonials" onclick="showPage('testimonials')">Testimonials</a></li>
+                <li><a class="nav-link" data-page="how" onclick="showPage('how')">How It Works</a></li>
+                <li><a class="nav-link" data-page="launch" onclick="showPage('launch')">Launch</a></li>
+                <li><a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="nav-launch">🚀 Try Now</a></li>
+            </ul>
+            
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        </div>
     </nav>
     
+    <!-- LIVE TESTIMONIAL TICKER -->
+    <div class="testimonial-ticker">
+        <div class="ticker-content" id="tickerContent">
+            <!-- Testimonials will be dynamically inserted here -->
+        </div>
+    </div>
+    
     <section class="page active" id="page-home">
-        <div class="hero-badge">🚀 2026 EDITION • NOW LIVE</div>
+        <div class="hero-badge"> 2026 EDITION • NOW LIVE</div>
         <h1 class="hero-title">SHINEGPT</h1>
         <p class="hero-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
         <p class="hero-description">A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas. Powered by open-source AI, built for the future.</p>
@@ -484,10 +665,29 @@
                 <p class="feature-desc">Designed for low-connectivity areas. Lightweight, accessible, and empowering youth across Alkebulan and beyond.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">💎</div>
+                <div class="feature-icon"></div>
                 <h3 class="feature-title">100% Open Source</h3>
                 <p class="feature-desc">A nonprofit project. Free forever. Built with love for every curious mind who dares to dream bigger.</p>
             </div>
+        </div>
+        <footer class="page-footer">
+            <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
+            <div class="footer-divider"></div>
+            <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
+            <p class="footer-love">Built with love for every curious mind</p>
+        </footer>
+    </section>
+    
+    <!-- NEW TESTIMONIALS PAGE -->
+    <section class="page" id="page-testimonials">
+        <div class="section-header">
+            <div class="section-label">Testimonials</div>
+            <h2 class="section-title">What Our Community Says</h2>
+            <p class="section-subtitle">Hear from the youth and leaders transforming their future with ShineGPT.</p>
+        </div>
+        <div class="testimonials-grid" id="testimonialsGrid">
+            <!-- Testimonials will be dynamically inserted here -->
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
@@ -546,6 +746,171 @@
     </section>
     
     <script>
+        // Testimonial Data - Mostly youth, few adults and elders
+        const testimonials = [
+            {
+                name: "Kwame Mensah",
+                age: "Youth, 22",
+                text: "ShineGPT changed my life! I learned AI basics in just 2 weeks. Now I'm building my own projects.",
+                avatar: "https://i.pravatar.cc/150?img=11",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Amara Johnson",
+                age: "Youth, 19",
+                text: "Finally, an AI tutor that understands us! The lessons are clear and I can learn on my phone.",
+                avatar: "https://i.pravatar.cc/150?img=5",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "David Osei",
+                age: "Youth, 25",
+                text: "From zero to blockchain developer. ShineGPT made it possible. Thank you KS1 Foundation!",
+                avatar: "https://i.pravatar.cc/150?img=13",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Fatima Abdullahi",
+                age: "Youth, 20",
+                text: "I love that I can ask anything and get instant answers. This is the future of education!",
+                avatar: "https://i.pravatar.cc/150?img=9",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Dr. Samuel Nkrumah",
+                age: "Adult, 45",
+                text: "As an educator, I'm impressed by the quality. I recommend ShineGPT to all my students.",
+                avatar: "https://i.pravatar.cc/150?img=15",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Chioma Okonkwo",
+                age: "Youth, 23",
+                text: "Best decision ever! I'm now confident in Web3 and smart contracts. ShineGPT is amazing!",
+                avatar: "https://i.pravatar.cc/150?img=10",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Prof. Adebayo Williams",
+                age: "Elder, 62",
+                text: "At my age, I thought I couldn't learn AI. ShineGPT proved me wrong. Never too late to learn!",
+                avatar: "https://i.pravatar.cc/150?img=14",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Zainab Ibrahim",
+                age: "Youth, 21",
+                text: "The 50,000 lessons are incredible! I learn something new every day. ShineGPT is life-changing.",
+                avatar: "https://i.pravatar.cc/150?img=8",
+                rating: "⭐⭐⭐⭐⭐"
+            }
+        ];
+        
+        // Live ticker testimonials (subset)
+        const tickerTestimonials = [
+            { name: "Kwame M.", text: "Just completed my first AI project! 🎉", avatar: "https://i.pravatar.cc/150?img=11" },
+            { name: "Amara J.", text: "ShineGPT helped me understand blockchain! 💎", avatar: "https://i.pravatar.cc/150?img=5" },
+            { name: "David O.", text: "From zero to hero in 30 days! ", avatar: "https://i.pravatar.cc/150?img=13" },
+            { name: "Fatima A.", text: "Best AI tutor ever! Thank you ShineGPT! ❤️", avatar: "https://i.pravatar.cc/150?img=9" },
+            { name: "Chioma O.", text: "Learning Web3 has never been easier! 🌐", avatar: "https://i.pravatar.cc/150?img=10" },
+            { name: "Samuel N.", text: "I recommend this to all my students! 📚", avatar: "https://i.pravatar.cc/150?img=15" },
+        ];
+        
+        // Render testimonials
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonialsGrid');
+            grid.innerHTML = testimonials.map(t => `
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="${t.avatar}" alt="${t.name}" class="testimonial-avatar">
+                        <div class="testimonial-info">
+                            <h4>${t.name}</h4>
+                            <div class="age">${t.age}</div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">"${t.text}"</p>
+                    <div class="testimonial-rating">${t.rating}</div>
+                </div>
+            `).join('');
+        }
+        
+        // Render live ticker
+        function renderTicker() {
+            const ticker = document.getElementById('tickerContent');
+            // Duplicate for seamless loop
+            const doubled = [...tickerTestimonials, ...tickerTestimonials];
+            ticker.innerHTML = doubled.map(t => `
+                <div class="ticker-item">
+                    <img src="${t.avatar}" alt="${t.name}" class="ticker-avatar">
+                    <div class="ticker-text">
+                        <span class="ticker-name">${t.name}:</span> ${t.text}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Language translations
+        const translations = {
+            en: {
+                home: "Home",
+                upgrade: "Upgrade",
+                features: "Features",
+                testimonials: "Testimonials",
+                how: "How It Works",
+                launch: "Launch"
+            },
+            fr: {
+                home: "Accueil",
+                upgrade: "Mise à jour",
+                features: "Fonctionnalités",
+                testimonials: "Témoignages",
+                how: "Comment ça marche",
+                launch: "Lancer"
+            },
+            es: {
+                home: "Inicio",
+                upgrade: "Actualización",
+                features: "Características",
+                testimonials: "Testimonios",
+                how: "Cómo funciona",
+                launch: "Lanzar"
+            },
+            pt: {
+                home: "Início",
+                upgrade: "Atualização",
+                features: "Recursos",
+                testimonials: "Depoimentos",
+                how: "Como funciona",
+                launch: "Lançar"
+            },
+            sw: {
+                home: "Mwanzo",
+                upgrade: "Sasisha",
+                features: "Vipengele",
+                testimonials: "Ushuhuda",
+                how: "Jinsi inavyofanya kazi",
+                launch: "Zindua"
+            },
+            yo: {
+                home: "Ibẹrẹ",
+                upgrade: "Imudojuiwọn",
+                features: "Awọn ẹya",
+                testimonials: "Ẹri",
+                how: "Bii o ṣe n ṣiṣẹ",
+                launch: "Bẹrẹ"
+            }
+        };
+        
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            const t = translations[lang];
+            
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const page = link.getAttribute('data-page');
+                if (t[page]) link.textContent = t[page];
+            });
+        }
+        
         function shareSite() {
             const shareData = { title: 'ShineGPT - Learn 4IR Technologies', text: 'Discover free lessons on AI, Blockchain, IoT, and more with ShineGPT! Empower yourself today.', url: window.location.href };
             if (navigator.share) { navigator.share(shareData).catch(console.error); } 
@@ -588,7 +953,7 @@
         document.addEventListener('mousemove', (e) => {
             const activePage = document.querySelector('.page.active');
             if (!activePage) return;
-            const cards = activePage.querySelectorAll('.feature-card, .step-card, .stat-card, .upgrade-card, .cta-card');
+            const cards = activePage.querySelectorAll('.feature-card, .step-card, .stat-card, .upgrade-card, .cta-card, .testimonial-card');
             const mouseX = e.clientX / window.innerWidth - 0.5;
             const mouseY = e.clientY / window.innerHeight - 0.5;
             cards.forEach(card => {
@@ -600,6 +965,10 @@
                 }
             });
         });
+        
+        // Initialize
+        renderTestimonials();
+        renderTicker();
     </script>
 </body>
 </html>
