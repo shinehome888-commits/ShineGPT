@@ -188,7 +188,7 @@
         /* ============ LIVE TESTIMONIAL TICKER ============ */
         .testimonial-ticker {
             position: fixed;
-            bottom: 0;
+            bottom: 100px;
             left: 0;
             width: 100%;
             background: rgba(5, 5, 16, 0.95);
@@ -238,7 +238,7 @@
         }
         
         /* ============ FLOATING ACTION BUTTONS ============ */
-        .fab-container { position: fixed; bottom: 100px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
+        .fab-container { position: fixed; bottom: 180px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 999; }
         .fab-btn {
             width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             font-size: 1.6rem; color: white; text-decoration: none; border: 2px solid rgba(255, 255, 255, 0.15);
@@ -258,14 +258,15 @@
         .fab-btn:hover .fab-tooltip { opacity: 1; transform: translateX(-10px); }
         
         @media (max-width: 768px) {
-            .fab-container { bottom: 80px; right: 20px; }
+            .fab-container { bottom: 160px; right: 20px; }
             .fab-btn { width: 55px; height: 55px; font-size: 1.4rem; }
             .fab-tooltip { display: none; }
+            .testimonial-ticker { bottom: 80px; }
         }
         
         /* ============ PAGE SYSTEM ============ */
         .page {
-            display: none; min-height: 100vh; padding: 120px 20px 0; position: relative;
+            display: none; min-height: 100vh; padding: 120px 20px 150px; position: relative;
             animation: pageEnter 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d;
         }
         .page.active { display: flex; flex-direction: column; justify-content: center; }
@@ -463,9 +464,10 @@
             font-size: 1.1rem;
             margin-bottom: 5px;
         }
-        .testimonial-info .age {
+        .testimonial-info .role {
             color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
+            font-style: italic;
         }
         .testimonial-text {
             color: rgba(255, 255, 255, 0.8);
@@ -518,8 +520,19 @@
         .cta-subtitle { font-size: 1.05rem; color: rgba(255, 255, 255, 0.7); margin-bottom: 35px; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.7; }
         
         /* ============ FOOTER ============ */
-        .page-footer { margin-top: auto; padding: 30px 20px; text-align: center; border-top: 1px solid rgba(212, 175, 55, 0.2); background: rgba(5, 5, 16, 0.5); backdrop-filter: blur(10px); transform-style: preserve-3d; }
-        .footer-logo { font-size: 1.5rem; font-weight: 900; background: linear-gradient(135deg, #D4AF37, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; letter-spacing: 2px; }
+        .page-footer { 
+            margin-top: auto; 
+            padding: 40px 20px 80px; 
+            text-align: center; 
+            border-top: 1px solid rgba(212, 175, 55, 0.2); 
+            background: rgba(5, 5, 16, 0.8); 
+            backdrop-filter: blur(10px); 
+            transform-style: preserve-3d;
+            position: relative;
+            z-index: 10;
+        }
+        .footer-logo { font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #D4AF37, #FFD700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; letter-spacing: 2px; }
+        .footer-powered { color: #D4AF37; margin-bottom: 15px; font-weight: 600; font-size: 1rem; }
         .footer-tagline { color: rgba(255, 255, 255, 0.5); margin-bottom: 15px; font-style: italic; font-size: 0.9rem; }
         .footer-divider { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #D4AF37, transparent); margin: 15px auto; }
         .footer-copyright { color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; margin-bottom: 8px; }
@@ -532,7 +545,7 @@
             .upgrade-card, .cta-card { padding: 40px 20px; }
             .upgrade-before-after { flex-direction: column; }
             .arrow-icon { transform: rotate(90deg); }
-            .page { padding: 100px 15px 0; }
+            .page { padding: 100px 15px 150px; }
             .testimonial-ticker { display: none; }
         }
     </style>
@@ -565,12 +578,15 @@
         <div style="display: flex; align-items: center;">
             <div class="lang-selector">
                 <select id="languageSelect" onchange="changeLanguage()">
-                    <option value="en">🌍 English</option>
-                    <option value="fr">🇷 Français</option>
+                    <option value="en"> English</option>
+                    <option value="ru">🇷🇺 Russian</option>
+                    <option value="fr">🇫🇷 Français</option>
                     <option value="es">🇪🇸 Español</option>
-                    <option value="pt">🇵🇹 Português</option>
-                    <option value="sw">🇹🇿 Kiswahili</option>
-                    <option value="yo">🇬 Yorùbá</option>
+                    <option value="gr">🇱🇷 Grand Gedeh</option>
+                    <option value="tw">🇭 Twi</option>
+                    <option value="ew">🇭 Ewe</option>
+                    <option value="ha">🇳🇬 Hausa</option>
+                    <option value="yo">🇳🇬 Yoruba</option>
                 </select>
             </div>
             
@@ -596,12 +612,12 @@
     </div>
     
     <section class="page active" id="page-home">
-        <div class="hero-badge"> 2026 EDITION • NOW LIVE</div>
+        <div class="hero-badge">🚀 2026 EDITION • NOW LIVE</div>
         <h1 class="hero-title">SHINEGPT</h1>
         <p class="hero-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
         <p class="hero-description">A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas. Powered by open-source AI, built for the future.</p>
         <div class="cta-group">
-            <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn-primary">🚀 LAUNCH SHINEGPT</a>
+            <a href="https://huggingface.co/spaces/shinehome888/ShineGPT" target="_blank" class="btn-primary"> LAUNCH SHINEGPT</a>
             <a class="btn-secondary" onclick="showPage('features')">✨ Explore Features</a>
         </div>
         <div class="stats">
@@ -611,6 +627,7 @@
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -621,7 +638,7 @@
     <section class="page" id="page-upgrade">
         <div class="upgrade-card">
             <div class="upgrade-content">
-                <div class="upgrade-badge">⚡ MAJOR UPGRADE</div>
+                <div class="upgrade-badge"> MAJOR UPGRADE</div>
                 <h2 class="upgrade-title">ShineGPT Has Evolved</h2>
                 <div class="upgrade-number">50,000</div>
                 <div class="upgrade-label">Structured Lessons</div>
@@ -635,6 +652,7 @@
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -665,13 +683,14 @@
                 <p class="feature-desc">Designed for low-connectivity areas. Lightweight, accessible, and empowering youth across Alkebulan and beyond.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon"></div>
+                <div class="feature-icon">💎</div>
                 <h3 class="feature-title">100% Open Source</h3>
                 <p class="feature-desc">A nonprofit project. Free forever. Built with love for every curious mind who dares to dream bigger.</p>
             </div>
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -684,13 +703,14 @@
         <div class="section-header">
             <div class="section-label">Testimonials</div>
             <h2 class="section-title">What Our Community Says</h2>
-            <p class="section-subtitle">Hear from the youth and leaders transforming their future with ShineGPT.</p>
+            <p class="section-subtitle">Hear from students, entrepreneurs, teachers, preachers, and learners transforming their future with ShineGPT.</p>
         </div>
         <div class="testimonials-grid" id="testimonialsGrid">
             <!-- Testimonials will be dynamically inserted here -->
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -723,6 +743,7 @@
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -738,6 +759,7 @@
         </div>
         <footer class="page-footer">
             <div class="footer-logo">SHINEGPT</div>
+            <p class="footer-powered">Powered by KS1 Empire Global Foundation (KS1EGF)</p>
             <p class="footer-tagline">Learn. Earn Knowledge. Empower Yourself.</p>
             <div class="footer-divider"></div>
             <p class="footer-copyright">©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)</p>
@@ -746,74 +768,88 @@
     </section>
     
     <script>
-        // Testimonial Data - Mostly youth, few adults and elders
+        // Testimonial Data - Diverse users: students, entrepreneurs, teachers, preachers, learners
         const testimonials = [
             {
                 name: "Kwame Mensah",
-                age: "Youth, 22",
-                text: "ShineGPT changed my life! I learned AI basics in just 2 weeks. Now I'm building my own projects.",
+                role: "University Student",
+                text: "ShineGPT helped me understand AI concepts for my computer science degree. Now I'm building my own projects!",
                 avatar: "https://i.pravatar.cc/150?img=11",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Amara Johnson",
-                age: "Youth, 19",
-                text: "Finally, an AI tutor that understands us! The lessons are clear and I can learn on my phone.",
+                role: "Young Entrepreneur",
+                text: "I used ShineGPT to learn blockchain for my startup. The AI explained everything clearly. My business is now Web3-ready!",
                 avatar: "https://i.pravatar.cc/150?img=5",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
-                name: "David Osei",
-                age: "Youth, 25",
-                text: "From zero to blockchain developer. ShineGPT made it possible. Thank you KS1 Foundation!",
+                name: "Pastor David Osei",
+                role: "Religious Leader",
+                text: "As a preacher, I use ShineGPT to research and prepare sermons. It helps me understand modern technology to better connect with youth.",
                 avatar: "https://i.pravatar.cc/150?img=13",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Fatima Abdullahi",
-                age: "Youth, 20",
-                text: "I love that I can ask anything and get instant answers. This is the future of education!",
+                role: "High School Student",
+                text: "Finally, an AI tutor that understands us! I can learn on my phone even with slow internet. ShineGPT is changing my future!",
                 avatar: "https://i.pravatar.cc/150?img=9",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Dr. Samuel Nkrumah",
-                age: "Adult, 45",
-                text: "As an educator, I'm impressed by the quality. I recommend ShineGPT to all my students.",
+                role: "Teacher/Educator",
+                text: "I recommend ShineGPT to all my students. The quality of education is incredible, and it's completely free!",
                 avatar: "https://i.pravatar.cc/150?img=15",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Chioma Okonkwo",
-                age: "Youth, 23",
-                text: "Best decision ever! I'm now confident in Web3 and smart contracts. ShineGPT is amazing!",
+                role: "Business Owner",
+                text: "ShineGPT taught me about e-commerce and digital marketing. My online store is now thriving. Thank you KS1 Foundation!",
                 avatar: "https://i.pravatar.cc/150?img=10",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Prof. Adebayo Williams",
-                age: "Elder, 62",
-                text: "At my age, I thought I couldn't learn AI. ShineGPT proved me wrong. Never too late to learn!",
+                role: "University Professor",
+                text: "At my age, I thought I couldn't learn AI. ShineGPT proved me wrong. Never too late to learn! I now teach AI basics to my colleagues.",
                 avatar: "https://i.pravatar.cc/150?img=14",
                 rating: "⭐⭐⭐⭐⭐"
             },
             {
                 name: "Zainab Ibrahim",
-                age: "Youth, 21",
-                text: "The 50,000 lessons are incredible! I learn something new every day. ShineGPT is life-changing.",
+                role: "Lifelong Learner",
+                text: "The 50,000 lessons are incredible! I learn something new every day. From IoT to smart contracts - ShineGPT makes it all simple.",
                 avatar: "https://i.pravatar.cc/150?img=8",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Marcus Tetteh",
+                role: "Software Developer",
+                text: "ShineGPT accelerated my coding journey. I went from beginner to building real apps in months. Best learning platform ever!",
+                avatar: "https://i.pravatar.cc/150?img=12",
+                rating: "⭐⭐⭐⭐⭐"
+            },
+            {
+                name: "Rev. Grace Mensah",
+                role: "Church Leader",
+                text: "I use ShineGPT to understand technology so I can better serve our youth ministry. It's helping bridge the generation gap!",
+                avatar: "https://i.pravatar.cc/150?img=6",
                 rating: "⭐⭐⭐⭐⭐"
             }
         ];
         
-        // Live ticker testimonials (subset)
+        // Live ticker testimonials (diverse users)
         const tickerTestimonials = [
-            { name: "Kwame M.", text: "Just completed my first AI project! 🎉", avatar: "https://i.pravatar.cc/150?img=11" },
-            { name: "Amara J.", text: "ShineGPT helped me understand blockchain! 💎", avatar: "https://i.pravatar.cc/150?img=5" },
-            { name: "David O.", text: "From zero to hero in 30 days! ", avatar: "https://i.pravatar.cc/150?img=13" },
-            { name: "Fatima A.", text: "Best AI tutor ever! Thank you ShineGPT! ❤️", avatar: "https://i.pravatar.cc/150?img=9" },
-            { name: "Chioma O.", text: "Learning Web3 has never been easier! 🌐", avatar: "https://i.pravatar.cc/150?img=10" },
-            { name: "Samuel N.", text: "I recommend this to all my students! 📚", avatar: "https://i.pravatar.cc/150?img=15" },
+            { name: "Kwame M.", role: "Student", text: "Just completed my first AI project! 🎉", avatar: "https://i.pravatar.cc/150?img=11" },
+            { name: "Amara J.", role: "Entrepreneur", text: "ShineGPT helped me understand blockchain! 💎", avatar: "https://i.pravatar.cc/150?img=5" },
+            { name: "David O.", role: "Pastor", text: "Using AI to better serve my congregation! 🙏", avatar: "https://i.pravatar.cc/150?img=13" },
+            { name: "Fatima A.", role: "Student", text: "Best AI tutor ever! Thank you ShineGPT! ❤️", avatar: "https://i.pravatar.cc/150?img=9" },
+            { name: "Chioma O.", role: "Business Owner", text: "My online store is thriving! 💼", avatar: "https://i.pravatar.cc/150?img=10" },
+            { name: "Samuel N.", role: "Teacher", text: "I recommend this to all my students! 📚", avatar: "https://i.pravatar.cc/150?img=15" },
         ];
         
         // Render testimonials
@@ -825,7 +861,7 @@
                         <img src="${t.avatar}" alt="${t.name}" class="testimonial-avatar">
                         <div class="testimonial-info">
                             <h4>${t.name}</h4>
-                            <div class="age">${t.age}</div>
+                            <div class="role">${t.role}</div>
                         </div>
                     </div>
                     <p class="testimonial-text">"${t.text}"</p>
@@ -843,13 +879,13 @@
                 <div class="ticker-item">
                     <img src="${t.avatar}" alt="${t.name}" class="ticker-avatar">
                     <div class="ticker-text">
-                        <span class="ticker-name">${t.name}:</span> ${t.text}
+                        <span class="ticker-name">${t.name} (${t.role}):</span> ${t.text}
                     </div>
                 </div>
             `).join('');
         }
         
-        // Language translations
+        // Full translations for all content
         const translations = {
             en: {
                 home: "Home",
@@ -857,7 +893,37 @@
                 features: "Features",
                 testimonials: "Testimonials",
                 how: "How It Works",
-                launch: "Launch"
+                launch: "Launch",
+                badge: "🚀 2026 EDITION • NOW LIVE",
+                tagline: "Learn. Earn Knowledge. Empower Yourself.",
+                description: "A free, low-data-first AI tutor for Alkebulan {Africa} youth and learners in low-connectivity areas. Powered by open-source AI, built for the future.",
+                launchBtn: "🚀 LAUNCH SHINEGPT",
+                exploreBtn: "✨ Explore Features",
+                lessons: "Structured Lessons",
+                aiAvailable: "AI Available",
+                freeOpen: "Free & Open",
+                powered: "Powered by KS1 Empire Global Foundation (KS1EGF)",
+                copyright: "©2026 ShineGPT - A nonprofit project by KS1 Empire Global Foundation (KS1EGF)",
+                love: "Built with love for every curious mind"
+            },
+            ru: {
+                home: "Главная",
+                upgrade: "Обновление",
+                features: "Возможности",
+                testimonials: "Отзывы",
+                how: "Как Это Работает",
+                launch: "Запуск",
+                badge: "🚀 ИЗДАНИЕ 2026 • СЕЙЧАС ДОСТУПНО",
+                tagline: "Учись. Получай Знания. Расширяй Возможности.",
+                description: "Бесплатный AI-репетитор для молодежи Alkebulan {Африки} и учащихся в зонах с низким подключением. На базе открытого AI, создан для будущего.",
+                launchBtn: "🚀 ЗАПУСТИТЬ SHINEGPT",
+                exploreBtn: "✨ Исследовать Возможности",
+                lessons: "Структурированных Уроков",
+                aiAvailable: "AI Доступен",
+                freeOpen: "Бесплатно и Открыто",
+                powered: "При поддержке KS1 Empire Global Foundation (KS1EGF)",
+                copyright: "©2026 ShineGPT - Некоммерческий проект KS1 Empire Global Foundation (KS1EGF)",
+                love: "Создано с любовью для каждого любознательного ума"
             },
             fr: {
                 home: "Accueil",
@@ -865,7 +931,18 @@
                 features: "Fonctionnalités",
                 testimonials: "Témoignages",
                 how: "Comment ça marche",
-                launch: "Lancer"
+                launch: "Lancer",
+                badge: "🚀 ÉDITION 2026 • MAINTENANT DISPONIBLE",
+                tagline: "Apprenez. Acquérez des Connaissances. Renforcez-vous.",
+                description: "Un tuteur IA gratuit et à faible données pour la jeunesse d'Alkebulan {Afrique} et les apprenants dans les zones à faible connectivité. Propulsé par l'IA open-source, construit pour l'avenir.",
+                launchBtn: "🚀 LANCER SHINEGPT",
+                exploreBtn: "✨ Explorer les Fonctionnalités",
+                lessons: "Leçons Structurées",
+                aiAvailable: "IA Disponible",
+                freeOpen: "Gratuit et Ouvert",
+                powered: "Propulsé par KS1 Empire Global Foundation (KS1EGF)",
+                copyright: "©2026 ShineGPT - Un projet à but non lucratif de KS1 Empire Global Foundation (KS1EGF)",
+                love: "Construit avec amour pour chaque esprit curieux"
             },
             es: {
                 home: "Inicio",
@@ -873,31 +950,113 @@
                 features: "Características",
                 testimonials: "Testimonios",
                 how: "Cómo funciona",
-                launch: "Lanzar"
+                launch: "Lanzar",
+                badge: "🚀 EDICIÓN 2026 • AHORA DISPONIBLE",
+                tagline: "Aprende. Obtén Conocimiento. Empodérate.",
+                description: "Un tutor de IA gratuito y de bajos datos para la juventud de Alkebulan {África} y estudiantes en áreas de baja conectividad. Impulsado por IA de código abierto, construido para el futuro.",
+                launchBtn: "🚀 LANZAR SHINEGPT",
+                exploreBtn: "✨ Explorar Características",
+                lessons: "Lecciones Estructuradas",
+                aiAvailable: "IA Disponible",
+                freeOpen: "Gratis y Abierto",
+                powered: "Impulsado por KS1 Empire Global Foundation (KS1EGF)",
+                copyright: "©2026 ShineGPT - Un proyecto sin fines de lucro de KS1 Empire Global Foundation (KS1EGF)",
+                love: "Construido con amor para cada mente curiosa"
             },
-            pt: {
-                home: "Início",
-                upgrade: "Atualização",
-                features: "Recursos",
-                testimonials: "Depoimentos",
-                how: "Como funciona",
-                launch: "Lançar"
+            gr: {
+                home: "Mɔ",
+                upgrade: "Sasɛ",
+                features: "Nɛkwɛ",
+                testimonials: "Edi",
+                how: "Ɛ Nyɛ",
+                launch: "Bɔ",
+                badge: " 2026 NYƐ • KƐ",
+                tagline: "Nyɛ. Nyɛ Nɛkwɛ. Bɔ wɔ.",
+                description: "AI lɛ mɔ fɛ Alkebulan {Africa} nyɛmɔ kɛ lɛ nyɛmɔ kɛ mɔ. Open-source AI, nyɛ fɛ.",
+                launchBtn: "🚀 BƆ SHINEGPT",
+                exploreBtn: "✨ Nyɛ Nɛkwɛ",
+                lessons: "Nɛkwɛ Kɛ",
+                aiAvailable: "AI Kɛ",
+                freeOpen: "Fɛ kɛ Mɔ",
+                powered: "Nyɛ KS1 Empire Global Foundation (KS1EGF)",
+                copyright: "©2026 ShineGPT - KS1 Empire Global Foundation (KS1EGF)",
+                love: "Nyɛ fɛ mɔ wɔ"
             },
-            sw: {
-                home: "Mwanzo",
-                upgrade: "Sasisha",
-                features: "Vipengele",
-                testimonials: "Ushuhuda",
-                how: "Jinsi inavyofanya kazi",
-                launch: "Zindua"
+            tw: {
+                home: "Fie",
+                upgrade: "Sesa",
+                features: "Nneɛma",
+                testimonials: "Nkasae",
+                how: "Ɛyɛ Dɛn",
+                launch: "Hy",
+                badge: "🚀 2026 NO • ƐWƆ HA",
+                tagline: "Sua. Nyɛ Nimdeɛ. Hyɛ wo ho den.",
+                description: "AI kyerekyerɛfo foforo a ɛyɛ foforo ma Alkebulan {Africa} mmɔfra ne adesuafo wɔ baabi a wɔntumi nnyɛ internet yie. Wɔde open-source AI ayɛ no, wɔayɛ no ama ɔkye.",
+                launchBtn: "🚀 HYƐ SHINEGPT",
+                exploreBtn: "✨ Hwɛ Nneɛma",
+                lessons: "Nkyerɛkyerɛmu",
+                aiAvailable: "AI Wɔ Hɔ",
+                freeOpen: "Foforo ne Mfinimfini",
+                powered: "Wɔde KS1 Empire Global Foundation (KS1EGF) ato so",
+                copyright: "©2026 ShineGPT - KS1 Empire Global Foundation (KS1EGF) adwuma",
+                love: "Wɔayɛ no dɔ ma obiara a ɔpɛ sɛ ɔsua"
+            },
+            ew: {
+                home: "Aƒe",
+                upgrade: "Ɖoɖo",
+                features: "Nɔnɔme",
+                testimonials: "Ɖeɖi",
+                how: "Ale Si Wòle",
+                launch: "o",
+                badge: " 2026 ƑE • EƑO",
+                tagline: "Srɔ̃. Xɔ Nyanyui. Ɖo Ŋusẽ.",
+                description: "AI nufiala xɔlɔ si mele fe o na Alkebulan {Africa} ɖeviwo kple srɔ̃lawo le tee siwo internet mele dɔwɔwɔ nyuie le o. Wotsɔ open-source AI wɔe, wɔe ɖe etsɔme ŋu.",
+                launchBtn: "🚀 ƉO SHINEGPT",
+                exploreBtn: "✨ Kpɔ Nɔnɔme",
+                lessons: "Nufiafia",
+                aiAvailable: "AI Li",
+                freeOpen: "Xɔlɔ̃ kple Mɔ̃",
+                powered: "KS1 Empire Global Foundation (KS1EGF) le ŋgɔ",
+                copyright: "©2026 ShineGPT - KS1 Empire Global Foundation (KS1EGF) dɔwɔna",
+                love: "Wɔe kple lɔlɔ̃ na ame sia ame si di be yeasrɔ̃"
+            },
+            ha: {
+                home: "Gida",
+                upgrade: "Sabunta",
+                features: "Fasali",
+                testimonials: "Shaida",
+                how: "Yaya Yake Aiki",
+                launch: "Fara",
+                badge: "🚀 2026 • YANZU",
+                tagline: "Koyi. Sami Ilimi. Ƙarfafa Kanka.",
+                description: "Mai koyarwa na AI kyauta don matasan Alkebulan {Afirka} da masu ilimi a yankuna marasa ingantacciyar intanet. Ana amfani da buɗaɗɗen AI, an gina shi don gobe.",
+                launchBtn: " FARA SHINEGPT",
+                exploreBtn: "✨ Bincika Fasali",
+                lessons: "Darussa",
+                aiAvailable: "AI Yana Aiki",
+                freeOpen: "Kyauta kpie Buɗe",
+                powered: "KS1 Empire Global Foundation (KS1EGF) ta tallafa",
+                copyright: "©2026 ShineGPT - Aikin KS1 Empire Global Foundation (KS1EGF)",
+                love: "An gina shi da soyayya ga kowa mai son koyuwa"
             },
             yo: {
-                home: "Ibẹrẹ",
+                home: "Ile",
                 upgrade: "Imudojuiwọn",
                 features: "Awọn ẹya",
                 testimonials: "Ẹri",
                 how: "Bii o ṣe n ṣiṣẹ",
-                launch: "Bẹrẹ"
+                launch: "Bẹrẹ",
+                badge: "🚀 2026 • BAYI",
+                tagline: "Kọ ẹkọ. Gba Imọ. Lagbara.",
+                description: "Olukọni AI ọfẹ fun ọdọ Alkebulan {Afirika} ati awọn ọmọ ile-iwe ni awọn agbegbe ti intanẹẹti ko dara. A lo AI orisun ṣiṣi, a kọ ọ fun ọla.",
+                launchBtn: "🚀 BẸRẸ SHINEGPT",
+                exploreBtn: "✨ Ṣawari Awọn ẹya",
+                lessons: "Awọn ẹkọ",
+                aiAvailable: "AI N ṣiṣẹ",
+                freeOpen: "Ọfẹ ati Ṣiṣi",
+                powered: "KS1 Empire Global Foundation (KS1EGF) ṣe atilẹyin",
+                copyright: "©2026 ShineGPT - Iṣẹ akanṣe KS1 Empire Global Foundation (KS1EGF)",
+                love: "A kọ ọ pẹlu ifẹ fun ẹnikẹni ti o fẹ kọ ẹkọ"
             }
         };
         
@@ -905,10 +1064,39 @@
             const lang = document.getElementById('languageSelect').value;
             const t = translations[lang];
             
+            // Update navigation
             document.querySelectorAll('.nav-link').forEach(link => {
                 const page = link.getAttribute('data-page');
                 if (t[page]) link.textContent = t[page];
             });
+            
+            // Update home page content
+            const badge = document.querySelector('.hero-badge');
+            const tagline = document.querySelector('.hero-tagline');
+            const desc = document.querySelector('.hero-description');
+            const launchBtn = document.querySelector('.btn-primary');
+            const exploreBtn = document.querySelector('.btn-secondary');
+            const powered = document.querySelector('.footer-powered');
+            const copyright = document.querySelector('.footer-copyright');
+            const love = document.querySelector('.footer-love');
+            
+            if (badge) badge.textContent = t.badge;
+            if (tagline) tagline.textContent = t.tagline;
+            if (desc) desc.textContent = t.description;
+            if (launchBtn) launchBtn.textContent = t.launchBtn;
+            if (exploreBtn) exploreBtn.textContent = t.exploreBtn;
+            if (powered) powered.textContent = t.powered;
+            if (copyright) {
+                const year = copyright.textContent.match(/©\d{4}/)?.[0] || '©2026';
+                copyright.textContent = `${year} ShineGPT - ${t.copyright.split(' - ')[1]}`;
+            }
+            if (love) love.textContent = t.love;
+            
+            // Update stat labels
+            const statLabels = document.querySelectorAll('.stat-label');
+            if (statLabels[0]) statLabels[0].textContent = t.lessons;
+            if (statLabels[1]) statLabels[1].textContent = t.aiAvailable;
+            if (statLabels[2]) statLabels[2].textContent = t.freeOpen;
         }
         
         function shareSite() {
